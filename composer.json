@@ -7,15 +7,15 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "doctrine/doctrine-bundle": "^3.2",
+        "doctrine/doctrine-bundle": "^3.2.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
-        "doctrine/orm": "^3.6",
+        "doctrine/orm": "^3.6.2",
         "pagerfanta/doctrine-orm-adapter": "^4.8",
-        "pagerfanta/pagerfanta": "^2.0",
-        "php-flasher/flasher-symfony": "*",
+        "pagerfanta/pagerfanta": "^2.0.1",
+        "php-flasher/flasher-symfony": ">=2.4",
         "phpdocumentor/reflection-docblock": "^5.6.6",
-        "phpstan/phpdoc-parser": "^2.3",
-        "stof/doctrine-extensions-bundle": "^1.15",
+        "phpstan/phpdoc-parser": "^2.3.2",
+        "stof/doctrine-extensions-bundle": "^1.15.3",
         "symfony/asset": "8.0.*",
         "symfony/console": "8.0.*",
         "symfony/doctrine-messenger": "8.0.*",
@@ -45,9 +45,9 @@
         "symfony/web-link": "8.0.*",
         "symfony/webpack-encore-bundle": "^2.4",
         "symfony/yaml": "8.0.*",
-        "symfonycasts/reset-password-bundle": "*",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "symfonycasts/reset-password-bundle": ">=1.24",
+        "twig/extra-bundle": "^2.12|^3.23",
+        "twig/twig": "^2.12|^3.23"
     },
     "config": {
         "allow-plugins": {
@@ -117,9 +117,9 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.3",
-        "friendsofphp/php-cs-fixer": "*",
-        "phpstan/phpstan": "*",
+        "doctrine/doctrine-fixtures-bundle": "^4.3.1",
+        "friendsofphp/php-cs-fixer": ">=3.93.1",
+        "phpstan/phpstan": ">=2.1.38",
         "phpunit/phpunit": "^12.5.8",
         "symfony/browser-kit": "8.0.*",
         "symfony/css-selector": "8.0.*",
