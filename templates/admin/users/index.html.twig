@@ -1,0 +1,46 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% set active_menu = 'users' %}
+{% set page_heading = 'Utilisateurs' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/users/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Administration</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Gestion des comptes et habilitations.</p>
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+        {{ include('components/_table_header.html.twig', {
+            route: 'app_admin_users_index',
+            params: params,
+            target: 'users',
+            search_id: 'users-search',
+            search_placeholder: 'Rechercher un utilisateur, un email...',
+            search_value: params.filters.q ?? '',
+            actions: [
+                {
+                    label: 'Ajouter un utilisateur',
+                    variant: 'primary',
+                    href: path('app_admin_users_new'),
+                    size: 'sm',
+                    extra_class: 'flex items-center justify-center',
+                    icon: '<svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>'
+                }
+            ]
+        }) }}
+        <div id="users-table-container" data-table-ajax="users">
+            {% include 'admin/users/_table.html.twig' with { pager: pager, params: params } %}
+        </div>
+    </section>
+{% endblock %}

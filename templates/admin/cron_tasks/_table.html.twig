@@ -1,0 +1,78 @@
+{% set columns = [
+    { label: 'Date / heure', sort: 'startedAt' },
+    { label: 'Commande', sort: 'command' },
+    { label: 'Statut', sort: 'status' },
+    { label: 'Durée', sort: 'durationMs' },
+    { label: 'Résumé' }
+] %}
+
+{% set status_styles = {
+    'success': { label: 'Succès', class: 'bg-success/10 text-success' },
+    'failed': { label: 'Échec', class: 'bg-danger/10 text-danger' },
+    'running': { label: 'En cours', class: 'bg-neutral-secondary-soft text-body' }
+} %}
+
+<div class="relative overflow-visible rounded-base border border-default bg-neutral-primary-soft shadow-xs">
+    <div class="overflow-x-auto overflow-y-visible">
+        <table class="w-full text-left text-sm text-body">
+            {% include '_partials/table/_header.html.twig' with {
+                route: 'app_admin_cron_tasks_index',
+                params: params,
+                columns: columns
+            } %}
+            <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+                {% for run in pager %}
+                    {% set status_meta = status_styles[run.status] ?? null %}
+                    {% set summary = run.summary ?? '' %}
+                    {% set detail = run.status == 'failed' ? run.error : run.output %}
+                    <tr class="border-b border-default bg-neutral-primary-soft">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
+                            {{ run.startedAt|date('d/m/Y H:i') }}
+                        </th>
+                        <td class="px-6 py-4 font-medium text-heading">
+                            {{ run.command }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if status_meta %}
+                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ status_meta.class }}">
+                                    {{ status_meta.label }}
+                                </span>
+                            {% else %}
+                                {{ run.status }}
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-body">
+                            {% if run.durationMs is not null %}
+                                {% if run.durationMs >= 1000 %}
+                                    {{ (run.durationMs / 1000)|number_format(1, ',', ' ') }} s
+                                {% else %}
+                                    {{ run.durationMs }} ms
+                                {% endif %}
+                            {% else %}
+                                <span class="text-body-subtle">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if summary %}
+                                <div class="text-sm text-heading">{{ summary }}</div>
+                            {% else %}
+                                <div class="text-sm text-body-subtle">—</div>
+                            {% endif %}
+                            {% if detail %}
+                                <div class="mt-1 text-xs {{ run.status == 'failed' ? 'text-danger dark:text-fg-danger-strong' : 'text-body-subtle' }}">
+                                    {{ detail|length > 120 ? detail|slice(0, 117) ~ '...' : detail }}
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucune exécution enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_cron_tasks_index', params: params, pager: pager } %}

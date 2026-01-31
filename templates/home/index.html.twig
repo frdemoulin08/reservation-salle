@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <main class="mx-auto flex min-h-screen max-w-4xl flex-col items-start justify-center gap-6 px-6 py-16">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Service Prévention, Sport et Loisirs</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">Réservation et facturation des salles</h1>
+            <p class="mt-3 max-w-2xl text-sm text-body">
+                Accédez au portail de réservation des salles départementales. Une authentification est requise pour accéder aux services.
+            </p>
+        </div>
+        <a class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" href="{{ path('app_login') }}">
+            Se connecter
+        </a>
+    </main>
+{% endblock %}

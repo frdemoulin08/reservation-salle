@@ -1,0 +1,29 @@
+{% set params = params ?? null %}
+{% set route = route ?? null %}
+{% set columns = columns ?? [] %}
+
+<thead class="bg-neutral-secondary-soft text-xs uppercase tracking-[0.12em] text-heading">
+    <tr>
+        {% for column in columns %}
+            {% set isSortable = column.sort is defined and column.sort %}
+            {% set isActive = isSortable and params and params.sort == column.sort %}
+            {% set nextDirection = isActive and params.direction == 'asc'
+                ? 'desc'
+                : (isActive and params.direction == 'desc' ? '' : 'asc') %}
+            <th class="px-4 py-3 font-semibold">
+                {% if isSortable and route and params %}
+                    <a class="inline-flex items-center gap-2 hover:text-heading"
+                       href="{{ path(route, params.toQueryArray()|merge({ sort: nextDirection == '' ? '' : column.sort, direction: nextDirection, page: 1 })) }}"
+                       data-table-link>
+                        <span>{{ column.label }}</span>
+                        {% if isActive and params.direction in ['asc', 'desc'] %}
+                            <span class="text-xs font-semibold text-fg-brand">{{ params.direction == 'asc' ? '▲' : '▼' }}</span>
+                        {% endif %}
+                    </a>
+                {% else %}
+                    {{ column.label }}
+                {% endif %}
+            </th>
+        {% endfor %}
+    </tr>
+</thead>

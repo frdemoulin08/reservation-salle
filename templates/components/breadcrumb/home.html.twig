@@ -1,0 +1,12 @@
+{#
+params:
+- homeRoute
+- homeLabel
+#}
+{% set current_route = app.request.attributes.get('_route') %}
+{# home #}
+{% if current_route == homeRoute %}
+	<li class="inline-flex items-center" aria-current="page">
+		<span class="inline-flex items-center text-sm font-medium text-body-subtle">{{ homeLabel }}</span>
+	</li>
+{% endif %}

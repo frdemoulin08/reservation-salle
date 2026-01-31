@@ -1,0 +1,34 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Journaux de réinitialisation{% endblock %}
+
+{% set active_menu = 'reset_password_logs' %}
+{% set page_heading = 'Journaux de réinitialisation' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/reset_password_logs/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Administration</p>
+        <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+        <p class="mt-2 max-w-2xl text-sm text-body">Traçabilité des demandes et réinitialisations de mots de passe.</p>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+        {{ include('components/_table_header.html.twig', {
+            route: 'app_admin_reset_password_logs_index',
+            params: params,
+            target: 'reset-password-logs',
+            search_id: 'reset-password-logs-search',
+            search_placeholder: 'Rechercher un identifiant, un utilisateur, une IP...',
+            search_value: params.filters.q ?? ''
+        }) }}
+        <div id="reset-password-logs-table-container" data-table-ajax="reset-password-logs">
+            {% include 'admin/reset_password_logs/_table.html.twig' with { pager: pager, params: params } %}
+        </div>
+    </section>
+{% endblock %}

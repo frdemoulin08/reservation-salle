@@ -1,0 +1,71 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% set active_menu = 'dashboard' %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Espace admin SPSL</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">Tableau de bord</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Suivi opérationnel des demandes, devis et disponibilités.</p>
+        </div>
+        <div class="flex w-full flex-wrap gap-3 lg:w-auto">
+            <button class="w-full text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none sm:w-auto">
+                Nouvelle réservation
+            </button>
+            <button class="w-full text-body bg-neutral-primary-soft border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none sm:w-auto">
+                Créer un usager
+            </button>
+        </div>
+    </div>
+
+    <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {% set use_stat_card_component = true %}
+
+        {% if use_stat_card_component %}
+            {{ include('components/_stat_card.html.twig', {
+                title: 'Demandes ouvertes',
+                value: '12',
+                subtitle: 'Depuis 7 jours'
+            }) }}
+            {{ include('components/_stat_card.html.twig', {
+                title: 'Devis en attente',
+                value: '7',
+                subtitle: 'À valider'
+            }) }}
+            {{ include('components/_stat_card.html.twig', {
+                title: 'Salles disponibles',
+                value: '5',
+                subtitle: 'Aujourd\'hui'
+            }) }}
+            {{ include('components/_stat_card.html.twig', {
+                title: 'Conventions générées',
+                value: '18',
+                subtitle: 'Ce mois-ci'
+            }) }}
+        {% else %}
+            <div class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Demandes ouvertes</p>
+                <p class="mt-3 text-3xl font-semibold text-heading">12</p>
+                <p class="mt-1 text-sm text-body">Depuis 7 jours</p>
+            </div>
+            <div class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Devis en attente</p>
+                <p class="mt-3 text-3xl font-semibold text-heading">7</p>
+                <p class="mt-1 text-sm text-body">À valider</p>
+            </div>
+            <div class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Salles disponibles</p>
+                <p class="mt-3 text-3xl font-semibold text-heading">5</p>
+                <p class="mt-1 text-sm text-body">Aujourd\'hui</p>
+            </div>
+            <div class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Conventions générées</p>
+                <p class="mt-3 text-3xl font-semibold text-heading">18</p>
+                <p class="mt-1 text-sm text-body">Ce mois-ci</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

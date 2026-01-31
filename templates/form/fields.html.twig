@@ -1,0 +1,33 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block choice_widget_expanded %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            <div class="flex items-center{% if not loop.last %} mb-4{% endif %}">
+                {{ form_widget(child, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                <label for="{{ child.vars.id }}" class="select-none ms-2 text-sm font-medium text-heading">
+                    {{ child.vars.label|trans({}, child.vars.translation_domain) }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block form_label %}
+    {% if label is same as(false) %}
+        {# no label #}
+    {% else %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        {% if required is same as(false) and label is not empty and '(optionnel)' not in label %}
+            {% set label = label ~ ' (optionnel)' %}
+        {% endif %}
+        {% if not compound and label_attr.for is not defined %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {% endif %}
+        <label{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
+            {{ label|trans({}, translation_domain) }}
+        </label>
+    {% endif %}
+{% endblock %}

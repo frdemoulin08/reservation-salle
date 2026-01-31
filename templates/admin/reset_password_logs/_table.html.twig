@@ -1,0 +1,67 @@
+{% set columns = [
+    { label: 'Date / heure', sort: 'occurredAt' },
+    { label: 'Identifiant', sort: 'identifier' },
+    { label: 'Événement', sort: 'eventType' },
+    { label: 'IP', sort: 'ipAddress' },
+    { label: 'Détail' }
+] %}
+
+{% set event_styles = {
+    'RESET_REQUEST': { label: 'Demande', class: 'bg-brand/10 text-fg-brand' },
+    'RESET_SUCCESS': { label: 'Succès', class: 'bg-success/10 text-success' },
+    'RESET_INVALID': { label: 'Invalide', class: 'bg-danger/10 text-danger' }
+} %}
+
+<div class="relative overflow-visible rounded-base border border-default bg-neutral-primary-soft shadow-xs">
+    <div class="overflow-x-auto overflow-y-visible">
+        <table class="w-full text-left text-sm text-body">
+            {% include '_partials/table/_header.html.twig' with {
+                route: 'app_admin_reset_password_logs_index',
+                params: params,
+                columns: columns
+            } %}
+            <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+                {% for log in pager %}
+                    {% set event_meta = event_styles[log.eventType] ?? null %}
+                    {% set detail_value = log.failureReason ?: log.userAgent %}
+                    <tr class="border-b border-default bg-neutral-primary-soft">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
+                            {{ log.occurredAt|date('d/m/Y H:i') }}
+                        </th>
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-heading">{{ log.identifier }}</div>
+                            {% if log.user %}
+                                <div class="text-xs text-body-subtle">{{ log.user.lastname|upper }} {{ log.user.firstname }}</div>
+                            {% else %}
+                                <div class="text-xs text-body-subtle">Utilisateur inconnu</div>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if event_meta %}
+                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ event_meta.class }}">
+                                    {{ event_meta.label }}
+                                </span>
+                            {% else %}
+                                {{ log.eventType }}
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">{{ log.ipAddress ?? '—' }}</td>
+                        <td class="px-6 py-4 text-xs text-body">
+                            {% if detail_value %}
+                                {{ detail_value|length > 90 ? detail_value|slice(0, 87) ~ '...' : detail_value }}
+                            {% else %}
+                                <span class="text-body-subtle">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucune action de réinitialisation trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_reset_password_logs_index', params: params, pager: pager } %}

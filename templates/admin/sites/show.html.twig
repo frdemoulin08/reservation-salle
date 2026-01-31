@@ -1,0 +1,56 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail du site{% endblock %}
+
+{% set active_menu = 'sites' %}
+{% set page_heading = site.name %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/sites/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée du site.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a class="text-body bg-neutral-primary-soft border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" href="{{ path('app_admin_sites_index') }}">
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <dl class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nom</dt>
+                <dd class="mt-2 text-base font-semibold text-heading">{{ site.name }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Commune</dt>
+                <dd class="mt-2 text-base text-heading">{{ site.city }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Adresse</dt>
+                <dd class="mt-2 text-base text-heading">{{ site.address ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Capacité</dt>
+                <dd class="mt-2 text-base text-heading">{{ site.capacity ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Statut</dt>
+                <dd class="mt-2 text-base text-heading">{{ site.status }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Dernière mise à jour</dt>
+                <dd class="mt-2 text-base text-heading">{{ site.updatedAt|date('d/m/Y \\à H:i:s') }}</dd>
+            </div>
+        </dl>
+    </section>
+{% endblock %}

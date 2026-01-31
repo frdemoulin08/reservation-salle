@@ -1,0 +1,11 @@
+{
+  "packages": [
+    "semantic-release",
+    "@semantic-release/npm",
+    "npm",
+    "tar"
+  ],
+  "advisories": [
+    "https://github.com/advisories/GHSA-34x7-hfp2-rc4v"
+  ]
+}

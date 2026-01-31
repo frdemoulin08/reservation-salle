@@ -1,0 +1,33 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block error_title %}Une erreur est survenue{% endblock %}
+{% block error_heading %}Une erreur est survenue{% endblock %}
+{% block error_description %}Un problème technique est survenu. Merci de réessayer ou de contacter le support si le problème persiste.{% endblock %}
+
+{% block title %}{{ block('error_title') }}{% endblock %}
+
+{% block error_content %}
+    <div class="mx-auto max-w-2xl rounded-2xl border border-default bg-neutral-primary-soft p-8 shadow-xs">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Administration</p>
+        <h1 class="mt-2 text-2xl font-semibold text-heading">{{ block('error_heading') }}</h1>
+        <p class="mt-2 text-sm text-body">{{ block('error_description') }}</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à l’accueil',
+                href: path('app_admin_index'),
+                variant: 'primary',
+                size: 'sm'
+            }) }}
+            <button type="button"
+                    class="box-border border border-default shadow-xs font-medium rounded-base focus:outline-none text-sm px-3 py-2 leading-5 text-body bg-neutral-primary-soft hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft"
+                    onclick="history.back()">
+                Page précédente
+            </button>
+        </div>
+        <p class="mt-4 text-xs text-body-subtle">Code {{ status_code }} — {{ status_text }}</p>
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    {{ block('error_content') }}
+{% endblock %}

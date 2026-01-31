@@ -1,0 +1,80 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail utilisateur{% endblock %}
+
+{% set active_menu = 'users' %}
+{% set page_heading = user.lastname|upper ~ ' ' ~ user.firstname %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/users/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Administration</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée de l’utilisateur.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Éditer',
+                href: path('app_admin_users_edit', { id: user.id }),
+                variant: 'primary',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_users_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {% set role_labels = [] %}
+        {% for role_code in user.roles %}
+            {% if role_code != 'ROLE_USER' %}
+                {% set translated = ('roles.' ~ role_code)|trans %}
+                {% set label = translated starts with 'roles.' ? role_code : translated %}
+                {% set role_labels = role_labels|merge([label]) %}
+            {% endif %}
+        {% endfor %}
+
+        <dl class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Email</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.email }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Statut</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.isActive ? 'Actif' : 'Inactif' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Téléphone mobile</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.mobilePhone ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Téléphone fixe</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.fixedPhone ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Rôles</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {{ role_labels is empty ? '—' : role_labels|join(', ') }}
+                </dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Dernière mise à jour</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.updatedAt|date('d/m/Y \\à H:i:s') }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Créé le</dt>
+                <dd class="mt-2 text-base text-heading">{{ user.createdAt|date('d/m/Y \\à H:i:s') }}</dd>
+            </div>
+        </dl>
+    </section>
+{% endblock %}

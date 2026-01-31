@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser le mot de passe{% endblock %}
+
+{% block body %}
+    <section class="bg-neutral-primary">
+        <div class="mx-auto flex min-h-screen flex-col items-center justify-center px-6 py-8">
+            <a class="mb-6 flex items-center text-2xl font-semibold text-heading" href="{{ path('app_home') }}">
+                <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-base bg-brand-strong text-sm font-semibold text-white">CD08</span>
+                Room booking
+            </a>
+            <div class="w-full rounded-2xl border border-default bg-neutral-primary-soft shadow-xs sm:max-w-md xl:p-0">
+                <div class="space-y-4 p-6 sm:p-8">
+                    <h1 class="text-center text-xl font-semibold leading-tight tracking-tight text-heading md:text-2xl">
+                        Réinitialiser le mot de passe
+                    </h1>
+
+                    {% set password_has_error = resetForm.plainPassword.vars.errors|length > 0 %}
+                    {% set password_error_id = resetForm.plainPassword.vars.id ~ '-error' %}
+
+                    {{ form_start(resetForm, { attr: { class: 'space-y-4', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+                        <div data-validate-field>
+                            {{ form_label(resetForm.plainPassword, null, {
+                                label_attr: {
+                                    class: 'mb-2 block text-sm font-medium ' ~ (password_has_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading'),
+                                    'data-validate-label': 'true',
+                                    'data-validate-valid-class': 'text-heading',
+                                    'data-validate-invalid-class': 'text-danger dark:text-fg-danger-strong'
+                                }
+                            }) }}
+                            <div class="relative">
+                                {{ form_widget(resetForm.plainPassword, { attr: {
+                                    class: 'w-full rounded-base border bg-neutral-primary-soft px-3 py-2.5 pr-10 text-sm text-heading placeholder:text-body focus:ring-2 ' ~ (password_has_error ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : 'border-default focus:border-brand-medium focus:ring-brand-medium/40'),
+                                    autocomplete: 'new-password',
+                                    'data-validate-input': 'true',
+                                    'data-validate-required-message': 'user.password.required'|trans({}, 'validators'),
+                                    'data-validate-valid-class': 'border-default focus:border-brand-medium focus:ring-brand-medium/40',
+                                    'data-validate-invalid-class': 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger',
+                                    'aria-invalid': password_has_error ? 'true' : 'false',
+                                    'aria-describedby': password_error_id
+                                } }) }}
+                                {{ include('components/_password_toggle.html.twig', { input_id: resetForm.plainPassword.vars.id }) }}
+                            </div>
+                            <div id="{{ password_error_id }}" data-validate-error class="mt-1 text-xs text-danger dark:text-fg-danger-strong{{ password_has_error ? '' : ' hidden' }}">
+                                {{ form_errors(resetForm.plainPassword) }}
+                            </div>
+                        </div>
+                        <div class="rounded-base border border-default bg-neutral-primary-soft p-4">
+                            {{ include('components/_password_requirements.html.twig', { input_id: resetForm.plainPassword.vars.id }) }}
+                        </div>
+                        <button type="submit" class="w-full text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-5 py-2.5 text-center focus:outline-none">
+                            Mettre à jour le mot de passe
+                        </button>
+                        <p class="text-center text-sm text-body">
+                            <a class="font-semibold text-fg-brand hover:underline" href="{{ path('app_login') }}">Retour à la connexion</a>
+                        </p>
+                    {{ form_end(resetForm) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

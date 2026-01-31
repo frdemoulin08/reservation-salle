@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes:
+        - 'form/fields.html.twig'
+    globals:
+        app_name: '%app.name%'
+
+when@test:
+    twig:
+        strict_variables: true

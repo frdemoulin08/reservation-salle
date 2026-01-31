@@ -1,0 +1,21 @@
+site:
+  name:
+    required: "Le nom du site est obligatoire"
+  city:
+    required: "La commune est obligatoire"
+user:
+  firstname:
+    required: "Le prénom est obligatoire"
+  lastname:
+    required: "Le nom est obligatoire"
+  email:
+    required: "L’email est obligatoire"
+    invalid: "Le format de l’email est invalide"
+  password:
+    required: "Le mot de passe est obligatoire"
+    min_length: "Le mot de passe doit contenir au moins {{ limit }} caractères"
+    max_length: "Le mot de passe ne peut pas dépasser {{ limit }} caractères"
+    invalid_chars: "Le mot de passe contient des caractères non autorisés"
+    categories: "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
+  roles:
+    required: "Au moins un rôle est obligatoire"

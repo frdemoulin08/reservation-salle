@@ -1,0 +1,13 @@
+flasher:
+    translate: true
+    options:
+        timeout: 2500
+    presets:
+        success:
+            title: 'Succès'
+        error:
+            title: 'Erreur'
+        warning:
+            title: 'Attention'
+        info:
+            title: 'Information'

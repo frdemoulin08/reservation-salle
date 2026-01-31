@@ -1,0 +1,103 @@
+{% set params = params ?? null %}
+{% set route = route ?? null %}
+{% if pager.nbResults > 0 %}
+    {% set startIndex = ((pager.currentPage - 1) * pager.maxPerPage) + 1 %}
+    {% set endIndex = startIndex + (pager.currentPageResults|length - 1) %}
+    {% set endIndex = endIndex > pager.nbResults ? pager.nbResults : endIndex %}
+    {% set totalPages = pager.nbPages %}
+    {% set currentPage = pager.currentPage %}
+    {% set startPage = currentPage - 1 %}
+    {% set endPage = currentPage + 1 %}
+    {% if startPage < 2 %}
+        {% set startPage = 2 %}
+    {% endif %}
+    {% if endPage > totalPages - 1 %}
+        {% set endPage = totalPages - 1 %}
+    {% endif %}
+    <nav class="flex flex-col gap-3 p-4 text-sm text-body md:flex-row md:items-center md:justify-between" aria-label="Table navigation">
+        <span class="block w-full text-center text-sm font-normal md:w-auto md:text-left">
+            Affichage <span class="font-semibold text-heading">{{ startIndex }}-{{ endIndex }}</span> sur <span class="font-semibold text-heading">{{ pager.nbResults }}</span>
+        </span>
+        <ul class="flex w-full flex-wrap items-center justify-center gap-1 text-sm md:w-auto md:justify-start md:gap-0 md:-space-x-px">
+            <li>
+                {% if pager.hasPreviousPage %}
+                    <a href="{{ path(route, params.toQueryArray()|merge({ page: pager.previousPage })) }}"
+                       data-table-link
+                       class="flex h-9 items-center justify-center rounded-s-base border border-default-medium bg-neutral-secondary-medium px-3 text-sm font-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading focus:outline-none">
+                        Précédent
+                    </a>
+                {% else %}
+                    <span class="flex h-9 items-center justify-center rounded-s-base border border-default-medium bg-neutral-secondary-medium px-3 text-sm font-medium text-body-subtle opacity-60 cursor-not-allowed"
+                          aria-disabled="true">
+                        Précédent
+                    </span>
+                {% endif %}
+            </li>
+            {% if totalPages <= 7 %}
+                {% for page in 1..totalPages %}
+                    <li>
+                        <a href="{{ path(route, params.toQueryArray()|merge({ page: page })) }}"
+                           data-table-link
+                           class="flex h-9 w-9 items-center justify-center border border-default-medium text-sm font-medium {{ page == currentPage ? 'bg-brand-softer text-fg-brand hover:bg-brand-soft' : 'bg-neutral-secondary-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading' }} focus:outline-none">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>
+                    <a href="{{ path(route, params.toQueryArray()|merge({ page: 1 })) }}"
+                       data-table-link
+                       class="flex h-9 w-9 items-center justify-center border border-default-medium text-sm font-medium {{ currentPage == 1 ? 'bg-brand-softer text-fg-brand hover:bg-brand-soft' : 'bg-neutral-secondary-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading' }} focus:outline-none">
+                        1
+                    </a>
+                </li>
+                {% if startPage > 2 %}
+                    <li>
+                        <span class="flex h-9 w-9 items-center justify-center border border-default-medium bg-neutral-secondary-medium text-sm font-medium text-body">
+                            …
+                        </span>
+                    </li>
+                {% endif %}
+                {% if startPage <= endPage %}
+                    {% for page in startPage..endPage %}
+                        <li>
+                            <a href="{{ path(route, params.toQueryArray()|merge({ page: page })) }}"
+                               data-table-link
+                               class="flex h-9 w-9 items-center justify-center border border-default-medium text-sm font-medium {{ page == currentPage ? 'bg-brand-softer text-fg-brand hover:bg-brand-soft' : 'bg-neutral-secondary-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading' }} focus:outline-none">
+                                {{ page }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% if endPage < totalPages - 1 %}
+                    <li>
+                        <span class="flex h-9 w-9 items-center justify-center border border-default-medium bg-neutral-secondary-medium text-sm font-medium text-body">
+                            …
+                        </span>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{{ path(route, params.toQueryArray()|merge({ page: totalPages })) }}"
+                       data-table-link
+                       class="flex h-9 w-9 items-center justify-center border border-default-medium text-sm font-medium {{ currentPage == totalPages ? 'bg-brand-softer text-fg-brand hover:bg-brand-soft' : 'bg-neutral-secondary-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading' }} focus:outline-none">
+                        {{ totalPages }}
+                    </a>
+                </li>
+            {% endif %}
+            <li>
+                {% if pager.hasNextPage %}
+                    <a href="{{ path(route, params.toQueryArray()|merge({ page: pager.nextPage })) }}"
+                       data-table-link
+                       class="flex h-9 items-center justify-center rounded-e-base border border-default-medium bg-neutral-secondary-medium px-3 text-sm font-medium text-body hover:bg-neutral-tertiary-medium hover:text-heading focus:outline-none">
+                        Suivant
+                    </a>
+                {% else %}
+                    <span class="flex h-9 items-center justify-center rounded-e-base border border-default-medium bg-neutral-secondary-medium px-3 text-sm font-medium text-body-subtle opacity-60 cursor-not-allowed"
+                          aria-disabled="true">
+                        Suivant
+                    </span>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endif %}

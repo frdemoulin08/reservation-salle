@@ -1,0 +1,17 @@
+{% set current_label = current_label|default('Utilisateurs') %}
+
+{{ include('components/breadcrumb/crud_double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Administration',
+    firstLevelHasLink: "false",
+    secondLevelIndexRoute: 'app_admin_users_index',
+    secondLevelIndexLabel: 'Utilisateurs',
+    secondLevelShowRoute: 'app_admin_users_show',
+    secondLevelShowLabel: current_label,
+    secondLevelCreateRoute: 'app_admin_users_new',
+    secondLevelCreateLabel: current_label,
+    secondLevelEditRoute: 'app_admin_users_edit',
+    secondLevelEditLabel: current_label
+}) }}

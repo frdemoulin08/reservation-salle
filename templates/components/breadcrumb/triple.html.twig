@@ -1,0 +1,73 @@
+{#
+params:
+- homeRoute
+- homeLabel
+- firstLevelRoute
+- firstLevelLabel
+- firstLevelHasLink (bool) : affiche ou non le lien du niveau 1
+- secondLevelRoute
+- secondLevelLabel
+- secondLevelHasLink (bool) : affiche ou non le lien du niveau 2
+- thirdLevelRoute
+- thirdLevelLabel
+#}
+
+{% set firstLevelHasLink = to_bool(firstLevelHasLink|default(true), true) %}
+{% set secondLevelHasLink = to_bool(secondLevelHasLink|default(true), true) %}
+{% set current_route = app.request.attributes.get('_route') %}
+
+{# fil d'ariane à trois niveaux #}
+{% if current_route == thirdLevelRoute %}
+	<nav class="flex" aria-label="Fil d’ariane">
+		<ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+			{# accueil #}
+			<li class="inline-flex items-center">
+				<a href="{{ path(homeRoute) }}" class="inline-flex items-center text-xs font-medium text-body hover:text-fg-brand sm:text-sm leading-tight whitespace-normal">
+					<svg class="me-1.5 h-4 w-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
+					</svg>
+					{{ homeLabel }}
+				</a>
+			</li>
+			{# niveau 1 #}
+			<li>
+				<div class="flex items-center space-x-1.5">
+					<svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+					</svg>
+					{% if firstLevelHasLink %}
+						<a href="{{ path(firstLevelRoute) }}" class="inline-flex items-center text-xs font-medium text-body hover:text-fg-brand sm:text-sm leading-tight whitespace-normal">
+							{{ firstLevelLabel }}
+						</a>
+					{% else %}
+						<span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">{{ firstLevelLabel }}</span>
+					{% endif %}
+				</div>
+			</li>
+			{# niveau 2 #}
+			<li>
+				<div class="flex items-center space-x-1.5">
+					<svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+					</svg>
+					{% if secondLevelHasLink %}
+						<a href="{{ path(secondLevelRoute) }}" class="inline-flex items-center text-xs font-medium text-body hover:text-fg-brand sm:text-sm leading-tight whitespace-normal">
+							{{ secondLevelLabel }}
+						</a>
+					{% else %}
+						<span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">{{ secondLevelLabel }}</span>
+					{% endif %}
+				</div>
+			</li>
+			{# niveau 3 #}
+			<li aria-current="page">
+				<div class="flex items-center space-x-1.5">
+					<svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+					</svg>
+					<span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">{{ thirdLevelLabel }}</span>
+				</div>
+			</li>
+		</ol>
+	</nav>
+{% endif %}

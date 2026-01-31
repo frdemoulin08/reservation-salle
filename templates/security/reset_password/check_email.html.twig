@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email envoyé{% endblock %}
+
+{% block body %}
+    <section class="bg-neutral-primary">
+        <div class="mx-auto flex min-h-screen flex-col items-center justify-center px-6 py-8">
+            <a class="mb-6 flex items-center text-2xl font-semibold text-heading" href="{{ path('app_home') }}">
+                <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-base bg-brand-strong text-sm font-semibold text-white">CD08</span>
+                Room booking
+            </a>
+            <div class="w-full rounded-2xl border border-default bg-neutral-primary-soft shadow-xs sm:max-w-md xl:p-0">
+                <div class="space-y-4 p-6 sm:p-8 text-center">
+                    <h1 class="text-xl font-semibold text-heading md:text-2xl">Vérifiez votre email</h1>
+                    <p class="text-sm text-body">
+                        Si un compte existe pour cette adresse, un email vient d’être envoyé avec un lien de réinitialisation.
+                    </p>
+                    <p class="text-sm text-body">
+                        Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                    </p>
+                    <p class="text-sm text-body">
+                        <a class="font-semibold text-fg-brand hover:underline" href="{{ path('app_login') }}">Retour à la connexion</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% set current_label = current_label|default('Sites') %}
+
+{{ include('components/breadcrumb/crud_double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Gestion',
+    firstLevelHasLink: "false",
+    secondLevelIndexRoute: 'app_admin_sites_index',
+    secondLevelIndexLabel: 'Sites',
+    secondLevelShowRoute: 'app_admin_sites_show',
+    secondLevelShowLabel: current_label,
+    secondLevelCreateRoute: 'app_admin_sites_new',
+    secondLevelCreateLabel: current_label,
+    secondLevelEditRoute: 'app_admin_sites_edit',
+    secondLevelEditLabel: current_label
+}) }}

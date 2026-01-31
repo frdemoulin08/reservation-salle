@@ -1,0 +1,11 @@
+roles:
+  ROLE_SUPER_ADMIN: "Super administrateur"
+  ROLE_BUSINESS_ADMIN: "Administrateur métier"
+  ROLE_APP_MANAGER: "Gestionnaire applicatif"
+  ROLE_SUPERVISOR: "Superviseur"
+actions:
+  export_excel: "Exporter en Excel"
+Success: "Succès"
+Error: "Erreur"
+Warning: "Attention"
+Info: "Information"

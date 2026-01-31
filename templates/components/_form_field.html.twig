@@ -1,0 +1,62 @@
+{#
+params:
+- field (FormView) : champ Symfony
+- label (string|null) : label custom
+- wrapper_class (string)
+- input_attr (array)
+- label_attr (array)
+- input_class (string)
+- required_message (string)
+- email_message (string)
+- pattern (string)
+- pattern_message (string)
+- validate (bool)
+#}
+{% set validate = validate|default(true) %}
+{% set label = label|default(null) %}
+{% set has_error = field.vars.errors|length > 0 %}
+{% set error_id = field.vars.id ~ '-error' %}
+{% set wrapper_class = wrapper_class|default('') %}
+{% set label_attr = label_attr|default({}) %}
+{% set input_attr = input_attr|default({}) %}
+
+{% set base_label_class = 'mb-2 block text-sm font-medium ' ~ (has_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading') %}
+{% set label_class = base_label_class ~ (label_attr.class is defined ? ' ' ~ label_attr.class : '') %}
+{% set label_attr = label_attr|merge({
+    class: label_class,
+    'data-validate-label': validate ? 'true' : null,
+    'data-validate-valid-class': validate ? 'text-heading' : null,
+    'data-validate-invalid-class': validate ? 'text-danger dark:text-fg-danger-strong' : null
+}) %}
+
+{% set base_input_class = 'w-full rounded-base border bg-neutral-primary px-3 py-2 text-sm text-heading placeholder:text-body focus:ring-2 ' ~ (has_error ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : 'border-default focus:border-brand-medium focus:ring-brand-medium/40') %}
+{% set input_class = base_input_class ~ (input_attr.class is defined ? ' ' ~ input_attr.class : '') %}
+{% set input_attr = input_attr|merge({
+    class: input_class,
+    'aria-invalid': has_error ? 'true' : 'false',
+    'aria-describedby': error_id,
+    'data-validate-input': validate ? 'true' : null,
+    'data-validate-valid-class': validate ? 'border-default focus:border-brand-medium focus:ring-brand-medium/40' : null,
+    'data-validate-invalid-class': validate ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : null
+}) %}
+
+{% if validate and required_message is defined and required_message %}
+    {% set input_attr = input_attr|merge({'data-validate-required-message': required_message}) %}
+{% endif %}
+{% if validate and email_message is defined and email_message %}
+    {% set input_attr = input_attr|merge({'data-validate-email-message': email_message}) %}
+{% endif %}
+{% if validate and pattern is defined and pattern %}
+    {% set input_attr = input_attr|merge({'data-validate-pattern': pattern}) %}
+{% endif %}
+{% if validate and pattern_message is defined and pattern_message %}
+    {% set input_attr = input_attr|merge({'data-validate-pattern-message': pattern_message}) %}
+{% endif %}
+
+<div class="{{ wrapper_class }}"{% if validate %} data-validate-field{% endif %}>
+    {{ form_label(field, label, { label_attr: label_attr }) }}
+    {{ form_widget(field, { attr: input_attr }) }}
+    <div id="{{ error_id }}"{% if validate %} data-validate-error{% endif %} class="mt-1 text-xs text-danger dark:text-fg-danger-strong{% if not has_error %} hidden{% endif %}">
+        {{ form_errors(field) }}
+    </div>
+</div>

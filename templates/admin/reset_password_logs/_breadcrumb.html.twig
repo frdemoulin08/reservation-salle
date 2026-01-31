@@ -1,0 +1,11 @@
+{% set current_label = current_label|default('Journaux de réinitialisation') %}
+
+{{ include('components/breadcrumb/double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Administration',
+    firstLevelHasLink: "false",
+    secondLevelRoute: 'app_admin_reset_password_logs_index',
+    secondLevelLabel: current_label
+}) }}

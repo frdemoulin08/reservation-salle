@@ -1,0 +1,8 @@
+{# Props: title, value, subtitle (optional) #}
+<div class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">{{ title }}</p>
+    <p class="mt-3 text-3xl font-semibold text-heading text-center">{{ value }}</p>
+    {% if subtitle is defined and subtitle %}
+        <p class="mt-1 text-sm text-body text-center">{{ subtitle }}</p>
+    {% endif %}
+</div>

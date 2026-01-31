@@ -1,0 +1,52 @@
+{#
+params:
+- route (string) : route Symfony
+- params (TableParams) : params de table (pagination/tri)
+- target (string) : clé pour data-table-target
+- search_id (string)
+- search_placeholder (string)
+- search_value (string)
+- min_length (int)
+- actions (array) : [{ label, variant, href, size, extra_class, icon, type }]
+#}
+{% set route = route|default('') %}
+{% set params = params ?? null %}
+{% set target = target|default('') %}
+{% set search_id = search_id|default('table-search') %}
+{% set search_placeholder = search_placeholder|default('Rechercher...') %}
+{% set search_value = search_value|default('') %}
+{% set min_length = min_length|default(3) %}
+{% set actions = actions|default([]) %}
+
+<div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <form class="flex w-full flex-1 flex-col gap-3 sm:flex-row sm:items-center md:w-auto" method="get" action="{{ path(route) }}" data-table-form data-table-target="{{ target }}">
+        <label class="sr-only" for="{{ search_id }}">Rechercher</label>
+        <div class="relative w-full md:min-w-70">
+            <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                <svg class="h-4 w-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+                </svg>
+            </div>
+            <input id="{{ search_id }}"
+                   class="block w-full rounded-base border border-default bg-neutral-primary px-3 py-2 ps-9 text-sm text-heading placeholder:text-body"
+                   type="search"
+                   name="filter[q]"
+                   data-table-search
+                   data-min-length="{{ min_length }}"
+                   value="{{ search_value }}"
+                   placeholder="{{ search_placeholder }}">
+        </div>
+        <input type="hidden" name="sort" value="{{ params ? params.sort : '' }}">
+        <input type="hidden" name="direction" value="{{ params ? params.direction : '' }}">
+    </form>
+    {% if actions is not empty %}
+        <div class="flex w-full flex-wrap gap-2 md:w-auto md:justify-end">
+            {% for action in actions %}
+                {% set action = action|merge({
+                    extra_class: ((action.extra_class|default('')) ~ ' w-full sm:w-auto')|trim
+                }) %}
+                {{ include('components/_button.html.twig', action) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,66 @@
+{% set columns = [
+    { label: 'NOM PRÉNOM', sort: 'lastname' },
+    { label: 'Email', sort: 'email' },
+    { label: 'Rôles' },
+    { label: 'Statut', sort: 'isActive' },
+    { label: 'Mise à jour', sort: 'updatedAt' },
+    { label: 'Actions' }
+] %}
+
+<div class="relative overflow-visible rounded-base border border-default bg-neutral-primary-soft shadow-xs">
+    <div class="overflow-x-auto overflow-y-visible">
+        <table class="w-full text-left text-sm text-body">
+            {% include '_partials/table/_header.html.twig' with {
+                route: 'app_admin_users_index',
+                params: params,
+                columns: columns
+            } %}
+            <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+            {% for user in pager %}
+                <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_users_show', { id: user.id }) }}">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
+                            {{ user.lastname|upper }} {{ user.firstname }}
+                        </th>
+                        <td class="px-6 py-4">{{ user.email }}</td>
+                        <td class="px-6 py-4">
+                            {% set role_labels = [] %}
+                            {% for role_code in user.roles %}
+                                {% if role_code != 'ROLE_USER' %}
+                                    {% set translated = ('roles.' ~ role_code)|trans %}
+                                    {% set label = translated starts with 'roles.' ? role_code : translated %}
+                                    {% set role_labels = role_labels|merge([label]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if role_labels is empty %}
+                                <span class="text-body-subtle">—</span>
+                            {% else %}
+                                {{ role_labels|join(', ') }}
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ user.isActive ? 'bg-success/10 text-success' : 'bg-neutral-secondary-soft text-body' }}">
+                                {{ user.isActive ? 'Actif' : 'Inactif' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">{{ user.updatedAt|date('d/m/Y') }}</td>
+                    <td class="px-6 py-4 text-center">
+                        {{ include('components/_actions_dropdown.html.twig', {
+                            id: 'user-actions-' ~ user.id,
+                            items: [
+                                { label: 'Voir', href: path('app_admin_users_show', { id: user.id }) },
+                                { label: 'Éditer', href: path('app_admin_users_edit', { id: user.id }) }
+                            ]
+                        }) }}
+                    </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucun utilisateur ne correspond à votre recherche.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_users_index', params: params, pager: pager } %}

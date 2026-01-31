@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <section class="bg-neutral-primary">
+        <div class="mx-auto flex min-h-screen flex-col items-center justify-center px-6 py-8">
+            <a class="mb-6 flex items-center text-2xl font-semibold text-heading" href="{{ path('app_home') }}">
+                <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-base bg-brand-strong text-sm font-semibold text-white">CD08</span>
+                Room booking
+            </a>
+            <div class="w-full rounded-2xl border border-default bg-neutral-primary-soft shadow-xs sm:max-w-md xl:p-0">
+                <div class="space-y-4 p-6 sm:p-8">
+                    <h1 class="text-center text-xl font-semibold leading-tight tracking-tight text-heading md:text-2xl">
+                        Connexion à votre compte
+                    </h1>
+
+                    {% set error_message = error ? error.messageKey|trans(error.messageData, 'security') : '' %}
+                    {% set email_error = error_message and ('email' in error_message) ? error_message : '' %}
+                    {% set password_error = error_message and ('mot de passe' in error_message) ? error_message : '' %}
+                    {% set show_alert = error_message and email_error == '' and password_error == '' %}
+
+                    {% if show_alert %}
+                        <div class="rounded-base border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+
+                    <form class="space-y-4" method="post" action="{{ path('app_login') }}" novalidate data-validate-form>
+                        <div data-validate-field>
+                            <label class="mb-2 block text-sm font-medium {{ email_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading' }}"
+                                   for="email"
+                                   data-validate-label
+                                   data-validate-valid-class="text-heading"
+                                   data-validate-invalid-class="text-danger dark:text-fg-danger-strong">
+                                Adresse email
+                            </label>
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   value="{{ last_username }}"
+                                   autocomplete="email"
+                                   required
+                                   autofocus
+                                   aria-describedby="email-error"
+                                   aria-invalid="{{ email_error ? 'true' : 'false' }}"
+                                   data-validate-input
+                                   data-validate-required-message="L’adresse email est obligatoire"
+                                   data-validate-email-message="Le format de l’email est invalide"
+                                   data-validate-pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                                   data-validate-pattern-message="Le format de l’email est invalide"
+                                   data-validate-valid-class="border-default focus:border-brand-medium focus:ring-brand-medium/40"
+                                   data-validate-invalid-class="border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger"
+                                   class="w-full rounded-base border bg-neutral-primary-soft px-3 py-2.5 text-sm text-heading placeholder:text-body focus:ring-2 {{ email_error ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : 'border-default focus:border-brand-medium focus:ring-brand-medium/40' }}">
+                            <div id="email-error" data-validate-error class="mt-1 text-xs text-danger dark:text-fg-danger-strong{{ email_error ? '' : ' hidden' }}">
+                                {{ email_error }}
+                            </div>
+                        </div>
+                        <div data-validate-field>
+                            <label class="mb-2 block text-sm font-medium {{ password_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading' }}"
+                                   for="password"
+                                   data-validate-label
+                                   data-validate-valid-class="text-heading"
+                                   data-validate-invalid-class="text-danger dark:text-fg-danger-strong">
+                                Mot de passe
+                            </label>
+                            <input type="password"
+                                   name="password"
+                                   id="password"
+                                   placeholder="••••••••"
+                                   autocomplete="current-password"
+                                   required
+                                   aria-describedby="password-error"
+                                   aria-invalid="{{ password_error ? 'true' : 'false' }}"
+                                   data-validate-input
+                                   data-validate-required-message="Le mot de passe est obligatoire"
+                                   data-validate-valid-class="border-default focus:border-brand-medium focus:ring-brand-medium/40"
+                                   data-validate-invalid-class="border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger"
+                                   class="w-full rounded-base border bg-neutral-primary-soft px-3 py-2.5 text-sm text-heading placeholder:text-body focus:ring-2 {{ password_error ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : 'border-default focus:border-brand-medium focus:ring-brand-medium/40' }}">
+                            <div id="password-error" data-validate-error class="mt-1 text-xs text-danger dark:text-fg-danger-strong{{ password_error ? '' : ' hidden' }}">
+                                {{ password_error }}
+                            </div>
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <button type="submit" class="w-full text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-5 py-2.5 text-center focus:outline-none">
+                            Se connecter
+                        </button>
+                        <a class="block text-center text-sm font-semibold text-fg-brand hover:underline" href="{{ path('app_forgot_password_request') }}">
+                            Mot de passe oublié ?
+                        </a>
+                        <p class="text-center text-sm text-body">
+                            <a class="font-semibold text-fg-brand hover:underline" href="{{ path('app_home') }}">Retour à l’accueil</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

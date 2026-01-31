@@ -1,0 +1,72 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Éditer un site{% endblock %}
+
+{% set active_menu = 'sites' %}
+{% set page_heading = 'Éditer un site' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/sites/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Mettez à jour les informations du site.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_sites_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {% set name_required_message = 'site.name.required'|trans({}, 'validators') %}
+        {% set city_required_message = 'site.city.required'|trans({}, 'validators') %}
+
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.name,
+                wrapper_class: 'md:col-span-2',
+                required_message: name_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.city,
+                required_message: city_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.status
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.address,
+                wrapper_class: 'md:col-span-2'
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.capacity
+            }) }}
+            <div class="md:col-span-2 flex items-center justify-end gap-3">
+                {{ include('components/_button.html.twig', {
+                    label: 'Annuler',
+                    href: path('app_admin_sites_show', { id: site.id }),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Enregistrer',
+                    variant: 'primary',
+                    size: 'sm',
+                    type: 'submit',
+                    extra_class: 'min-w-[140px]'
+                }) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
