@@ -41,6 +41,7 @@
         "symfony/translation": "8.0.*",
         "symfony/twig-bundle": "8.0.*",
         "symfony/uid": "8.0.*",
+        "symfony/ux-twig-component": "*",
         "symfony/validator": "8.0.*",
         "symfony/web-link": "8.0.*",
         "symfony/webpack-encore-bundle": "^2.4",

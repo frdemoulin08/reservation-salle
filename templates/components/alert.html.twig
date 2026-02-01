@@ -1,0 +1,17 @@
+<div class="p-4 text-sm {{ this.wrapperClass }}" role="alert">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            {% if title %}
+                <span class="font-medium">{{ title }}</span>
+            {% endif %}
+            {% if message %}
+                {{ message|raw }}
+            {% endif %}
+        </div>
+        {% if actionLabel and actionHref %}
+            <div class="sm:text-right">
+                <a class="font-semibold underline hover:opacity-80" href="{{ actionHref }}">{{ actionLabel }}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>

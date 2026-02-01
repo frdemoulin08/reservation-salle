@@ -1540,6 +1540,18 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     throttle_limit?: int|Param, // Another password reset cannot be made faster than this throttle time in seconds. // Default: 3600
  *     enable_garbage_collection?: bool|Param, // Enable/Disable automatic garbage collection. // Default: true
  * }
+ * @psalm-type TwigComponentConfig = array{
+ *     defaults?: array<string, string|array{ // Default: ["__deprecated__use_old_naming_behavior"]
+ *         template_directory?: scalar|Param|null, // Default: "components"
+ *         name_prefix?: scalar|Param|null, // Default: ""
+ *     }>,
+ *     anonymous_template_directory?: scalar|Param|null, // Defaults to `components`
+ *     profiler?: bool|array{ // Enables the profiler for Twig Component
+ *         enabled?: bool|Param, // Default: "%kernel.debug%"
+ *         collect_components?: bool|Param, // Collect components instances // Default: true
+ *     },
+ *     controllers_json?: scalar|Param|null, // Deprecated: The "twig_component.controllers_json" config option is deprecated, and will be removed in 3.0. // Default: null
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1555,6 +1567,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *     flasher?: FlasherConfig,
  *     symfonycasts_reset_password?: SymfonycastsResetPasswordConfig,
+ *     twig_component?: TwigComponentConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1573,6 +1586,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         flasher?: FlasherConfig,
  *         symfonycasts_reset_password?: SymfonycastsResetPasswordConfig,
+ *         twig_component?: TwigComponentConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1589,6 +1603,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         flasher?: FlasherConfig,
  *         symfonycasts_reset_password?: SymfonycastsResetPasswordConfig,
+ *         twig_component?: TwigComponentConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1606,6 +1621,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         flasher?: FlasherConfig,
  *         symfonycasts_reset_password?: SymfonycastsResetPasswordConfig,
+ *         twig_component?: TwigComponentConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

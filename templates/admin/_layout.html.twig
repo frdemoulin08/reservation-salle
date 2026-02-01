@@ -5,31 +5,6 @@
 
 {% block body %}
     <div class="min-h-screen bg-neutral-primary text-body">
-        {% if is_granted('IS_IMPERSONATOR') and app.user %}
-            <div class="lg:pl-64">
-                <div class="px-4 pt-4 sm:px-6">
-                    {% set first = true %}
-                    {% set roles_list = '' %}
-                    {% for role in app.user.roleEntities %}
-                        {% if role.isActive %}
-                            {% if not first %}{% set roles_list = roles_list ~ ', ' %}{% endif %}
-                            {% set roles_list = roles_list ~ role.label %}
-                            {% set first = false %}
-                        {% endif %}
-                    {% endfor %}
-                    <div class="flex flex-wrap items-center justify-between gap-3 rounded-base bg-warning-soft p-4 text-sm text-fg-warning" role="alert">
-                        <div>
-                            <span class="font-medium">Warning alert!</span>
-                            Connecté en tant que <span class="font-semibold">{{ app.user.firstname }} {{ app.user.lastname }}</span>
-                            {% if roles_list %}
-                                <span class="text-fg-warning"> — Rôles : {{ roles_list }}</span>
-                            {% endif %}
-                        </div>
-                        <a class="text-sm font-semibold text-fg-warning underline hover:opacity-80" href="{{ path('app_admin_index', { _switch_user: '_exit' }) }}">Quitter l’impersonation</a>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
         <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-default bg-neutral-primary px-4 py-6 transition-transform lg:translate-x-0 overflow-y-auto" aria-label="Sidebar">
             <div class="mb-8 flex items-center gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-base bg-brand-strong text-white">
@@ -75,8 +50,37 @@
         </aside>
 
         <div class="lg:pl-64 min-h-screen flex flex-col">
-            <header class="sticky top-0 z-30 border-b border-default bg-neutral-primary/90 backdrop-blur">
-                <div class="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
+            <div class="sticky top-0 z-30 bg-neutral-primary/90 backdrop-blur">
+                {% if is_granted('IS_IMPERSONATOR') and app.user %}
+                    <div class="px-4 pt-4 sm:px-6">
+                        {% set first = true %}
+                        {% set roles_list = '' %}
+                        {% for role in app.user.roleEntities %}
+                            {% if role.isActive %}
+                                {% set role_label = ('roles.' ~ role.code)|trans %}
+                                {% if role_label == 'roles.' ~ role.code %}{% set role_label = role.label %}{% endif %}
+                                {% if not first %}{% set roles_list = roles_list ~ ', ' %}{% endif %}
+                                {% set roles_list = roles_list ~ role_label %}
+                                {% set first = false %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set impersonation_message %}
+                            Connecté en tant que <span class="font-semibold">{{ app.user.firstname }} {{ app.user.lastname }}</span>
+                            {% if roles_list %}
+                                <span> — Rôles : {{ roles_list }}</span>
+                            {% endif %}
+                        {% endset %}
+                        {{ component('Alert', {
+                            type: 'warning',
+                            title: 'Attention.',
+                            message: impersonation_message|trim,
+                            actionLabel: 'Quitter l’impersonation',
+                            actionHref: path('app_admin_index', { _switch_user: '_exit' })
+                        }) }}
+                    </div>
+                {% endif %}
+                <header class="border-b border-default">
+                    <div class="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
                     <button class="inline-flex items-center justify-center rounded-base border border-default bg-neutral-primary-soft p-2 text-heading hover:bg-neutral-secondary-soft lg:hidden" type="button" data-drawer-target="admin-sidebar" data-drawer-toggle="admin-sidebar" aria-controls="admin-sidebar">
                         <span class="sr-only">Ouvrir le menu</span>
                         <svg class="icon-md text-heading" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -161,19 +165,22 @@
                                     <p class="mt-1 inline-flex items-center gap-2 text-xs font-semibold text-fg-brand">
                                         Mode impersonation
                                     </p>
-                                    {% if app.user and app.user.roleEntities is defined %}
-                                        <p class="mt-2 text-xs text-body">
-                                            Rôles :
-                                            {% set first = true %}
-                                            {% for role in app.user.roleEntities %}
-                                                {% if role.isActive %}
-                                                    {% if not first %}, {% endif %}
-                                                    {{ role.label }}
-                                                    {% set first = false %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </p>
-                                    {% endif %}
+                                {% endif %}
+                                {% if app.user and app.user.roleEntities is defined %}
+                                    <p class="mt-2 text-xs text-body">
+                                        {% set first = true %}
+                                        {% set roles_list = '' %}
+                                        {% for role in app.user.roleEntities %}
+                                            {% if role.isActive %}
+                                                {% set role_label = ('roles.' ~ role.code)|trans %}
+                                                {% if role_label == 'roles.' ~ role.code %}{% set role_label = role.label %}{% endif %}
+                                                {% if not first %}{% set roles_list = roles_list ~ ', ' %}{% endif %}
+                                                {% set roles_list = roles_list ~ role_label %}
+                                                {% set first = false %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ roles_list }}
+                                    </p>
                                 {% endif %}
                             </div>
                             <ul class="py-2 text-sm text-body">
@@ -201,8 +208,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                    </div>
+                </header>
+            </div>
 
             <main class="flex-1 px-4 py-8 sm:px-6">
                 {% block admin_breadcrumb %}{% endblock %}

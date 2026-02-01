@@ -4,6 +4,7 @@
 
 @plugin "flowbite/plugin";
 @source "../../node_modules/flowbite";
+@source "../../templates";
 @source not "../../public";
 
 /* =============================================================================
