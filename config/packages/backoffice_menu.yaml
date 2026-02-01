@@ -12,30 +12,30 @@ parameters:
         label: "Gestion"
         roles: [ROLE_APP_MANAGER]
         items:
-          - key: demandes
-            label: "Demandes à valider"
-            url: "#"
           - key: devis
             label: "Devis (création/modif)"
+            url: "#"
+          - key: demandes
+            label: "Demandes à valider"
             url: "#"
           - key: reservations
             label: "Réservations"
             url: "#"
-          - key: usagers
-            label: "Usagers (liste + recherche)"
-            url: "#"
           - key: sites
             label: "Sites"
-            route: app_admin_sites_index
+            route: app_admin_venues_index
+          - key: usagers
+            label: "Usagers"
+            url: "#"
       - key: planning
         label: "Planning"
         roles: [ROLE_APP_MANAGER, ROLE_SUPERVISOR]
         items:
-          - key: planning_site
-            label: "Vue site"
-            url: "#"
           - key: planning_salle
             label: "Vue salle"
+            url: "#"
+          - key: planning_site
+            label: "Vue site"
             url: "#"
       - key: documents
         label: "Documents"
@@ -52,23 +52,23 @@ parameters:
             label: "Catalogue (édition)"
             url: "#"
             children:
-              - key: sites_catalogue
-                label: "Sites"
-                route: app_admin_sites_index
-              - key: salles_catalogue
-                label: "Salles"
+              - key: configurations
+                label: "Configurations"
                 url: "#"
               - key: equipements_catalogue
                 label: "Équipements"
                 url: "#"
+              - key: salles_catalogue
+                label: "Salles"
+                url: "#"
               - key: services_catalogue
                 label: "Services"
                 url: "#"
+              - key: sites_catalogue
+                label: "Sites"
+                route: app_admin_venues_index
               - key: types_salle
                 label: "Types de salle"
-                url: "#"
-              - key: configurations
-                label: "Configurations"
                 url: "#"
               - key: usages
                 label: "Usages autorisés"
@@ -77,21 +77,21 @@ parameters:
             label: "Tarification (édition)"
             url: "#"
             children:
-              - key: grilles_tarifaires
-                label: "Grilles tarifaires"
-                url: "#"
               - key: frais_annexes
                 label: "Frais annexes"
+                url: "#"
+              - key: grilles_tarifaires
+                label: "Grilles tarifaires"
                 url: "#"
           - key: documents_metier
             label: "Documents (édition)"
             url: "#"
             children:
-              - key: docs_site
-                label: "Documents de site"
-                url: "#"
               - key: docs_salle
                 label: "Documents de salle"
+                url: "#"
+              - key: docs_site
+                label: "Documents de site"
                 url: "#"
           - key: regles_reservation
             label: "Règles de réservation"
@@ -104,18 +104,18 @@ parameters:
         label: "Administration générale"
         roles: [ROLE_SUPER_ADMIN]
         items:
-          - key: menu_config
-            label: "Menu backoffice"
-            route: app_admin_menu_config
           - key: authentication_logs
             label: "Journaux d’authentification"
             route: app_admin_authentication_logs_index
-          - key: reset_password_logs
-            label: "Journaux de réinitialisation"
-            route: app_admin_reset_password_logs_index
           - key: cron_tasks
             label: "Journaux des tâches"
             route: app_admin_cron_tasks_index
+          - key: menu_config
+            label: "Menu backoffice"
+            route: app_admin_menu_config
+          - key: reset_password_logs
+            label: "Journaux de réinitialisation"
+            route: app_admin_reset_password_logs_index
           - key: users
             label: "Utilisateurs"
             route: app_admin_users_index
@@ -136,9 +136,9 @@ parameters:
         label: "Pilotage"
         roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER, ROLE_SUPERVISOR]
         items:
-          - key: stats_usage
-            label: "Statistiques d’usage"
-            url: "#"
           - key: rapports_synthese
             label: "Rapports de synthèse"
+            url: "#"
+          - key: stats_usage
+            label: "Statistiques d’usage"
             url: "#"

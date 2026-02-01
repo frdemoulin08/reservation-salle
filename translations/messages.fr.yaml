@@ -21,6 +21,8 @@ common:
   no: "Non"
   actions: "Actions"
   status: "Statut"
+  created_at: "Créé le"
+  updated_at: "Dernière mise à jour"
 
 equipment_type:
   singular: "Type d’équipement"
@@ -227,6 +229,14 @@ usage_type:
 venue:
   singular: "Site"
   plural: "Sites"
+  sections:
+    general: "Informations générales"
+    address: "Adresse"
+    access: "Accès et stationnement"
+    resources: "Ressources associées"
+  address_source:
+    manual: "Saisie manuelle"
+    ban: "BAN"
   fields:
     name: "Nom du site"
     description: "Description"
@@ -268,4 +278,6 @@ venue_equipment:
   fields:
     max_quantity: "Quantité maximale"
     is_included: "Inclus"
-
+  values:
+    included: "Inclus"
+    optional: "En option"

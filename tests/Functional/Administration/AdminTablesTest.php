@@ -6,7 +6,7 @@ use App\Tests\Functional\DatabaseWebTestCase;
 
 class AdminTablesTest extends DatabaseWebTestCase
 {
-    public function testSitesIndexRenders(): void
+    public function testVenuesIndexRenders(): void
     {
         $client = $this->loginAsAdmin();
 

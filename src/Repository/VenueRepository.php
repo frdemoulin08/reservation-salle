@@ -2,30 +2,30 @@
 
 namespace App\Repository;
 
-use App\Entity\Site;
+use App\Entity\Venue;
 use App\Table\TableParams;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Site>
+ * @extends ServiceEntityRepository<Venue>
  */
-class SiteRepository extends ServiceEntityRepository
+class VenueRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Site::class);
+        parent::__construct($registry, Venue::class);
     }
 
     public function createTableQb(TableParams $params): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('v');
 
         $search = trim((string) ($params->filters['q'] ?? ''));
         if ('' !== $search) {
             $qb
-                ->andWhere('s.name LIKE :search OR s.city LIKE :search')
+                ->andWhere('v.name LIKE :search OR v.address.city LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
 

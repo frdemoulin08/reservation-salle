@@ -4,14 +4,14 @@ namespace App\Tests\Functional\Administration;
 
 use App\Tests\Functional\DatabaseWebTestCase;
 
-class SiteValidationTest extends DatabaseWebTestCase
+class VenueValidationTest extends DatabaseWebTestCase
 {
     private function getCsrfToken($crawler): string
     {
-        return (string) $crawler->filter('input[name="site[_token]"]')->attr('value');
+        return (string) $crawler->filter('input[name="venue[_token]"]')->attr('value');
     }
 
-    public function testCreateSiteRequiresNameAndCity(): void
+    public function testCreateVenueRequiresNameAndCity(): void
     {
         $client = $this->loginAsAdmin();
 
@@ -19,16 +19,15 @@ class SiteValidationTest extends DatabaseWebTestCase
         self::assertResponseIsSuccessful();
 
         $client->request('POST', '/administration/sites/nouveau', [
-            'site' => [
+            'venue' => [
                 'name' => '',
-                'city' => '',
-                'status' => 'Ouvert',
+                'addressCity' => '',
                 '_token' => $this->getCsrfToken($crawler),
             ],
         ]);
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('#site_name-error', 'Le nom du site est obligatoire');
-        self::assertSelectorTextContains('#site_city-error', 'La commune est obligatoire');
+        self::assertSelectorTextContains('#venue_name-error', 'Le nom du site est obligatoire');
+        self::assertSelectorTextContains('#venue_addressCity-error', 'La commune est obligatoire');
     }
 }
