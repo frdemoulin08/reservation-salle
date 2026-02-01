@@ -1,0 +1,6 @@
+composer lint:php
+composer lint:twig
+composer lint:phpstan
+composer lint:cs
+npm run lint:js
+./vendor/bin/phpunit --testdox

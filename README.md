@@ -54,6 +54,21 @@ Alternative rapide : utiliser le script ci-dessus.
 ./vendor/bin/phpunit --testdox
 ```
 
+### Qualité / Lint
+Exécuter l’ensemble des checks (lint + static analysis + tests) :
+```
+composer qa
+```
+
+Checks individuellement :
+```
+composer lint:php
+composer lint:twig
+composer lint:phpstan
+composer lint:cs
+npm run lint:js
+```
+
 ### Build assets
 ```
 npm run watch
