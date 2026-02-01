@@ -2,14 +2,14 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Venue;
+use App\Entity\Embeddable\Address;
 use App\Entity\EquipmentType;
+use App\Entity\Venue;
 use App\Entity\VenueDocument;
 use App\Entity\VenueEquipment;
-use App\Entity\Embeddable\Address;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
 
 class VenueFixtures extends Fixture implements DependentFixtureInterface
 {

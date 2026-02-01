@@ -71,6 +71,7 @@ class BackofficeMenuBuilder
 
     /**
      * @param array<string, mixed> $item
+     *
      * @return array<string, mixed>
      */
     private function normalizeItem(array $item): array
