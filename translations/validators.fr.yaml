@@ -1,4 +1,4 @@
-site:
+venue:
   name:
     required: "Le nom du site est obligatoire"
   city:

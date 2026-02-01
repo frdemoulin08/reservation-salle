@@ -19,10 +19,10 @@ Dans le tableau, chaque bouton doit fournir l’URL de suppression et, optionnel
 ```twig
 <button
   type="button"
-  data-modal-target="site-delete-modal"
-  data-modal-toggle="site-delete-modal"
-  data-delete-url="{{ path('app_admin_sites_delete', { id: site.id }) }}"
-  data-delete-name="{{ site.name }}"
+  data-modal-target="venue-delete-modal"
+  data-modal-toggle="venue-delete-modal"
+  data-delete-url="{{ path('app_admin_venues_delete', { id: venue.id }) }}"
+  data-delete-name="{{ venue.name }}"
 >
   Supprimer
 </button>
@@ -38,9 +38,9 @@ Utiliser le partial commun : `templates/admin/_partials/_delete_modal.html.twig`
 
 ```twig
 {% include 'admin/_partials/_delete_modal.html.twig' with {
-  modal_id: 'site-delete-modal',
+  modal_id: 'venue-delete-modal',
   message: 'Confirmez la suppression de ce site ?',
-  csrf_token_id: 'delete_site',
+  csrf_token_id: 'delete_venue',
   show_name: false
 } %}
 ```
@@ -55,8 +55,8 @@ Utiliser le partial commun : `templates/admin/_partials/_delete_modal.html.twig`
 Le contrôleur doit valider le token **avec le même ID**.
 
 ```php
-if (!$this->isCsrfTokenValid('delete_site', (string) $request->request->get('_token'))) {
-    return $this->redirectToRoute('app_admin_sites_index');
+if (!$this->isCsrfTokenValid('delete_venue', (string) $request->request->get('_token'))) {
+    return $this->redirectToRoute('app_admin_venues_index');
 }
 ```
 
@@ -67,7 +67,7 @@ Si l’app utilise des tokens stateless : ajouter l’ID dans `config/packages/c
 framework:
   csrf_protection:
     stateless_token_ids:
-      - delete_site
+      - delete_venue
 ```
 
 ## Fonctionnement JS (résumé)
@@ -86,4 +86,3 @@ Le formulaire reste un **POST classique** (pas AJAX) :
 - [ ] Modale unique incluse avec le bon `modal_id`
 - [ ] Token CSRF correct côté Twig et contrôleur
 - [ ] JS chargé (`assets/app.js`)
-

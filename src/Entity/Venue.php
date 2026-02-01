@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\VenueRepository::class)]
 class Venue
 {
     use TimestampableEntity;
@@ -71,6 +71,7 @@ class Venue
 
     public function __construct()
     {
+        $this->address = new Address();
         $this->rooms = new ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->venueEquipments = new ArrayCollection();

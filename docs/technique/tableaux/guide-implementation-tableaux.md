@@ -37,7 +37,7 @@ Le contrôleur :
 - retourne le fragment si AJAX.
 
 ```php
-#[Route('/administration/sites', name: 'app_admin_sites_index')]
+#[Route('/administration/sites', name: 'app_admin_venues_index')]
 public function index(Request $request, SiteRepository $repo, TablePaginator $paginator): Response
 {
     $params = TableParams::fromRequest($request, [
@@ -74,9 +74,9 @@ Le formulaire possède :
 
 ```twig
 <form method="get"
-      action="{{ path('app_admin_sites_index') }}"
+      action="{{ path('app_admin_venues_index') }}"
       data-table-form
-      data-table-target="sites">
+      data-table-target="venues">
     <input type="search"
            name="filter[q]"
            data-table-search
@@ -101,13 +101,13 @@ Le tableau :
 
 ```twig
 {% include '_partials/table/_header.html.twig' with {
-    route: 'app_admin_sites_index',
+    route: 'app_admin_venues_index',
     params: params,
     columns: columns
 } %}
 
 {% include '_partials/table/_pagination.html.twig' with {
-    route: 'app_admin_sites_index',
+    route: 'app_admin_venues_index',
     params: params,
     pager: pager
 } %}

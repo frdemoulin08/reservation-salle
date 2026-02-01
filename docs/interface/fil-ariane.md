@@ -49,13 +49,13 @@ Exemple dans une page admin :
   firstLevelRoute: 'app_admin_index',
   firstLevelLabel: 'Gestion',
   firstLevelHasLink: false,
-  secondLevelIndexRoute: 'app_admin_sites_index',
+  secondLevelIndexRoute: 'app_admin_venues_index',
   secondLevelIndexLabel: 'Sites',
-  secondLevelShowRoute: 'app_admin_sites_show',
+  secondLevelShowRoute: 'app_admin_venues_show',
   secondLevelShowLabel: current_label,
-  secondLevelCreateRoute: 'app_admin_sites_new',
+  secondLevelCreateRoute: 'app_admin_venues_new',
   secondLevelCreateLabel: current_label,
-  secondLevelEditRoute: 'app_admin_sites_edit',
+  secondLevelEditRoute: 'app_admin_venues_edit',
   secondLevelEditLabel: current_label
 }) }}
 ```

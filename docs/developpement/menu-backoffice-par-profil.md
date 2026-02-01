@@ -25,56 +25,56 @@ Chaque profil affiche une structure à 2 niveaux :
 - **Tableau de bord**
   - Vue d'ensemble
 - **Catalogue**
-  - Sites
-  - Salles
-  - Équipements
-  - Services
-  - Types de salle
   - Configurations
+  - Équipements
+  - Salles
+  - Services
+  - Sites
+  - Types de salle
   - Usages autorisés
 - **Réservations**
+  - Contacts usager
   - Demandes
   - Devis
   - Réservations
-  - Usagers (liste + recherche)
-  - Contacts usager
+  - Usagers
 - **Planning**
-  - Vue site
   - Vue salle
+  - Vue site
 - **Tarification**
-  - Grilles tarifaires
   - Frais annexes
+  - Grilles tarifaires
 - **Documents**
-  - Documents de site
   - Documents de salle
+  - Documents de site
 - **Sécurité**
-  - Utilisateurs
-  - Rôles et permissions
   - Journaux
+  - Rôles et permissions
+  - Utilisateurs
 - **Données**
   - Blocages de créneaux
 - **Pilotage**
-  - Statistiques d’usage
   - Rapports de synthèse
+  - Statistiques d’usage
 
 ### Administrateur métier (gestionnaire administratif avec droits métier)
 
 Ce profil **partage le menu du gestionnaire administratif** et peut disposer d'une **section dédiée** non redondante :
 - **Administration métier**
   - Catalogue (édition)
-    - Sites
-    - Salles
-    - Équipements
-    - Services
-    - Types de salle
     - Configurations
+    - Équipements
+    - Salles
+    - Services
+    - Sites
+    - Types de salle
     - Usages autorisés
   - Tarification (édition)
-    - Grilles tarifaires
     - Frais annexes
+    - Grilles tarifaires
   - Documents (édition)
-    - Documents de site
     - Documents de salle
+    - Documents de site
   - Règles de réservation
     - Règles bloquantes
 
@@ -86,23 +86,23 @@ Ce profil **partage le menu du gestionnaire administratif** et peut disposer d'u
   - Demandes à valider
   - Devis (création/modif)
   - Réservations
-  - Usagers (liste + recherche)
+  - Usagers
 - **Planning**
-  - Vue site
   - Vue salle
+  - Vue site
 - **Documents**
   - Pièces jointes réservation
 - **Pilotage**
-  - Statistiques d’usage
   - Rapports de synthèse
+  - Statistiques d’usage
 
 ### Superviseur
 
 - **Tableau de bord**
   - Vue d'ensemble
 - **Pilotage**
-  - Statistiques d’usage
   - Rapports de synthèse
+  - Statistiques d’usage
 
 ---
 

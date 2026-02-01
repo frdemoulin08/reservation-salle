@@ -1,0 +1,207 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail du site{% endblock %}
+
+{% set active_menu = 'sites' %}
+{% set page_heading = venue.name %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/venues/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée du site.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a class="text-body bg-neutral-primary-soft border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" href="{{ path('app_admin_venues_index') }}">
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-body">{{ 'venue.sections.general'|trans }}</h2>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.name'|trans }}</dt>
+                <dd class="mt-2 text-base font-semibold text-heading">{{ venue.name }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.contact_details'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.contactDetails ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.reference_contact_name'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.referenceContactName ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'common.updated_at'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.updatedAt|date('d/m/Y \\à H:i:s') }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'common.created_at'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.createdAt|date('d/m/Y \\à H:i:s') }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.description'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ venue.description ?? '—' }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.house_rules'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ venue.houseRules ?? '—' }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-body">{{ 'venue.sections.address'|trans }}</h2>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_line1'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.line1 ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_line2'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.line2 ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_line3'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.line3 ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_postal_code'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.postalCode ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_city'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.city ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_country'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.country ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_source'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if venue.address.source %}
+                        {% set source_label = ('venue.address_source.' ~ venue.address.source|lower)|trans %}
+                        {{ source_label starts with 'venue.address_source.' ? venue.address.source : source_label }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_external_id'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.externalId ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_latitude'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.latitude ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_longitude'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.address.longitude ?? '—' }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-body">{{ 'venue.sections.access'|trans }}</h2>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.public_transport_access'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ venue.publicTransportAccess ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.parking_type'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {{ venue.parkingType ? venue.parkingType|capitalize : '—' }}
+                    {% if venue.parkingCapacity %}({{ venue.parkingCapacity }} {{ 'venue.fields.parking_capacity'|trans|lower }}){% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.delivery_access'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">{{ venue.deliveryAccess ?? '—' }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.access_map_url'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if venue.accessMapUrl %}
+                        <a class="font-medium text-brand hover:underline" href="{{ venue.accessMapUrl }}" target="_blank" rel="noopener noreferrer">
+                            {{ venue.accessMapUrl }}
+                        </a>
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-body">{{ 'venue.sections.resources'|trans }}</h2>
+        <div class="mt-4 grid gap-6 lg:grid-cols-3">
+            <div class="rounded-base border border-default bg-neutral-primary p-4">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'room.plural'|trans }}</h3>
+                <ul class="mt-3 space-y-2 text-sm text-heading">
+                    {% for room in venue.rooms %}
+                        <li>
+                            <a class="font-medium text-brand hover:underline" href="/administration/salles/{{ room.id }}">
+                                {{ room.name }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="text-body-subtle">—</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="rounded-base border border-default bg-neutral-primary p-4">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue_equipment.plural'|trans }}</h3>
+                <ul class="mt-3 space-y-2 text-sm text-heading">
+                    {% for equipment in venue.venueEquipments %}
+                        <li>
+                            {{ equipment.equipmentType.label }}
+                            {% if equipment.maxQuantity %}
+                                - {{ equipment.maxQuantity }} {{ 'venue_equipment.fields.max_quantity'|trans|lower }}
+                            {% endif %}
+                            {% if equipment.isIncluded %}
+                                ({{ 'venue_equipment.values.included'|trans|lower }})
+                            {% else %}
+                                ({{ 'venue_equipment.values.optional'|trans|lower }})
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="text-body-subtle">—</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="rounded-base border border-default bg-neutral-primary p-4">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue_document.plural'|trans }}</h3>
+                <ul class="mt-3 space-y-2 text-sm text-heading">
+                    {% for document in venue.documents %}
+                        <li>
+                            <a class="font-medium text-brand hover:underline" href="{{ asset(document.filePath) }}" target="_blank" rel="noopener noreferrer">
+                                {{ document.label }}
+                            </a>
+                            {% if document.type %}
+                                {% set type_label = ('venue_document.type.' ~ document.type)|trans %}
+                                <span class="text-body-subtle">
+                                    ({{ type_label starts with 'venue_document.type.' ? document.type : type_label }})
+                                </span>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="text-body-subtle">—</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}
