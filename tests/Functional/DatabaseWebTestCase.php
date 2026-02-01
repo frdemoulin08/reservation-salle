@@ -3,10 +3,11 @@
 namespace App\Tests\Functional;
 
 use App\DataFixtures\CronTaskRunFixtures;
+use App\DataFixtures\ReferenceFixtures;
 use App\DataFixtures\ResetPasswordLogFixtures;
 use App\DataFixtures\RoleFixtures;
-use App\DataFixtures\SiteFixtures;
 use App\DataFixtures\UserFixtures;
+use App\DataFixtures\VenueFixtures;
 use App\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
@@ -38,7 +39,8 @@ abstract class DatabaseWebTestCase extends WebTestCase
 
         $loader = new Loader();
         $loader->addFixture(new RoleFixtures());
-        $loader->addFixture(new SiteFixtures());
+        $loader->addFixture(new ReferenceFixtures());
+        $loader->addFixture(new VenueFixtures());
 
         $passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         $loader->addFixture(new UserFixtures($passwordHasher));

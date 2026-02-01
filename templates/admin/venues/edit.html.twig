@@ -7,7 +7,7 @@
 
 {% block admin_breadcrumb %}
     <div class="mb-4">
-        {% include 'admin/sites/_breadcrumb.html.twig' with { current_label: page_heading } %}
+        {% include 'admin/venues/_breadcrumb.html.twig' with { current_label: page_heading } %}
     </div>
 {% endblock %}
 
@@ -21,7 +21,7 @@
         <div class="flex flex-wrap gap-3">
             {{ include('components/_button.html.twig', {
                 label: 'Retour à la liste',
-                href: path('app_admin_sites_index'),
+                href: path('app_admin_venues_index'),
                 variant: 'tertiary',
                 size: 'sm'
             }) }}
@@ -29,8 +29,8 @@
     </div>
 
     <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
-        {% set name_required_message = 'site.name.required'|trans({}, 'validators') %}
-        {% set city_required_message = 'site.city.required'|trans({}, 'validators') %}
+        {% set name_required_message = 'venue.name.required'|trans({}, 'validators') %}
+        {% set city_required_message = 'venue.city.required'|trans({}, 'validators') %}
 
         {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
             {{ include('components/_form_field.html.twig', {
@@ -39,23 +39,29 @@
                 required_message: name_required_message
             }) }}
             {{ include('components/_form_field.html.twig', {
-                field: form.city,
-                required_message: city_required_message
-            }) }}
-            {{ include('components/_form_field.html.twig', {
-                field: form.status
-            }) }}
-            {{ include('components/_form_field.html.twig', {
-                field: form.address,
+                field: form.addressLine1,
                 wrapper_class: 'md:col-span-2'
             }) }}
             {{ include('components/_form_field.html.twig', {
-                field: form.capacity
+                field: form.addressPostalCode
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.addressCity,
+                required_message: city_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.addressCountry
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.parkingType
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.parkingCapacity
             }) }}
             <div class="md:col-span-2 flex items-center justify-end gap-3">
                 {{ include('components/_button.html.twig', {
                     label: 'Annuler',
-                    href: path('app_admin_sites_show', { id: site.id }),
+                    href: path('app_admin_venues_show', { id: venue.id }),
                     variant: 'tertiary',
                     size: 'sm'
                 }) }}

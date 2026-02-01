@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     public const ADMIN_USER = 'admin-user';
-    public const BUSINESS_ADMIN_USER = 'business-admin-user';
+    public const ADMINISTRATIVE_MANAGER_USER = 'administrative-manager-user';
     public const APP_MANAGER_USER = 'app-manager-user';
     public const APP_MANAGER_BUSINESS_USER = 'app-manager-business-user';
     public const SUPERVISOR_USER = 'supervisor-user';
@@ -34,15 +34,15 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         );
         $this->addReference(self::ADMIN_USER, $superAdmin);
 
-        $businessAdmin = $this->createUser(
+        $administrativeManager = $this->createUser(
             $manager,
             'metier.admin@cd08.fr',
             'Marion',
             'Leblanc',
             'Abcdef123456@',
-            [$this->getReference(RoleFixtures::ROLE_BUSINESS_ADMIN, Role::class)]
+            [$this->getReference(RoleFixtures::ROLE_APP_MANAGER, Role::class)]
         );
-        $this->addReference(self::BUSINESS_ADMIN_USER, $businessAdmin);
+        $this->addReference(self::ADMINISTRATIVE_MANAGER_USER, $administrativeManager);
 
         $appManager = $this->createUser(
             $manager,

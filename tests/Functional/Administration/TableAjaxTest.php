@@ -6,7 +6,7 @@ use App\Tests\Functional\DatabaseWebTestCase;
 
 class TableAjaxTest extends DatabaseWebTestCase
 {
-    public function testSitesAjaxReturnsTableFragment(): void
+    public function testVenuesAjaxReturnsTableFragment(): void
     {
         $client = $this->loginAsAdmin();
 

@@ -17,55 +17,66 @@ class VenueFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        $address = (new Address())
-            ->setLine1('2 place Ducale')
-            ->setPostalCode('08000')
-            ->setCity('Charleville-Mézières')
-            ->setCountry('FR')
-            ->setSource('MANUAL');
+        $rows = [
+            ['name' => 'Bairon', 'city' => 'Bairon', 'capacity' => 180, 'status' => 'Ouvert', 'updated_at' => '2026-01-12 09:15:30'],
+            ['name' => 'Vieilles Forges', 'city' => 'Les Mazures', 'capacity' => 200, 'status' => 'Ouvert', 'updated_at' => '2026-01-09 14:42:10'],
+            ['name' => 'Maison des Sports', 'city' => 'Bazeilles', 'capacity' => 260, 'status' => 'Ouvert', 'updated_at' => '2026-01-04 18:05:45'],
+        ];
 
-        $venue = (new Venue())
-            ->setName('Maison des Associations')
-            ->setDescription('Site principal pour les réunions et conférences.')
-            ->setPublicTransportAccess('Bus ligne 1, arrêt Hôtel de Ville')
-            ->setParkingType('gratuit')
-            ->setParkingCapacity(40)
-            ->setContactDetails('contact@exemple.org / 03 24 00 00 00')
-            ->setReferenceContactName('Sophie Martin')
-            ->setDeliveryAccess('Entrée livraison par rue des Faubourgs')
-            ->setAccessMapUrl('https://maps.example.org/maison-associations')
-            ->setHouseRules('Respect du voisinage, pas de bruit après 22h.')
-            ->setAddress($address);
+        $mainVenue = null;
+        foreach ($rows as $row) {
+            $address = (new Address())
+                ->setCity($row['city'])
+                ->setCountry('FR')
+                ->setSource('MANUAL');
 
-        $venue->setCreatedAt(new \DateTime('2026-01-15 08:00:00'));
-        $venue->setUpdatedAt(new \DateTime('2026-01-25 10:30:00'));
+            $venue = (new Venue())
+                ->setName($row['name'])
+                ->setDescription(sprintf('Capacité: %d — Statut: %s', $row['capacity'], $row['status']))
+                ->setAddress($address);
 
-        $manager->persist($venue);
-        $this->addReference(self::VENUE_MAIN, $venue);
+            $updatedAt = new \DateTime($row['updated_at']);
+            $venue->setUpdatedAt($updatedAt);
+            $venue->setCreatedAt((clone $updatedAt)->modify('-10 days'));
 
-        $photo = (new VenueDocument())
-            ->setVenue($venue)
-            ->setLabel('Photo façade')
-            ->setFilePath('venues/maison-associations/photo.jpg')
-            ->setMimeType('image/jpeg')
-            ->setType('photo');
-        $manager->persist($photo);
+            if (null === $mainVenue) {
+                $mainVenue = $venue;
+            }
 
-        $plan = (new VenueDocument())
-            ->setVenue($venue)
-            ->setLabel('Plan d\'accès')
-            ->setFilePath('venues/maison-associations/plan.pdf')
-            ->setMimeType('application/pdf')
-            ->setType('plan');
-        $manager->persist($plan);
+            if ('Maison des Sports' === $row['name']) {
+                $mainVenue = $venue;
+            }
 
-        $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_PROJECTOR, EquipmentType::class);
-        $venueEquipment = (new VenueEquipment())
-            ->setVenue($venue)
-            ->setEquipmentType($equipmentType)
-            ->setMaxQuantity(2)
-            ->setIsIncluded(true);
-        $manager->persist($venueEquipment);
+            $manager->persist($venue);
+        }
+
+        if ($mainVenue instanceof Venue) {
+            $this->addReference(self::VENUE_MAIN, $mainVenue);
+
+            $photo = (new VenueDocument())
+                ->setVenue($mainVenue)
+                ->setLabel('Photo façade')
+                ->setFilePath('venues/maison-des-sports/photo.jpg')
+                ->setMimeType('image/jpeg')
+                ->setType('photo');
+            $manager->persist($photo);
+
+            $plan = (new VenueDocument())
+                ->setVenue($mainVenue)
+                ->setLabel('Plan d\'accès')
+                ->setFilePath('venues/maison-des-sports/plan.pdf')
+                ->setMimeType('application/pdf')
+                ->setType('plan');
+            $manager->persist($plan);
+
+            $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_PROJECTOR, EquipmentType::class);
+            $venueEquipment = (new VenueEquipment())
+                ->setVenue($mainVenue)
+                ->setEquipmentType($equipmentType)
+                ->setMaxQuantity(2)
+                ->setIsIncluded(true);
+            $manager->persist($venueEquipment);
+        }
 
         $manager->flush();
     }
