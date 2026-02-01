@@ -11,7 +11,7 @@ class SiteCrudTest extends DatabaseWebTestCase
     {
         $client = $this->loginAsAdmin();
 
-        $crawler = $client->request('GET', '/administration/sites/new');
+        $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Créer le site')->form();
@@ -39,7 +39,7 @@ class SiteCrudTest extends DatabaseWebTestCase
 
         self::assertNotNull($site, 'Aucun site disponible pour le test.');
 
-        $crawler = $client->request('GET', '/administration/sites/'.$site->getId().'/edit');
+        $crawler = $client->request('GET', '/administration/sites/'.$site->getId().'/modifier');
         self::assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Enregistrer')->form();
@@ -71,7 +71,7 @@ class SiteCrudTest extends DatabaseWebTestCase
         $token = $tokenManager->getToken('delete_site')->getValue();
 
         $before = $repository->count([]);
-        $client->request('POST', '/administration/sites/'.$site->getId().'/delete', [
+        $client->request('POST', '/administration/sites/'.$site->getId().'/supprimer', [
             '_token' => $token,
         ]);
 

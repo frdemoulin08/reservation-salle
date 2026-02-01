@@ -1,0 +1,41 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Configuration du menu{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            {{ include('components/breadcrumb/double.html.twig', {
+                homeRoute: 'app_admin_index',
+                homeLabel: 'Accueil',
+                firstLevelRoute: 'app_admin_index',
+                firstLevelLabel: 'Administration générale',
+                firstLevelHasLink: "false",
+                secondLevelRoute: 'app_admin_menu_config',
+                secondLevelLabel: 'Menu backoffice'
+            }) }}
+            <p class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand">Administration générale</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">Configuration du menu backoffice</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Modification réservée au superadministrateur. Format JSON attendu.</p>
+        </div>
+    </div>
+
+    <div class="px-4 py-6 sm:px-6">
+        {{ form_start(form, { 'attr': { 'class': 'space-y-4' } }) }}
+            <div>
+                {{ form_label(form.config, null, { 'label_attr': { 'class': 'mb-2 block text-sm font-semibold text-heading' } }) }}
+                {{ form_widget(form.config) }}
+                {{ form_errors(form.config) }}
+            </div>
+            <div class="flex justify-end">
+                <label class="inline-flex items-center gap-2 text-sm text-body">
+                    {{ form_widget(form.isActive) }}
+                    {{ form_label(form.isActive, null, { 'label_attr': { 'class': 'text-sm text-body' } }) }}
+                </label>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="inline-flex items-center rounded-base bg-brand-strong px-4 py-2 text-sm font-semibold text-white hover:bg-brand-medium">Enregistrer</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

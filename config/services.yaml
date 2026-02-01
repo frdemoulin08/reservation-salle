@@ -26,5 +26,13 @@ services:
         arguments:
             $githubRepo: '%github.repo%'
 
+    App\Menu\BackofficeMenuBuilder:
+        arguments:
+            $configProvider: '@App\Service\BackofficeMenuConfigProvider'
+
+    App\Service\BackofficeMenuConfigProvider:
+        arguments:
+            $defaultConfig: '%backoffice_menu%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

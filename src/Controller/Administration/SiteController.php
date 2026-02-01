@@ -46,7 +46,7 @@ class SiteController extends AbstractController
         ]);
     }
 
-    #[Route('/administration/sites/new', name: 'app_admin_sites_new')]
+    #[Route('/administration/sites/nouveau', name: 'app_admin_sites_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $site = new Site();
@@ -75,7 +75,7 @@ class SiteController extends AbstractController
         ]);
     }
 
-    #[Route('/administration/sites/{id}/edit', name: 'app_admin_sites_edit', requirements: ['id' => '\\d+'])]
+    #[Route('/administration/sites/{id}/modifier', name: 'app_admin_sites_edit', requirements: ['id' => '\\d+'])]
     public function edit(Request $request, Site $site, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(SiteType::class, $site);
@@ -95,7 +95,7 @@ class SiteController extends AbstractController
         ]);
     }
 
-    #[Route('/administration/sites/{id}/delete', name: 'app_admin_sites_delete', requirements: ['id' => '\\d+'], methods: ['POST'])]
+    #[Route('/administration/sites/{id}/supprimer', name: 'app_admin_sites_delete', requirements: ['id' => '\\d+'], methods: ['POST'])]
     public function delete(Request $request, Site $site, EntityManagerInterface $entityManager): Response
     {
         if (!$this->isCsrfTokenValid('delete_site', (string) $request->request->get('_token'))) {

@@ -15,10 +15,10 @@ class SiteValidationTest extends DatabaseWebTestCase
     {
         $client = $this->loginAsAdmin();
 
-        $crawler = $client->request('GET', '/administration/sites/new');
+        $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
 
-        $client->request('POST', '/administration/sites/new', [
+        $client->request('POST', '/administration/sites/nouveau', [
             'site' => [
                 'name' => '',
                 'city' => '',

@@ -1,22 +1,46 @@
-roles:
-  ROLE_SUPER_ADMIN: "Super administrateur"
-  ROLE_BUSINESS_ADMIN: "Administrateur métier"
-  ROLE_APP_MANAGER: "Gestionnaire applicatif"
-  ROLE_SUPERVISOR: "Superviseur"
+Error: "Erreur"
+
+Info: "Information"
+
+Success: "Succès"
+
+Warning: "Attention"
 
 actions:
   export_excel: "Exporter en Excel"
 
-Success: "Succès"
-Error: "Erreur"
-Warning: "Attention"
-Info: "Information"
+additional_fee_type:
+  singular: "Type de frais annexe"
+  plural: "Types de frais annexes"
+  fields:
+    code: "Code"
+    label: "Libellé"
 
 common:
   yes: "Oui"
   no: "Non"
   actions: "Actions"
   status: "Statut"
+
+equipment_type:
+  singular: "Type d’équipement"
+  plural: "Types d’équipement"
+  fields:
+    code: "Code"
+    label: "Libellé"
+    category: "Catégorie"
+  category:
+    technical: "Technique"
+    catering: "Restauration"
+    sports: "Sportif"
+    stage: "Scénique"
+
+event_type:
+  singular: "Type d’événement"
+  plural: "Types d’événement"
+  fields:
+    code: "Code"
+    label: "Libellé"
 
 organization:
   singular: "Usager"
@@ -67,30 +91,39 @@ organization_contact:
     email: "Adresse email"
     phone: "Téléphone"
 
-venue:
-  singular: "Site"
-  plural: "Sites"
+reservation:
+  singular: "Réservation"
+  plural: "Réservations"
+  status:
+    draft: "Brouillon"
+    pending: "En attente"
+    confirmed: "Validée"
+    cancelled: "Annulée"
+    closed: "Clôturée"
+  ticketing:
+    none: "Aucune billetterie"
+    under_5: "Billetterie < 5 €"
+    over_5: "Billetterie ≥ 5 €"
   fields:
-    name: "Nom du site"
-    description: "Description"
-    public_transport_access: "Accès transports en commun"
-    parking_type: "Type de parking"
-    parking_capacity: "Nombre de places de parking"
-    contact_details: "Coordonnées de contact"
-    reference_contact_name: "Référent SPSL"
-    delivery_access: "Accès livraison"
-    access_map_url: "Plan / indication d’accès"
-    house_rules: "Règlement intérieur"
-    address_line1: "Adresse"
-    address_line2: "Complément d’adresse"
-    address_line3: "Complément d’adresse (suite)"
-    address_postal_code: "Code postal"
-    address_city: "Ville"
-    address_country: "Pays"
-    address_source: "Source adresse"
-    address_external_id: "Identifiant externe"
-    address_latitude: "Latitude"
-    address_longitude: "Longitude"
+    start_date: "Date de début"
+    end_date: "Date de fin"
+    status: "Statut"
+    ticketing_type: "Billetterie"
+    security_deposit: "Dépôt de garantie / caution"
+    comment: "Commentaire"
+
+reservation_additional_fee:
+  singular: "Frais annexe appliqué"
+  plural: "Frais annexes appliqués"
+  fields:
+    amount: "Montant"
+    label: "Libellé"
+
+roles:
+  ROLE_SUPER_ADMIN: "Super administrateur"
+  ROLE_BUSINESS_ADMIN: "Administrateur métier"
+  ROLE_APP_MANAGER: "Gestionnaire applicatif"
+  ROLE_SUPERVISOR: "Superviseur"
 
 room:
   singular: "Salle"
@@ -119,127 +152,6 @@ room:
     music_allowed: "Musique autorisée"
     sacem_required: "Déclaration SACEM requise"
 
-room_type:
-  singular: "Type de salle"
-  plural: "Types de salle"
-  values:
-    meeting: "Réunion"
-    conference: "Conférence"
-    catering: "Restauration"
-    reception: "Réception"
-    multipurpose: "Polyvalente"
-    sports: "Sportive"
-    cultural: "Culturelle"
-
-room_layout:
-  singular: "Configuration de salle"
-  plural: "Configurations de salle"
-  values:
-    theatre: "Théâtre"
-    u_shape: "En U"
-    classroom: "Classe"
-    cocktail: "Cocktail"
-    banquet: "Banquet"
-    bleachers: "Gradins"
-    auditorium: "Auditorium"
-
-usage_type:
-  singular: "Usage autorisé"
-  plural: "Usages autorisés"
-  values:
-    professional_meeting: "Réunions professionnelles"
-    training: "Formations"
-    conference: "Conférences"
-    associative_event: "Événements associatifs"
-    show_exhibition: "Spectacles / expositions"
-    sports_event: "Manifestation sportive"
-
-equipment_type:
-  singular: "Type d’équipement"
-  plural: "Types d’équipement"
-  fields:
-    code: "Code"
-    label: "Libellé"
-    category: "Catégorie"
-  category:
-    technical: "Technique"
-    catering: "Restauration"
-    sports: "Sportif"
-    stage: "Scénique"
-
-room_equipment:
-  singular: "Équipement de salle"
-  plural: "Équipements de salle"
-  fields:
-    max_quantity: "Quantité maximale"
-    exclusive_to_room: "Propre à la salle"
-    is_included: "Inclus"
-
-venue_equipment:
-  singular: "Équipement de site"
-  plural: "Équipements de site"
-  fields:
-    max_quantity: "Quantité maximale"
-    is_included: "Inclus"
-
-service_type:
-  singular: "Type de service"
-  plural: "Types de service"
-  fields:
-    code: "Code"
-    label: "Libellé"
-
-reservation:
-  singular: "Réservation"
-  plural: "Réservations"
-  status:
-    draft: "Brouillon"
-    pending: "En attente"
-    confirmed: "Validée"
-    cancelled: "Annulée"
-    closed: "Clôturée"
-  ticketing:
-    none: "Aucune billetterie"
-    under_5: "Billetterie < 5 €"
-    over_5: "Billetterie ≥ 5 €"
-  fields:
-    start_date: "Date de début"
-    end_date: "Date de fin"
-    status: "Statut"
-    ticketing_type: "Billetterie"
-    security_deposit: "Dépôt de garantie / caution"
-    comment: "Commentaire"
-
-event_type:
-  singular: "Type d’événement"
-  plural: "Types d’événement"
-  fields:
-    code: "Code"
-    label: "Libellé"
-
-room_pricing:
-  singular: "Tarification"
-  plural: "Tarifications"
-  fields:
-    price_category: "Catégorie d’usager"
-    hourly_rate: "Tarif horaire"
-    daily_rate: "Tarif journée"
-    currency: "Devise"
-
-additional_fee_type:
-  singular: "Type de frais annexe"
-  plural: "Types de frais annexes"
-  fields:
-    code: "Code"
-    label: "Libellé"
-
-reservation_additional_fee:
-  singular: "Frais annexe appliqué"
-  plural: "Frais annexes appliqués"
-  fields:
-    amount: "Montant"
-    label: "Libellé"
-
 room_document:
   singular: "Document de salle"
   plural: "Documents de salle"
@@ -253,6 +165,90 @@ room_document:
     plan: "Plan"
     other: "Autre"
 
+room_equipment:
+  singular: "Équipement de salle"
+  plural: "Équipements de salle"
+  fields:
+    max_quantity: "Quantité maximale"
+    exclusive_to_room: "Propre à la salle"
+    is_included: "Inclus"
+
+room_layout:
+  singular: "Configuration de salle"
+  plural: "Configurations de salle"
+  values:
+    theatre: "Théâtre"
+    u_shape: "En U"
+    classroom: "Classe"
+    cocktail: "Cocktail"
+    banquet: "Banquet"
+    bleachers: "Gradins"
+    auditorium: "Auditorium"
+
+room_pricing:
+  singular: "Tarification"
+  plural: "Tarifications"
+  fields:
+    price_category: "Catégorie d’usager"
+    hourly_rate: "Tarif horaire"
+    daily_rate: "Tarif journée"
+    currency: "Devise"
+
+room_type:
+  singular: "Type de salle"
+  plural: "Types de salle"
+  values:
+    meeting: "Réunion"
+    conference: "Conférence"
+    catering: "Restauration"
+    reception: "Réception"
+    multipurpose: "Polyvalente"
+    sports: "Sportive"
+    cultural: "Culturelle"
+
+service_type:
+  singular: "Type de service"
+  plural: "Types de service"
+  fields:
+    code: "Code"
+    label: "Libellé"
+
+usage_type:
+  singular: "Usage autorisé"
+  plural: "Usages autorisés"
+  values:
+    professional_meeting: "Réunions professionnelles"
+    training: "Formations"
+    conference: "Conférences"
+    associative_event: "Événements associatifs"
+    show_exhibition: "Spectacles / expositions"
+    sports_event: "Manifestation sportive"
+
+venue:
+  singular: "Site"
+  plural: "Sites"
+  fields:
+    name: "Nom du site"
+    description: "Description"
+    public_transport_access: "Accès transports en commun"
+    parking_type: "Type de parking"
+    parking_capacity: "Nombre de places de parking"
+    contact_details: "Coordonnées de contact"
+    reference_contact_name: "Référent SPSL"
+    delivery_access: "Accès livraison"
+    access_map_url: "Plan / indication d’accès"
+    house_rules: "Règlement intérieur"
+    address_line1: "Adresse"
+    address_line2: "Complément d’adresse"
+    address_line3: "Complément d’adresse (suite)"
+    address_postal_code: "Code postal"
+    address_city: "Ville"
+    address_country: "Pays"
+    address_source: "Source adresse"
+    address_external_id: "Identifiant externe"
+    address_latitude: "Latitude"
+    address_longitude: "Longitude"
+
 venue_document:
   singular: "Document de site"
   plural: "Documents de site"
@@ -265,3 +261,11 @@ venue_document:
     photo: "Photo"
     plan: "Plan"
     other: "Autre"
+
+venue_equipment:
+  singular: "Équipement de site"
+  plural: "Équipements de site"
+  fields:
+    max_quantity: "Quantité maximale"
+    is_included: "Inclus"
+
