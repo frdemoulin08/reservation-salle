@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\DataFixtures\CountryFixtures;
 use App\DataFixtures\CronTaskRunFixtures;
 use App\DataFixtures\ReferenceFixtures;
 use App\DataFixtures\ResetPasswordLogFixtures;
@@ -39,6 +40,7 @@ abstract class DatabaseWebTestCase extends WebTestCase
 
         $loader = new Loader();
         $loader->addFixture(new RoleFixtures());
+        $loader->addFixture(new CountryFixtures());
         $loader->addFixture(new ReferenceFixtures());
         $loader->addFixture(new VenueFixtures());
 

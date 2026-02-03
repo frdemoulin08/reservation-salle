@@ -42,7 +42,7 @@ class BackofficeMenuBuilderTest extends TestCase
             ->method('getConfig')
             ->willReturn($config);
 
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
         $authorizationChecker->method('isGranted')
             ->willReturnCallback(static fn (string $role): bool => 'ROLE_APP_MANAGER' === $role);
 
@@ -91,7 +91,7 @@ class BackofficeMenuBuilderTest extends TestCase
             ->method('getConfig')
             ->willReturn($config);
 
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
         $authorizationChecker->method('isGranted')
             ->willReturnCallback(static fn (string $role): bool => 'ROLE_APP_MANAGER' === $role);
 

@@ -9,6 +9,7 @@ import { initPasswordGenerator } from '../helpers/password-generator.js';
 import { initPasswordCopy } from '../helpers/password-copy.js';
 import { initDropdownPortals } from '../helpers/dropdown-portal.js';
 import { initFormValidation } from '../helpers/form-validation.js';
+import { initAddressAutocomplete } from '../helpers/address-autocomplete.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
@@ -22,4 +23,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initPasswordCopy();
     initDropdownPortals();
     initFormValidation();
+    initAddressAutocomplete();
 });

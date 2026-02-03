@@ -1,6 +1,12 @@
 venue:
   name:
     required: "Le nom du site est obligatoire"
+  address:
+    required: "L’adresse du site est obligatoire"
+  country:
+    required: "Le pays est obligatoire"
+  postal_code:
+    required: "Le code postal est obligatoire"
   city:
     required: "La commune est obligatoire"
 user:

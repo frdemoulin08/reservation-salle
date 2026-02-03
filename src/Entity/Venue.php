@@ -7,11 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: \App\Repository\VenueRepository::class)]
 class Venue
 {
     use TimestampableEntity;
+
+    #[ORM\Column(length: 36, unique: true)]
+    private string $publicIdentifier = '';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -71,6 +75,7 @@ class Venue
 
     public function __construct()
     {
+        $this->publicIdentifier = Uuid::v4()->toRfc4122();
         $this->address = new Address();
         $this->rooms = new ArrayCollection();
         $this->documents = new ArrayCollection();
@@ -80,6 +85,11 @@ class Venue
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPublicIdentifier(): string
+    {
+        return $this->publicIdentifier;
     }
 
     public function getName(): string

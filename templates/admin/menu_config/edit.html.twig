@@ -28,9 +28,9 @@
                 {{ form_errors(form.config) }}
             </div>
             <div class="flex justify-end">
-                <label class="inline-flex items-center gap-2 text-sm text-body">
-                    {{ form_widget(form.isActive) }}
-                    {{ form_label(form.isActive, null, { 'label_attr': { 'class': 'text-sm text-body' } }) }}
+                <label class="inline-flex items-center text-sm text-body">
+                    {{ form_widget(form.isActive, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                    {{ form_label(form.isActive, null, { 'label_attr': { 'class': 'select-none ms-2 text-sm font-medium text-heading' } }) }}
                 </label>
             </div>
             <div class="flex justify-end">

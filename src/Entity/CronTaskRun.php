@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CronTaskRunRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: CronTaskRunRepository::class)]
 #[ORM\Table(name: 'cron_task_run')]
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['status'], name: 'idx_cron_task_run_status')]
 class CronTaskRun
 {
+    use TimestampableEntity;
     public const STATUS_RUNNING = 'running';
     public const STATUS_SUCCESS = 'success';
     public const STATUS_FAILED = 'failed';

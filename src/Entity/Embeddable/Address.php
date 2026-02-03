@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Embeddable]
 class Address
 {
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $line1 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -16,13 +16,13 @@ class Address
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $line3 = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
+    #[ORM\Column(length: 10, nullable: false)]
     private ?string $postalCode = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 2, nullable: true)]
+    #[ORM\Column(length: 2, nullable: false)]
     private ?string $country = 'FR';
 
     #[ORM\Column(length: 50, nullable: true)]

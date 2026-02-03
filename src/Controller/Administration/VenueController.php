@@ -4,6 +4,7 @@ namespace App\Controller\Administration;
 
 use App\Entity\Venue;
 use App\Form\VenueType;
+use App\Repository\CountryRepository;
 use App\Repository\VenueRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
@@ -59,7 +60,9 @@ class VenueController extends AbstractController
 
             $this->addFlash('success', 'Le site a été créé avec succès.');
 
-            return $this->redirectToRoute('app_admin_venues_show', ['id' => $venue->getId()]);
+            return $this->redirectToRoute('app_admin_venues_show', [
+                'publicIdentifier' => $venue->getPublicIdentifier(),
+            ]);
         }
 
         return $this->render('admin/venues/new.html.twig', [
@@ -67,17 +70,35 @@ class VenueController extends AbstractController
         ]);
     }
 
-    #[Route('/administration/sites/{id}', name: 'app_admin_venues_show', requirements: ['id' => '\\d+'])]
-    public function show(Venue $venue): Response
+    #[Route('/administration/sites/{publicIdentifier}', name: 'app_admin_venues_show', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
+    public function show(string $publicIdentifier, VenueRepository $venueRepository, CountryRepository $countryRepository): Response
     {
+        $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$venue) {
+            throw $this->createNotFoundException();
+        }
+
+        $countryLabel = null;
+        $countryCode = $venue->getAddress()?->getCountry();
+        if ($countryCode) {
+            $country = $countryRepository->findOneBy(['code' => $countryCode]);
+            $countryLabel = $country?->getLabel();
+        }
+
         return $this->render('admin/venues/show.html.twig', [
             'venue' => $venue,
+            'country_label' => $countryLabel,
         ]);
     }
 
-    #[Route('/administration/sites/{id}/modifier', name: 'app_admin_venues_edit', requirements: ['id' => '\\d+'])]
-    public function edit(Request $request, Venue $venue, EntityManagerInterface $entityManager): Response
+    #[Route('/administration/sites/{publicIdentifier}/modifier', name: 'app_admin_venues_edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
+    public function edit(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
+        $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$venue) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->createForm(VenueType::class, $venue);
         $form->handleRequest($request);
 
@@ -86,7 +107,9 @@ class VenueController extends AbstractController
 
             $this->addFlash('success', 'Le site a été mis à jour.');
 
-            return $this->redirectToRoute('app_admin_venues_show', ['id' => $venue->getId()]);
+            return $this->redirectToRoute('app_admin_venues_show', [
+                'publicIdentifier' => $venue->getPublicIdentifier(),
+            ]);
         }
 
         return $this->render('admin/venues/edit.html.twig', [
@@ -95,9 +118,14 @@ class VenueController extends AbstractController
         ]);
     }
 
-    #[Route('/administration/sites/{id}/supprimer', name: 'app_admin_venues_delete', requirements: ['id' => '\\d+'], methods: ['POST'])]
-    public function delete(Request $request, Venue $venue, EntityManagerInterface $entityManager): Response
+    #[Route('/administration/sites/{publicIdentifier}/supprimer', name: 'app_admin_venues_delete', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'], methods: ['POST'])]
+    public function delete(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
+        $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$venue) {
+            throw $this->createNotFoundException();
+        }
+
         if (!$this->isCsrfTokenValid('delete_venue', (string) $request->request->get('_token'))) {
             return $this->redirectToRoute('app_admin_venues_index');
         }

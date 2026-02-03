@@ -5,12 +5,14 @@ namespace App\Entity;
 use App\Repository\ResetPasswordLogRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ResetPasswordLogRepository::class)]
 #[ORM\Table(name: 'log_reset_password')]
 #[ORM\Index(columns: ['occurred_at'], name: 'idx_log_reset_password_occurred_at')]
 class ResetPasswordLog
 {
+    use TimestampableEntity;
     public const EVENT_REQUEST = 'RESET_REQUEST';
     public const EVENT_RESET_SUCCESS = 'RESET_SUCCESS';
     public const EVENT_RESET_INVALID = 'RESET_INVALID';

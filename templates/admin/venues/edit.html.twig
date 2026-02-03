@@ -30,38 +30,73 @@
 
     <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
         {% set name_required_message = 'venue.name.required'|trans({}, 'validators') %}
+        {% set address_required_message = 'venue.address.required'|trans({}, 'validators') %}
+        {% set country_required_message = 'venue.country.required'|trans({}, 'validators') %}
+        {% set postal_required_message = 'venue.postal_code.required'|trans({}, 'validators') %}
         {% set city_required_message = 'venue.city.required'|trans({}, 'validators') %}
 
-        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-4', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
             {{ include('components/_form_field.html.twig', {
                 field: form.name,
-                wrapper_class: 'md:col-span-2',
+                wrapper_class: 'md:col-span-4',
                 required_message: name_required_message
             }) }}
             {{ include('components/_form_field.html.twig', {
+                field: form.addressCountry,
+                wrapper_class: 'md:col-span-1',
+                required_message: country_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
                 field: form.addressLine1,
+                wrapper_class: 'relative md:col-span-3',
+                required_message: address_required_message,
+                input_attr: {
+                    'data-address-autocomplete': 'true',
+                    'data-address-endpoint': path('app_admin_addresses_ban'),
+                    'data-address-postal-id': form.addressPostalCode.vars.id,
+                    'data-address-city-id': form.addressCity.vars.id,
+                    'data-address-country-id': form.addressCountry.vars.id,
+                    'data-address-source-id': form.addressSource.vars.id,
+                    'data-address-external-id': form.addressExternalId.vars.id,
+                    'data-address-latitude-id': form.addressLatitude.vars.id,
+                    'data-address-longitude-id': form.addressLongitude.vars.id
+                }
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.addressLine2,
                 wrapper_class: 'md:col-span-2'
             }) }}
             {{ include('components/_form_field.html.twig', {
-                field: form.addressPostalCode
+                field: form.addressLine3,
+                wrapper_class: 'md:col-span-2'
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.addressPostalCode,
+                wrapper_class: 'md:col-span-2',
+                required_message: postal_required_message
             }) }}
             {{ include('components/_form_field.html.twig', {
                 field: form.addressCity,
+                wrapper_class: 'md:col-span-2',
                 required_message: city_required_message
             }) }}
+            <p class="md:col-span-4 text-xs text-body" data-address-hint data-address-hint-fr="Autocomplétion disponible pour les adresses en France." data-address-hint-foreign="Saisie manuelle pour les adresses hors France."></p>
+            {{ form_widget(form.addressSource) }}
+            {{ form_widget(form.addressExternalId) }}
+            {{ form_widget(form.addressLatitude) }}
+            {{ form_widget(form.addressLongitude) }}
             {{ include('components/_form_field.html.twig', {
-                field: form.addressCountry
+                field: form.parkingType,
+                wrapper_class: 'md:col-span-2'
             }) }}
             {{ include('components/_form_field.html.twig', {
-                field: form.parkingType
+                field: form.parkingCapacity,
+                wrapper_class: 'md:col-span-2'
             }) }}
-            {{ include('components/_form_field.html.twig', {
-                field: form.parkingCapacity
-            }) }}
-            <div class="md:col-span-2 flex items-center justify-end gap-3">
+            <div class="md:col-span-4 flex items-center justify-end gap-3">
                 {{ include('components/_button.html.twig', {
                     label: 'Annuler',
-                    href: path('app_admin_venues_show', { id: venue.id }),
+                    href: path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }),
                     variant: 'tertiary',
                     size: 'sm'
                 }) }}

@@ -9,6 +9,10 @@ on:
 jobs:
   audits:
     runs-on: ubuntu-latest
+    env:
+      CI: true
+      HUSKY: 0
+      HUSKY_SKIP_INSTALL: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4

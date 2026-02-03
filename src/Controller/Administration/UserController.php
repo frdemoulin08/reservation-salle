@@ -81,21 +81,32 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', requirements: ['id' => '\\d+'])]
-    public function show(User $user): Response
+    #[Route('/{publicIdentifier}', name: 'show', requirements: ['publicIdentifier' => '[0-9A-HJKMNP-TV-Z]{26}'])]
+    public function show(string $publicIdentifier, UserRepository $userRepository): Response
     {
+        $user = $userRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$user) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('admin/users/show.html.twig', [
             'user' => $user,
         ]);
     }
 
-    #[Route('/{id}/edition', name: 'edit', requirements: ['id' => '\\d+'])]
+    #[Route('/{publicIdentifier}/edition', name: 'edit', requirements: ['publicIdentifier' => '[0-9A-HJKMNP-TV-Z]{26}'])]
     public function edit(
         Request $request,
-        User $user,
+        string $publicIdentifier,
+        UserRepository $userRepository,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
     ): Response {
+        $user = $userRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$user) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->createForm(UserType::class, $user, [
             'require_password' => false,
             'validation_groups' => static function (FormInterface $form): array {
@@ -121,7 +132,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'L’utilisateur a été mis à jour.');
 
-            return $this->redirectToRoute('app_admin_users_show', ['id' => $user->getId()]);
+            return $this->redirectToRoute('app_admin_users_show', ['publicIdentifier' => $user->getPublicIdentifier()]);
         }
 
         return $this->render('admin/users/edit.html.twig', [

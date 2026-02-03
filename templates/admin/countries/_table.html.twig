@@ -1,0 +1,61 @@
+{% set columns = [
+    { label: 'Pays', sort: 'label' },
+    { label: 'Code ISO', sort: 'code' },
+    { label: 'Indicatif', sort: 'dialingCode' },
+    { label: 'Actif', sort: 'isActive' },
+    { label: 'Actions' }
+] %}
+
+<div class="relative overflow-visible rounded-base border border-default bg-neutral-primary-soft shadow-xs">
+    <div class="overflow-x-auto overflow-y-visible">
+        <table class="w-full text-left text-sm text-body">
+            {% include '_partials/table/_header.html.twig' with {
+                route: 'app_admin_countries_index',
+                params: params,
+                columns: columns
+            } %}
+            <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+                {% for country in pager %}
+                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_countries_show', { publicIdentifier: country.publicIdentifier }) }}">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ country.label }}</th>
+                        <td class="px-6 py-4">{{ country.code }}</td>
+                        <td class="px-6 py-4">{{ country.dialingCode ?? '—' }}</td>
+                        <td class="px-6 py-4">
+                            {% if country.isActive %}
+                                <span class="inline-flex items-center rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-medium text-fg-success-strong">Actif</span>
+                            {% else %}
+                                <span class="inline-flex items-center rounded-full bg-neutral-tertiary px-2.5 py-0.5 text-xs font-medium text-body">Inactif</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{ include('components/_actions_dropdown.html.twig', {
+                                id: 'country-actions-' ~ country.id,
+                                items: [
+                                    { label: 'Voir', href: path('app_admin_countries_show', { publicIdentifier: country.publicIdentifier }) },
+                                    { label: 'Éditer', href: path('app_admin_countries_edit', { publicIdentifier: country.publicIdentifier }) },
+                                    {
+                                        label: 'Supprimer',
+                                        href: '#',
+                                        extra_class: 'text-fg-danger font-medium',
+                                        data_attrs: {
+                                            'data-modal-target': 'country-delete-modal',
+                                            'data-modal-toggle': 'country-delete-modal',
+                                            'data-delete-url': path('app_admin_countries_delete', { publicIdentifier: country.publicIdentifier }),
+                                            'data-delete-name': country.label
+                                        }
+                                    }
+                                ]
+                            }) }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucun pays ne correspond à votre recherche.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_countries_index', params: params, pager: pager } %}

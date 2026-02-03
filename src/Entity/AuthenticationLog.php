@@ -5,12 +5,14 @@ namespace App\Entity;
 use App\Repository\AuthenticationLogRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: AuthenticationLogRepository::class)]
 #[ORM\Table(name: 'log_authentication')]
 #[ORM\Index(columns: ['occurred_at'], name: 'idx_log_authentication_occurred_at')]
 class AuthenticationLog
 {
+    use TimestampableEntity;
     public const EVENT_LOGIN_SUCCESS = 'LOGIN_SUCCESS';
     public const EVENT_LOGIN_FAILURE = 'LOGIN_FAILURE';
     public const EVENT_LOGOUT = 'LOGOUT';

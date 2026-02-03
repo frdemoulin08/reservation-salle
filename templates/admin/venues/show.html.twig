@@ -19,9 +19,18 @@
             <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée du site.</p>
         </div>
         <div class="flex flex-wrap gap-3">
-            <a class="text-body bg-neutral-primary-soft border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" href="{{ path('app_admin_venues_index') }}">
-                Retour à la liste
-            </a>
+            {{ include('components/_button.html.twig', {
+                label: 'Éditer',
+                href: path('app_admin_venues_edit', { publicIdentifier: venue.publicIdentifier }),
+                variant: 'warning',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_venues_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
         </div>
     </div>
 
@@ -84,7 +93,13 @@
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_country'|trans }}</dt>
-                <dd class="mt-2 text-base text-heading">{{ venue.address.country ?? '—' }}</dd>
+                <dd class="mt-2 text-base text-heading">
+                    {% if venue.address.country %}
+                        {{ country_label ?? venue.address.country }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.address_source'|trans }}</dt>
