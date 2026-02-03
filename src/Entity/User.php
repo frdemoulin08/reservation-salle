@@ -15,8 +15,8 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'app_user')]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-#[UniqueEntity(fields: ['publicIdentifier'], message: 'There is already an account with this public identifier')]
+#[UniqueEntity(fields: ['email'], message: 'user.email.unique', errorPath: 'email')]
+#[UniqueEntity(fields: ['publicIdentifier'], message: 'user.public_identifier.unique', errorPath: 'publicIdentifier')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
