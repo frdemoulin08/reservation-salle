@@ -41,13 +41,27 @@
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.name'|trans }}</dt>
                 <dd class="mt-2 text-base font-semibold text-heading">{{ venue.name }}</dd>
             </div>
-            <div>
-                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.contact_details'|trans }}</dt>
-                <dd class="mt-2 text-base text-heading">{{ venue.contactDetails ?? '—' }}</dd>
-            </div>
-            <div>
-                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.reference_contact_name'|trans }}</dt>
-                <dd class="mt-2 text-base text-heading">{{ venue.referenceContactName ?? '—' }}</dd>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'venue.fields.reference_contact_user'|trans }}</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if venue.referenceContactUser %}
+                        <p class="font-semibold text-heading">
+                            {{ venue.referenceContactUser.firstname }} {{ venue.referenceContactUser.lastname }}
+                        </p>
+                        <p class="mt-1 text-sm text-body">{{ venue.referenceContactUser.email }}</p>
+                        {% if venue.referenceContactUser.mobilePhone %}
+                            <p class="text-sm text-body">Mobile : {{ venue.referenceContactUser.mobilePhone }}</p>
+                        {% endif %}
+                        {% if venue.referenceContactUser.fixedPhone %}
+                            <p class="text-sm text-body">Fixe : {{ venue.referenceContactUser.fixedPhone }}</p>
+                        {% endif %}
+                        {% if not venue.referenceContactUser.mobilePhone and not venue.referenceContactUser.fixedPhone %}
+                            <p class="text-sm text-body">Téléphone : —</p>
+                        {% endif %}
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">{{ 'common.updated_at'|trans }}</dt>
