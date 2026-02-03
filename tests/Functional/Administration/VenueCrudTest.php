@@ -16,6 +16,7 @@ class VenueCrudTest extends DatabaseWebTestCase
 
         $form = $crawler->selectButton('Créer le site')->form();
         $form['venue[name]'] = 'Site Test';
+        $form['venue[description]'] = 'Un site de test pour la validation.';
         $form['venue[addressLine1]'] = '1 rue des Tests';
         $form['venue[addressPostalCode]'] = '08000';
         $form['venue[addressCity]'] = 'Charleville';
