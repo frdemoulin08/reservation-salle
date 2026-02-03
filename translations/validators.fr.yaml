@@ -38,3 +38,6 @@ user:
 role:
   code:
     unique: "Ce code est déjà utilisé."
+site_document_type:
+  code:
+    unique: "Ce code est déjà utilisé."

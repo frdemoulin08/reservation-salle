@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Embeddable\Address;
 use App\Entity\EquipmentType;
+use App\Entity\SiteDocumentType;
 use App\Entity\Venue;
 use App\Entity\VenueDocument;
 use App\Entity\VenueEquipment;
@@ -88,20 +89,24 @@ class VenueFixtures extends Fixture implements DependentFixtureInterface
         if ($mainVenue instanceof Venue) {
             $this->addReference(self::VENUE_MAIN, $mainVenue);
 
+            $photoType = $this->getReference(SiteDocumentTypeFixtures::TYPE_PHOTO, SiteDocumentType::class);
             $photo = (new VenueDocument())
                 ->setVenue($mainVenue)
                 ->setLabel('Photo façade')
-                ->setFilePath('venues/maison-des-sports/photo.jpg')
+                ->setFilePath('uploads/venues/maison-des-sports/photo.jpg')
                 ->setMimeType('image/jpeg')
-                ->setType('photo');
+                ->setDocumentType($photoType)
+                ->setIsPublic(true);
             $manager->persist($photo);
 
+            $planType = $this->getReference(SiteDocumentTypeFixtures::TYPE_PLAN, SiteDocumentType::class);
             $plan = (new VenueDocument())
                 ->setVenue($mainVenue)
                 ->setLabel('Plan d\'accès')
-                ->setFilePath('venues/maison-des-sports/plan.pdf')
+                ->setFilePath('uploads/venues/maison-des-sports/plan.pdf')
                 ->setMimeType('application/pdf')
-                ->setType('plan');
+                ->setDocumentType($planType)
+                ->setIsPublic(true);
             $manager->persist($plan);
 
             $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_PROJECTOR, EquipmentType::class);
@@ -118,6 +123,6 @@ class VenueFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [ReferenceFixtures::class];
+        return [ReferenceFixtures::class, SiteDocumentTypeFixtures::class];
     }
 }

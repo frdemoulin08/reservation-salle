@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^3.2.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6.2",
+        "oneup/flysystem-bundle": "^4.14",
         "pagerfanta/doctrine-orm-adapter": "^4.8",
         "pagerfanta/pagerfanta": "^2.0.1",
         "php-flasher/flasher-symfony": ">=2.4",

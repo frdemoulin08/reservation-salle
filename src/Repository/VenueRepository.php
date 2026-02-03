@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\SiteDocumentType;
 use App\Entity\Venue;
 use App\Table\TableParams;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -30,5 +31,33 @@ class VenueRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+
+    /**
+     * @return Venue[]
+     */
+    public function findAllWithPublicPhotos(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->leftJoin('v.documents', 'd', 'WITH', 'd.isPublic = true')
+            ->leftJoin('d.documentType', 'dt', 'WITH', 'dt.code = :photoCode')
+            ->addSelect('d', 'dt')
+            ->setParameter('photoCode', SiteDocumentType::CODE_PHOTO)
+            ->orderBy('v.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneWithPublicPhotos(string $publicIdentifier): ?Venue
+    {
+        return $this->createQueryBuilder('v')
+            ->leftJoin('v.documents', 'd', 'WITH', 'd.isPublic = true')
+            ->leftJoin('d.documentType', 'dt', 'WITH', 'dt.code = :photoCode')
+            ->addSelect('d', 'dt')
+            ->andWhere('v.publicIdentifier = :publicIdentifier')
+            ->setParameter('publicIdentifier', $publicIdentifier)
+            ->setParameter('photoCode', SiteDocumentType::CODE_PHOTO)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace utilisateur{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen bg-neutral-primary text-body">
+        <header class="border-b border-default bg-neutral-primary-soft">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">SPSL</p>
+                    <p class="text-lg font-semibold text-heading">Espace utilisateur</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-sm text-body">{{ app.user ? app.user.firstname ~ ' ' ~ app.user.lastname : '' }}</span>
+                    {{ include('components/_button.html.twig', {
+                        label: 'Backoffice',
+                        href: path('app_admin_index'),
+                        variant: 'tertiary',
+                        size: 'sm'
+                    }) }}
+                    {{ include('components/_button.html.twig', {
+                        label: 'Déconnexion',
+                        href: path('app_logout'),
+                        variant: 'ghost',
+                        size: 'sm'
+                    }) }}
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto max-w-6xl px-6 py-10">
+            {% block portal_content %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

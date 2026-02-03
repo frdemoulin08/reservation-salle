@@ -10,6 +10,8 @@ import { initPasswordCopy } from '../helpers/password-copy.js';
 import { initDropdownPortals } from '../helpers/dropdown-portal.js';
 import { initFormValidation } from '../helpers/form-validation.js';
 import { initAddressAutocomplete } from '../helpers/address-autocomplete.js';
+import { initPhotoDropzone } from '../helpers/photo-dropzone.js';
+import { initPhotoLabelEditor } from '../helpers/photo-label-editor.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
@@ -24,4 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDropdownPortals();
     initFormValidation();
     initAddressAutocomplete();
+    initPhotoDropzone();
+    initPhotoLabelEditor();
 });
