@@ -126,6 +126,9 @@ parameters:
           - key: habilitations
             label: "Habilitations"
             url: "#"
+          - key: document_types
+            label: "Types de documents"
+            route: app_admin_site_document_types_index
           - key: countries
             label: "Pays"
             route: app_admin_countries_index

@@ -1,0 +1,36 @@
+{% extends 'portal/_layout.html.twig' %}
+
+{% block title %}Sites{% endblock %}
+
+{% block portal_content %}
+    <div class="mb-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Sites</p>
+        <h1 class="mt-3 text-3xl font-semibold text-heading">Photos des sites</h1>
+        <p class="mt-2 max-w-2xl text-sm text-body">Consultez les photos publiques associées aux sites.</p>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for venue in venues %}
+            {% set photos = venue.documents|filter(photo => photo.isPublic and photo.documentType and photo.documentType.code == 'PHOTO') %}
+            {% set cover = photos|first %}
+            <a class="group flex h-full flex-col overflow-hidden rounded-base border border-default bg-neutral-primary shadow-xs hover:shadow-sm" href="{{ path('app_portal_venues_show', { publicIdentifier: venue.publicIdentifier }) }}">
+                <div class="aspect-[4/3] overflow-hidden bg-neutral-secondary-medium">
+                    {% if cover %}
+                        <img src="{{ asset(cover.filePath) }}" alt="{{ cover.label }}" class="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" loading="lazy">
+                    {% else %}
+                        <div class="flex h-full items-center justify-center text-xs text-body-subtle">Aucune photo</div>
+                    {% endif %}
+                </div>
+                <div class="flex flex-1 flex-col justify-between p-4">
+                    <div>
+                        <h2 class="text-base font-semibold text-heading">{{ venue.name }}</h2>
+                        <p class="mt-1 text-sm text-body">{{ venue.address.city ?? '—' }}</p>
+                    </div>
+                    <p class="mt-4 text-xs text-body-subtle">{{ photos|length }} photo{{ photos|length > 1 ? 's' : '' }}</p>
+                </div>
+            </a>
+        {% else %}
+            <p class="text-body-subtle">Aucun site disponible.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

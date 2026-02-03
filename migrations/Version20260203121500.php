@@ -10,11 +10,11 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260124184416 extends AbstractMigration
+final class Version20260203121500 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Initial schema baseline.';
     }
 
     public function up(Schema $schema): void
@@ -49,9 +49,10 @@ final class Version20260124184416 extends AbstractMigration
         $this->addSql('CREATE TABLE room_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_EFDABD4D77153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE room_usage (id INT AUTO_INCREMENT NOT NULL, room_id INT NOT NULL, usage_type_id INT NOT NULL, INDEX IDX_9A57FFDB54177093 (room_id), INDEX IDX_9A57FFDB9BC8FA8C (usage_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE service_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_429DE3C577153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE site_document_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, is_public TINYINT(1) DEFAULT 1 NOT NULL, is_required TINYINT(1) DEFAULT 0 NOT NULL, is_multiple_allowed TINYINT(1) DEFAULT 1 NOT NULL, is_active TINYINT(1) DEFAULT 1 NOT NULL, position INT DEFAULT 0 NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_B1B95E1C77153098 (code), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE usage_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_2774453277153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE venue (id INT AUTO_INCREMENT NOT NULL, public_identifier VARCHAR(36) NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, public_transport_access LONGTEXT DEFAULT NULL, parking_type VARCHAR(50) DEFAULT NULL, parking_capacity INT DEFAULT NULL, contact_details LONGTEXT DEFAULT NULL, reference_contact_name VARCHAR(255) DEFAULT NULL, delivery_access LONGTEXT DEFAULT NULL, access_map_url VARCHAR(255) DEFAULT NULL, house_rules LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, address_line1 VARCHAR(255) NOT NULL, address_line2 VARCHAR(255) DEFAULT NULL, address_line3 VARCHAR(255) DEFAULT NULL, address_postal_code VARCHAR(10) NOT NULL, address_city VARCHAR(100) DEFAULT NULL, address_country VARCHAR(2) NOT NULL, address_source VARCHAR(50) DEFAULT NULL, address_external_id VARCHAR(255) DEFAULT NULL, address_latitude DOUBLE PRECISION DEFAULT NULL, address_longitude DOUBLE PRECISION DEFAULT NULL, UNIQUE INDEX UNIQ_7A404EBA1FC56738 (public_identifier), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE venue_document (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(255) NOT NULL, file_path VARCHAR(255) NOT NULL, mime_type VARCHAR(100) DEFAULT NULL, type VARCHAR(50) DEFAULT NULL, venue_id INT NOT NULL, INDEX IDX_B9B2BD5240A73EBA (venue_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE venue_document (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(255) NOT NULL, file_path VARCHAR(255) NOT NULL, original_filename VARCHAR(255) DEFAULT NULL, size INT DEFAULT NULL, mime_type VARCHAR(100) DEFAULT NULL, is_public TINYINT(1) DEFAULT 1 NOT NULL, venue_id INT NOT NULL, document_type_id INT NOT NULL, INDEX IDX_B9B2BD5240A73EBA (venue_id), INDEX IDX_B9B2BD5F1A8B5E7 (document_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE venue_equipment (id INT AUTO_INCREMENT NOT NULL, max_quantity INT DEFAULT NULL, is_included TINYINT DEFAULT 1 NOT NULL, venue_id INT NOT NULL, equipment_type_id INT NOT NULL, INDEX IDX_EF5AEA6540A73EBA (venue_id), INDEX IDX_EF5AEA65B337437C (equipment_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
 
         $this->addSql('ALTER TABLE log_authentication ADD CONSTRAINT FK_18E8F8ABA76ED395 FOREIGN KEY (user_id) REFERENCES app_user (id) ON DELETE CASCADE');
@@ -81,6 +82,7 @@ final class Version20260124184416 extends AbstractMigration
         $this->addSql('ALTER TABLE room_usage ADD CONSTRAINT FK_9A57FFDB54177093 FOREIGN KEY (room_id) REFERENCES room (id)');
         $this->addSql('ALTER TABLE room_usage ADD CONSTRAINT FK_9A57FFDB9BC8FA8C FOREIGN KEY (usage_type_id) REFERENCES usage_type (id)');
         $this->addSql('ALTER TABLE venue_document ADD CONSTRAINT FK_1B5F2B2A40A73EBA FOREIGN KEY (venue_id) REFERENCES venue (id)');
+        $this->addSql('ALTER TABLE venue_document ADD CONSTRAINT FK_B9B2BD5F1A8B5E7 FOREIGN KEY (document_type_id) REFERENCES site_document_type (id)');
         $this->addSql('ALTER TABLE venue_equipment ADD CONSTRAINT FK_2D3E7A1340A73EBA FOREIGN KEY (venue_id) REFERENCES venue (id)');
         $this->addSql('ALTER TABLE venue_equipment ADD CONSTRAINT FK_2D3E7A13B337437C FOREIGN KEY (equipment_type_id) REFERENCES equipment_type (id)');
     }
@@ -109,6 +111,7 @@ final class Version20260124184416 extends AbstractMigration
         $this->addSql('DROP TABLE room_layout');
         $this->addSql('DROP TABLE room_type');
         $this->addSql('DROP TABLE service_type');
+        $this->addSql('DROP TABLE site_document_type');
         $this->addSql('DROP TABLE usage_type');
         $this->addSql('DROP TABLE venue');
 

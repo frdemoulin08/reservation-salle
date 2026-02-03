@@ -24,11 +24,21 @@ class VenueDocument
     #[ORM\Column(length: 255)]
     private string $filePath = '';
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $originalFilename = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $size = null;
+
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $mimeType = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $type = null;
+    #[ORM\Column(options: ['default' => true])]
+    private bool $isPublic = true;
+
+    #[ORM\ManyToOne(inversedBy: 'documents')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SiteDocumentType $documentType = null;
 
     public function getId(): ?int
     {
@@ -71,6 +81,30 @@ class VenueDocument
         return $this;
     }
 
+    public function getOriginalFilename(): ?string
+    {
+        return $this->originalFilename;
+    }
+
+    public function setOriginalFilename(?string $originalFilename): self
+    {
+        $this->originalFilename = $originalFilename;
+
+        return $this;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
+    }
+
+    public function setSize(?int $size): self
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
     public function getMimeType(): ?string
     {
         return $this->mimeType;
@@ -83,14 +117,26 @@ class VenueDocument
         return $this;
     }
 
-    public function getType(): ?string
+    public function isPublic(): bool
     {
-        return $this->type;
+        return $this->isPublic;
     }
 
-    public function setType(?string $type): self
+    public function setIsPublic(bool $isPublic): self
     {
-        $this->type = $type;
+        $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    public function getDocumentType(): ?SiteDocumentType
+    {
+        return $this->documentType;
+    }
+
+    public function setDocumentType(?SiteDocumentType $documentType): self
+    {
+        $this->documentType = $documentType;
 
         return $this;
     }

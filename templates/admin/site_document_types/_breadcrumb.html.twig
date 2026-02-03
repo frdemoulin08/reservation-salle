@@ -1,0 +1,17 @@
+{% set current_label = current_label|default('Types de documents') %}
+
+{{ include('components/breadcrumb/crud_double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Paramétrage',
+    firstLevelHasLink: "false",
+    secondLevelIndexRoute: 'app_admin_site_document_types_index',
+    secondLevelIndexLabel: 'Types de documents',
+    secondLevelShowRoute: 'app_admin_site_document_types_show',
+    secondLevelShowLabel: current_label,
+    secondLevelCreateRoute: 'app_admin_site_document_types_new',
+    secondLevelCreateLabel: current_label,
+    secondLevelEditRoute: 'app_admin_site_document_types_edit',
+    secondLevelEditLabel: current_label
+}) }}
