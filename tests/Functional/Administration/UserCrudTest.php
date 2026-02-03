@@ -62,13 +62,13 @@ class UserCrudTest extends DatabaseWebTestCase
 
         self::assertNotNull($user, 'Utilisateur de test introuvable.');
 
-        $crawler = $client->request('GET', '/administration/utilisateurs/'.$user->getId().'/edition');
+        $crawler = $client->request('GET', '/administration/utilisateurs/'.$user->getPublicIdentifier().'/edition');
         self::assertResponseIsSuccessful();
 
         $csrfToken = (string) $crawler->filter('input[name="user[_token]"]')->attr('value');
         $roleId = $this->resolveRoleId();
 
-        $client->request('POST', '/administration/utilisateurs/'.$user->getId().'/edition', [
+        $client->request('POST', '/administration/utilisateurs/'.$user->getPublicIdentifier().'/edition', [
             'user' => [
                 'firstname' => 'Frederic',
                 'lastname' => 'Demoulin',

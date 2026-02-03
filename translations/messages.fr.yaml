@@ -24,6 +24,12 @@ common:
   created_at: "Créé le"
   updated_at: "Dernière mise à jour"
 
+country:
+  FR: "France"
+  BE: "Belgique"
+  LU: "Luxembourg"
+  DE: "Allemagne"
+
 equipment_type:
   singular: "Type d’équipement"
   plural: "Types d’équipement"

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ResetPasswordRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
 
@@ -12,6 +13,7 @@ use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
 #[ORM\Table(name: 'reset_password_request')]
 class ResetPasswordRequest implements ResetPasswordRequestInterface
 {
+    use TimestampableEntity;
     use ResetPasswordRequestTrait;
 
     #[ORM\Id]

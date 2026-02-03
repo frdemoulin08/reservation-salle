@@ -10,6 +10,7 @@ parameters:
     app.name: 'Room booking'
     app.mailer_from: '%env(MAILER_FROM)%'
     github.repo: 'frdemoulin08/reservation-salle'
+    ban_api_base: 'https://api-adresse.data.gouv.fr'
 
 services:
     # default configuration for services in *this* file
@@ -33,6 +34,10 @@ services:
     App\Service\BackofficeMenuConfigProvider:
         arguments:
             $defaultConfig: '%backoffice_menu%'
+
+    App\Service\BanAddressClient:
+        arguments:
+            $baseUrl: '%ban_api_base%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

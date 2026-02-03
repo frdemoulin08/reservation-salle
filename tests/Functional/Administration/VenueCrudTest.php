@@ -19,6 +19,7 @@ class VenueCrudTest extends DatabaseWebTestCase
         $form['venue[addressLine1]'] = '1 rue des Tests';
         $form['venue[addressPostalCode]'] = '08000';
         $form['venue[addressCity]'] = 'Charleville';
+        $form['venue[addressCountry]'] = 'FR';
 
         $client->submit($form);
 
@@ -38,7 +39,7 @@ class VenueCrudTest extends DatabaseWebTestCase
 
         self::assertNotNull($venue, 'Aucun site disponible pour le test.');
 
-        $crawler = $client->request('GET', '/administration/sites/'.$venue->getId().'/modifier');
+        $crawler = $client->request('GET', '/administration/sites/'.$venue->getPublicIdentifier().'/modifier');
         self::assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Enregistrer')->form();
@@ -83,7 +84,7 @@ class VenueCrudTest extends DatabaseWebTestCase
         $tokenManager = $client->getContainer()->get('security.csrf.token_manager');
         $token = $tokenManager->getToken('delete_venue')->getValue();
 
-        $client->request('POST', '/administration/sites/'.$venue->getId().'/supprimer', [
+        $client->request('POST', '/administration/sites/'.$venue->getPublicIdentifier().'/supprimer', [
             '_token' => $token,
         ]);
 

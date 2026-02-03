@@ -21,8 +21,8 @@
         <div class="flex flex-wrap gap-3">
             {{ include('components/_button.html.twig', {
                 label: 'Éditer',
-                href: path('app_admin_users_edit', { id: user.id }),
-                variant: 'primary',
+                href: path('app_admin_users_edit', { publicIdentifier: user.publicIdentifier }),
+                variant: 'warning',
                 size: 'sm'
             }) }}
             {{ include('components/_button.html.twig', {

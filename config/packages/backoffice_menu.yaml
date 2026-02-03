@@ -121,11 +121,14 @@ parameters:
             route: app_admin_users_index
       - key: parametrage
         label: "Paramétrage"
-        roles: [ROLE_SUPER_ADMIN]
+        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
         items:
           - key: habilitations
             label: "Habilitations"
             url: "#"
+          - key: countries
+            label: "Pays"
+            route: app_admin_countries_index
           - key: rapports
             label: "Rapports"
             url: "#"

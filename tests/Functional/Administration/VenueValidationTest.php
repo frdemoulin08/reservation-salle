@@ -21,6 +21,9 @@ class VenueValidationTest extends DatabaseWebTestCase
         $client->request('POST', '/administration/sites/nouveau', [
             'venue' => [
                 'name' => '',
+                'addressLine1' => '',
+                'addressPostalCode' => '',
+                'addressCountry' => '',
                 'addressCity' => '',
                 '_token' => $this->getCsrfToken($crawler),
             ],
@@ -28,6 +31,9 @@ class VenueValidationTest extends DatabaseWebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('#venue_name-error', 'Le nom du site est obligatoire');
+        self::assertSelectorTextContains('#venue_addressLine1-error', 'L’adresse du site est obligatoire');
+        self::assertSelectorTextContains('#venue_addressPostalCode-error', 'Le code postal est obligatoire');
+        self::assertSelectorTextContains('#venue_addressCountry-error', 'Le pays est obligatoire');
         self::assertSelectorTextContains('#venue_addressCity-error', 'La commune est obligatoire');
     }
 }

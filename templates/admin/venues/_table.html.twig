@@ -15,7 +15,7 @@
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
                 {% for venue in pager %}
-                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_venues_show', { id: venue.id }) }}">
+                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) }}">
                         <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ venue.name }}</th>
                         <td class="px-6 py-4">{{ venue.address.city ?? '—' }}</td>
                         <td class="px-6 py-4">{{ venue.updatedAt|date('d/m/Y') }}</td>
@@ -23,8 +23,8 @@
                             {{ include('components/_actions_dropdown.html.twig', {
                                 id: 'venue-actions-' ~ venue.id,
                                 items: [
-                                    { label: 'Voir', href: path('app_admin_venues_show', { id: venue.id }) },
-                                    { label: 'Éditer', href: path('app_admin_venues_edit', { id: venue.id }) },
+                                    { label: 'Voir', href: path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) },
+                                    { label: 'Éditer', href: path('app_admin_venues_edit', { publicIdentifier: venue.publicIdentifier }) },
                                     {
                                         label: 'Supprimer',
                                         href: '#',
@@ -32,7 +32,7 @@
                                         data_attrs: {
                                             'data-modal-target': 'venue-delete-modal',
                                             'data-modal-toggle': 'venue-delete-modal',
-                                            'data-delete-url': path('app_admin_venues_delete', { id: venue.id }),
+                                            'data-delete-url': path('app_admin_venues_delete', { publicIdentifier: venue.publicIdentifier }),
                                             'data-delete-name': venue.name
                                         }
                                     }

@@ -17,7 +17,7 @@
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
             {% for user in pager %}
-                <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_users_show', { id: user.id }) }}">
+                <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_users_show', { publicIdentifier: user.publicIdentifier }) }}">
                         <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
                             {{ user.lastname|upper }} {{ user.firstname }}
                         </th>
@@ -47,8 +47,8 @@
                         {{ include('components/_actions_dropdown.html.twig', {
                             id: 'user-actions-' ~ user.id,
                             items: [
-                                { label: 'Voir', href: path('app_admin_users_show', { id: user.id }) },
-                                { label: 'Éditer', href: path('app_admin_users_edit', { id: user.id }) }
+                                { label: 'Voir', href: path('app_admin_users_show', { publicIdentifier: user.publicIdentifier }) },
+                                { label: 'Éditer', href: path('app_admin_users_edit', { publicIdentifier: user.publicIdentifier }) }
                             ]
                         }) }}
                     </td>
