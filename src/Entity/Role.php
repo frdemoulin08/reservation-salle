@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: 'role')]
-#[UniqueEntity(fields: ['code'], message: 'There is already a role with this code')]
+#[UniqueEntity(fields: ['code'], message: 'role.code.unique', errorPath: 'code')]
 class Role
 {
     use TimestampableEntity;

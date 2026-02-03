@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\CountryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 #[ORM\Table(name: 'country')]
+#[UniqueEntity(fields: ['code'], message: 'country.code.unique', errorPath: 'code')]
 class Country
 {
     use TimestampableEntity;

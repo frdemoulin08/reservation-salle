@@ -20,15 +20,21 @@ class CountryType extends AbstractType
                 'label' => 'Libellé',
                 'empty_data' => '',
                 'constraints' => [
-                    new NotBlank(message: 'Le libellé est obligatoire.'),
+                    new NotBlank(message: 'country.label.required'),
                 ],
             ])
             ->add('code', TextType::class, [
                 'label' => 'Code ISO',
                 'empty_data' => '',
                 'constraints' => [
-                    new NotBlank(message: 'Le code ISO est obligatoire.'),
-                    new Length(min: 2, max: 2),
+                    new NotBlank(message: 'country.code.required'),
+                    new Length(
+                        min: 2,
+                        max: 2,
+                        minMessage: 'country.code.length',
+                        maxMessage: 'country.code.length',
+                        exactMessage: 'country.code.length'
+                    ),
                 ],
             ])
             ->add('dialingCode', TextType::class, [
