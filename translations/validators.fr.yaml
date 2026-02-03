@@ -9,6 +9,13 @@ venue:
     required: "Le code postal est obligatoire"
   city:
     required: "La commune est obligatoire"
+country:
+  code:
+    unique: "Ce code ISO est déjà utilisé."
+    required: "Le code ISO est obligatoire."
+    length: "Le code ISO doit contenir exactement {{ limit }} caractères."
+  label:
+    required: "Le libellé est obligatoire."
 user:
   firstname:
     required: "Le prénom est obligatoire"
@@ -17,6 +24,9 @@ user:
   email:
     required: "L’email est obligatoire"
     invalid: "Le format de l’email est invalide"
+    unique: "Cet email est déjà utilisé"
+  public_identifier:
+    unique: "Cet identifiant public est déjà utilisé"
   password:
     required: "Le mot de passe est obligatoire"
     min_length: "Le mot de passe doit contenir au moins {{ limit }} caractères"
@@ -25,3 +35,6 @@ user:
     categories: "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
   roles:
     required: "Au moins un rôle est obligatoire"
+role:
+  code:
+    unique: "Ce code est déjà utilisé."

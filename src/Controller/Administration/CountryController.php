@@ -59,7 +59,9 @@ class CountryController extends AbstractController
 
             $this->addFlash('success', 'Le pays a été créé avec succès.');
 
-            return $this->redirectToRoute('app_admin_countries_show', ['id' => $country->getId()]);
+            return $this->redirectToRoute('app_admin_countries_show', [
+                'publicIdentifier' => $country->getPublicIdentifier(),
+            ]);
         }
 
         return $this->render('admin/countries/new.html.twig', [
@@ -95,7 +97,9 @@ class CountryController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Le pays a été mis à jour.');
 
-            return $this->redirectToRoute('app_admin_countries_show', ['id' => $country->getId()]);
+            return $this->redirectToRoute('app_admin_countries_show', [
+                'publicIdentifier' => $country->getPublicIdentifier(),
+            ]);
         }
 
         return $this->render('admin/countries/edit.html.twig', [
