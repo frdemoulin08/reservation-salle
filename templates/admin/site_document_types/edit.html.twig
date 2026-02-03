@@ -1,0 +1,72 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Éditer un type de document{% endblock %}
+
+{% set active_menu = 'document_types' %}
+{% set page_heading = 'Éditer un type de document' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/site_document_types/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Paramétrage</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Modifiez les informations du type de document.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_site_document_types_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+            {{ include('components/_form_field.html.twig', { field: form.label, wrapper_class: 'md:col-span-2' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.code }) }}
+            {{ include('components/_form_field.html.twig', { field: form.position }) }}
+            {{ include('components/_form_field.html.twig', { field: form.description, wrapper_class: 'md:col-span-2' }) }}
+            <div class="md:col-span-2 grid gap-3 sm:grid-cols-2">
+                <div class="flex items-center">
+                    {{ form_widget(form.isPublic, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                    {{ form_label(form.isPublic, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
+                </div>
+                <div class="flex items-center">
+                    {{ form_widget(form.isRequired, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                    {{ form_label(form.isRequired, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
+                </div>
+                <div class="flex items-center">
+                    {{ form_widget(form.isMultipleAllowed, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                    {{ form_label(form.isMultipleAllowed, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
+                </div>
+                <div class="flex items-center">
+                    {{ form_widget(form.isActive, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                    {{ form_label(form.isActive, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
+                </div>
+            </div>
+            <div class="md:col-span-2 flex items-center justify-end gap-3">
+                {{ include('components/_button.html.twig', {
+                    label: 'Annuler',
+                    href: path('app_admin_site_document_types_index'),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Enregistrer',
+                    variant: 'primary',
+                    size: 'sm',
+                    type: 'submit',
+                    extra_class: 'min-w-[160px]'
+                }) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

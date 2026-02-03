@@ -65,6 +65,7 @@ class Venue
      * @var Collection<int, VenueDocument>
      */
     #[ORM\OneToMany(mappedBy: 'venue', targetEntity: VenueDocument::class)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $documents;
 
     /**

@@ -239,6 +239,8 @@ venue:
     general: "Informations générales"
     address: "Adresse"
     access: "Accès et stationnement"
+    photos: "Photos du site"
+    documents: "Documents du site"
     resources: "Ressources associées"
   address_source:
     manual: "Saisie manuelle"
@@ -287,3 +289,16 @@ venue_equipment:
   values:
     included: "Inclus"
     optional: "En option"
+
+site_document_type:
+  singular: "Type de document"
+  plural: "Types de documents"
+  fields:
+    code: "Code"
+    label: "Libellé"
+    description: "Description"
+    is_public: "Visible côté front"
+    is_required: "Obligatoire"
+    is_multiple_allowed: "Multiple autorisé"
+    is_active: "Actif"
+    position: "Ordre d'affichage"

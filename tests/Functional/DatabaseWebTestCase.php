@@ -7,6 +7,7 @@ use App\DataFixtures\CronTaskRunFixtures;
 use App\DataFixtures\ReferenceFixtures;
 use App\DataFixtures\ResetPasswordLogFixtures;
 use App\DataFixtures\RoleFixtures;
+use App\DataFixtures\SiteDocumentTypeFixtures;
 use App\DataFixtures\UserFixtures;
 use App\DataFixtures\VenueFixtures;
 use App\Repository\UserRepository;
@@ -42,6 +43,7 @@ abstract class DatabaseWebTestCase extends WebTestCase
         $loader->addFixture(new RoleFixtures());
         $loader->addFixture(new CountryFixtures());
         $loader->addFixture(new ReferenceFixtures());
+        $loader->addFixture(new SiteDocumentTypeFixtures());
         $loader->addFixture(new VenueFixtures());
 
         $passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);

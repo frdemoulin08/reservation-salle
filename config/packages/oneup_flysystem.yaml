@@ -1,0 +1,15 @@
+oneup_flysystem:
+    adapters:
+        site_public_adapter:
+            local:
+                location: '%kernel.project_dir%/public'
+        site_private_adapter:
+            local:
+                location: '%kernel.project_dir%/var'
+    filesystems:
+        site_public_filesystem:
+            adapter: site_public_adapter
+            alias: site_public_filesystem
+        site_private_filesystem:
+            adapter: site_private_adapter
+            alias: site_private_filesystem
