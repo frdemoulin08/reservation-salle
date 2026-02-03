@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.0...v1.0.1) (2026-02-03)
+
+
+### Bug Fixes
+
+* gestion des photos associées à un site ([baac1e0](https://github.com/frdemoulin08/reservation-salle/commit/baac1e0690d32d4d2486ae79ac3ed6c983577661))
+
 # 1.0.0 (2026-02-03)
 
 
