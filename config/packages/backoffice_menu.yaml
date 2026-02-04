@@ -8,12 +8,37 @@ parameters:
             label: "Accueil"
             route: app_admin_index
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER, ROLE_SUPERVISOR]
+      - key: catalogue
+        label: "Catalogue"
+        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
+        items:
+          - key: configurations
+            label: "Configurations"
+            url: "#"
+          - key: equipements_catalogue
+            label: "Équipements"
+            url: "#"
+          - key: salles_catalogue
+            label: "Salles"
+            url: "#"
+          - key: services_catalogue
+            label: "Services"
+            url: "#"
+          - key: sites
+            label: "Sites"
+            route: app_admin_venues_index
+          - key: types_salle
+            label: "Types de salle"
+            url: "#"
+          - key: usages
+            label: "Usages autorisés"
+            url: "#"
       - key: gestion
         label: "Gestion"
         roles: [ROLE_APP_MANAGER]
         items:
           - key: devis
-            label: "Devis (création/modif)"
+            label: "Devis"
             url: "#"
           - key: demandes
             label: "Demandes à valider"
@@ -21,15 +46,12 @@ parameters:
           - key: reservations
             label: "Réservations"
             url: "#"
-          - key: sites
-            label: "Sites"
-            route: app_admin_venues_index
           - key: usagers
             label: "Usagers"
             url: "#"
       - key: planning
         label: "Planning"
-        roles: [ROLE_APP_MANAGER, ROLE_SUPERVISOR]
+        roles: [ROLE_APP_MANAGER]
         items:
           - key: planning_salle
             label: "Vue salle"
@@ -39,67 +61,24 @@ parameters:
             url: "#"
       - key: documents
         label: "Documents"
-        roles: [ROLE_APP_MANAGER]
+        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
           - key: documents_reservation
             label: "Pièces jointes réservation"
             url: "#"
+          - key: docs_salle
+            label: "Documents de salle"
+            url: "#"
+          - key: docs_site
+            label: "Documents de site"
+            url: "#"
+          - key: document_types
+            label: "Types de documents"
+            route: app_admin_site_document_types_index
       - key: administration_metier
         label: "Administration métier"
         roles: [ROLE_BUSINESS_ADMIN]
         items:
-          - key: catalogue
-            label: "Catalogue (édition)"
-            url: "#"
-            children:
-              - key: configurations
-                label: "Configurations"
-                url: "#"
-              - key: equipements_catalogue
-                label: "Équipements"
-                url: "#"
-              - key: salles_catalogue
-                label: "Salles"
-                url: "#"
-              - key: services_catalogue
-                label: "Services"
-                url: "#"
-              - key: sites_catalogue
-                label: "Sites"
-                route: app_admin_venues_index
-              - key: types_salle
-                label: "Types de salle"
-                url: "#"
-              - key: usages
-                label: "Usages autorisés"
-                url: "#"
-          - key: tarification
-            label: "Tarification (édition)"
-            url: "#"
-            children:
-              - key: frais_annexes
-                label: "Frais annexes"
-                url: "#"
-              - key: grilles_tarifaires
-                label: "Grilles tarifaires"
-                url: "#"
-          - key: documents_metier
-            label: "Documents (édition)"
-            url: "#"
-            children:
-              - key: docs_salle
-                label: "Documents de salle"
-                url: "#"
-              - key: docs_site
-                label: "Documents de site"
-                url: "#"
-          - key: regles_reservation
-            label: "Règles de réservation"
-            url: "#"
-            children:
-              - key: regles_bloquantes
-                label: "Règles bloquantes"
-                url: "#"
       - key: administration_generale
         label: "Administration générale"
         roles: [ROLE_SUPER_ADMIN]
@@ -110,9 +89,6 @@ parameters:
           - key: cron_tasks
             label: "Journaux des tâches"
             route: app_admin_cron_tasks_index
-          - key: menu_config
-            label: "Menu backoffice"
-            route: app_admin_menu_config
           - key: reset_password_logs
             label: "Journaux de réinitialisation"
             route: app_admin_reset_password_logs_index
@@ -125,26 +101,73 @@ parameters:
         items:
           - key: habilitations
             label: "Habilitations"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             url: "#"
-          - key: document_types
-            label: "Types de documents"
-            route: app_admin_site_document_types_index
           - key: countries
             label: "Pays"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             route: app_admin_countries_index
           - key: rapports
             label: "Rapports"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             url: "#"
+          - key: regles_reservation
+            label: "Règles de réservation"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
+            url: "#"
+            children:
+              - key: regles_bloquantes
+                label: "Règles bloquantes"
+                url: "#"
           - key: tarification_admin
             label: "Tarification"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             url: "#"
+            children:
+              - key: frais_annexes
+                label: "Frais annexes"
+                url: "#"
+              - key: grilles_tarifaires
+                label: "Grilles tarifaires"
+                url: "#"
       - key: pilotage
         label: "Pilotage"
-        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER, ROLE_SUPERVISOR]
+        roles: [ROLE_SUPERVISOR]
         items:
+          - key: analyse_demande
+            label: "Analyse de la demande"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
+          - key: annulations
+            label: "Annulations / no-show"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
+          - key: exports_rapports
+            label: "Exports / rapports"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
+          - key: performance_sites
+            label: "Performance des sites/salles"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
+          - key: previsions
+            label: "Prévisions"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
           - key: rapports_synthese
             label: "Rapports de synthèse"
             url: "#"
+          - key: recettes_locations
+            label: "Recettes des locations"
+            url: "#"
           - key: stats_usage
             label: "Statistiques d’usage"
+            url: "#"
+          - key: tableau_bord_kpi
+            label: "Tableau de bord KPI"
+            roles: [ROLE_SUPERVISOR]
+            url: "#"
+          - key: taux_occupation
+            label: "Taux d’occupation"
+            roles: [ROLE_SUPERVISOR]
             url: "#"
