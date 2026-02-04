@@ -135,6 +135,9 @@ export const initModalToggles = () => {
             .then((html) => {
                 if (html && container) {
                     container.innerHTML = html;
+                    if (typeof window !== 'undefined' && typeof window.initDropdowns === 'function') {
+                        window.initDropdowns();
+                    }
                 }
             })
             .catch(() => {

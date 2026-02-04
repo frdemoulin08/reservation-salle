@@ -1,0 +1,53 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Types d’événement{% endblock %}
+
+{% set active_menu = 'types_evenement' %}
+{% set page_heading = "Types d’événement" %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/event_types/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Paramétrage</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Liste des types d’événement disponibles.</p>
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+        {{ include('components/_table_header.html.twig', {
+            route: 'app_admin_event_types_index',
+            params: params,
+            target: 'event-types',
+            search_id: 'event-types-search',
+            search_placeholder: "Rechercher un type d’événement ou un code",
+            search_value: params.filters.q ?? '',
+            actions: [
+                {
+                    label: "Ajouter un type d’événement",
+                    variant: 'primary',
+                    href: path('app_admin_event_types_new'),
+                    size: 'sm',
+                    extra_class: 'flex items-center justify-center',
+                    icon: '<svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>'
+                }
+            ]
+        }) }}
+        <div id="event-types-table-container" data-table-ajax="event-types">
+            {% include 'admin/event_types/_table.html.twig' with { pager: pager, params: params } %}
+        </div>
+    </section>
+
+    {% include 'admin/_partials/_delete_modal.html.twig' with {
+        modal_id: 'event-type-delete-modal',
+        message: "Confirmez la suppression de ce type d’événement ?",
+        csrf_token_id: 'delete_event_type',
+        show_name: true
+    } %}
+{% endblock %}
