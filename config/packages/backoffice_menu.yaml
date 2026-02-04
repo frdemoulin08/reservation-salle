@@ -14,7 +14,7 @@ parameters:
         items:
           - key: salles_catalogue
             label: "Salles"
-            url: "#"
+            route: app_admin_rooms_index
           - key: services_catalogue
             label: "Services"
             url: "#"

@@ -1,0 +1,135 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Ajouter une salle{% endblock %}
+
+{% set active_menu = 'salles_catalogue' %}
+{% set page_heading = 'Ajouter une salle' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/rooms/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Catalogue</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Renseignez les informations principales pour créer une salle.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_rooms_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {% set name_required_message = 'room.name.required'|trans({}, 'validators') %}
+        {% set venue_required_message = 'room.venue.required'|trans({}, 'validators') %}
+
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-4', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+            <div class="md:col-span-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Informations générales</p>
+            </div>
+            {{ include('components/_form_field.html.twig', {
+                field: form.venue,
+                wrapper_class: 'md:col-span-2',
+                required_message: venue_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.name,
+                wrapper_class: 'md:col-span-2',
+                required_message: name_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.description,
+                wrapper_class: 'md:col-span-4'
+            }) }}
+
+            <div class="md:col-span-4 border-t border-default pt-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Typologies</p>
+            </div>
+            <div class="md:col-span-2">
+                {% set types_has_error = form.roomTypes.vars.errors|length > 0 %}
+                {{ form_label(form.roomTypes, null, { label_attr: {
+                    class: 'mb-3 block text-sm font-medium ' ~ (types_has_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading')
+                } }) }}
+                <div class="grid gap-3 sm:grid-cols-2">
+                    {{ form_widget(form.roomTypes, { attr: { class: 'space-y-2' } }) }}
+                </div>
+                <div id="{{ form.roomTypes.vars.id }}-error" class="mt-2 text-xs text-danger dark:text-fg-danger-strong{% if not types_has_error %} hidden{% endif %}">
+                    {{ form_errors(form.roomTypes) }}
+                </div>
+            </div>
+            <div class="md:col-span-2">
+                {% set layouts_has_error = form.roomLayouts.vars.errors|length > 0 %}
+                {{ form_label(form.roomLayouts, null, { label_attr: {
+                    class: 'mb-3 block text-sm font-medium ' ~ (layouts_has_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading')
+                } }) }}
+                <div class="grid gap-3 sm:grid-cols-2">
+                    {{ form_widget(form.roomLayouts, { attr: { class: 'space-y-2' } }) }}
+                </div>
+                <div id="{{ form.roomLayouts.vars.id }}-error" class="mt-2 text-xs text-danger dark:text-fg-danger-strong{% if not layouts_has_error %} hidden{% endif %}">
+                    {{ form_errors(form.roomLayouts) }}
+                </div>
+            </div>
+
+            <div class="md:col-span-4 border-t border-default pt-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Capacités et surface</p>
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.surfaceArea, wrapper_class: 'md:col-span-2' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.seatedCapacity, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.standingCapacity, wrapper_class: 'md:col-span-1' }) }}
+
+            <div class="md:col-span-4 border-t border-default pt-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Accessibilité et sécurité</p>
+            </div>
+            <div class="md:col-span-4 grid gap-4 sm:grid-cols-2">
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.isPmrAccessible }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.hasElevator }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.hasPmrRestrooms }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.hasEmergencyExits }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.isErpCompliant }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.securityStaffRequired }) }}
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.erpType, wrapper_class: 'md:col-span-2' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.erpCategory, wrapper_class: 'md:col-span-2' }) }}
+
+            <div class="md:col-span-4 border-t border-default pt-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Règlement et usage</p>
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.openingHoursSchema, wrapper_class: 'md:col-span-4' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.minRentalDurationMinutes, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.maxRentalDurationMinutes, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.bookingLeadTimeDays, wrapper_class: 'md:col-span-1' }) }}
+            <div class="md:col-span-4 grid gap-4 sm:grid-cols-2">
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.cateringAllowed }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.alcoholAllowed }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.musicAllowed }) }}
+                {{ include('admin/rooms/_checkbox_field.html.twig', { field: form.sacemRequired }) }}
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.alcoholLegalNotice, wrapper_class: 'md:col-span-4' }) }}
+
+            <div class="md:col-span-4 flex items-center justify-end gap-3">
+                {{ include('components/_button.html.twig', {
+                    label: 'Annuler',
+                    href: path('app_admin_rooms_index'),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Créer la salle',
+                    variant: 'primary',
+                    size: 'sm',
+                    type: 'submit',
+                    extra_class: 'min-w-[160px]'
+                }) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

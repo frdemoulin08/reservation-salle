@@ -20,7 +20,8 @@
         {% if label is empty %}
             {% set label = name|humanize %}
         {% endif %}
-        {% if required is same as(false) and label is not empty and '(optionnel)' not in label %}
+        {% set isCheckbox = 'checkbox' in form.vars.block_prefixes %}
+        {% if required is same as(false) and label is not empty and '(optionnel)' not in label and not isCheckbox %}
             {% set label = label ~ ' (optionnel)' %}
         {% endif %}
         {% if not compound and label_attr.for is not defined %}

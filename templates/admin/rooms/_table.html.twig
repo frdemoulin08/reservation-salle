@@ -1,7 +1,8 @@
 {% set columns = [
-    { label: 'Nom du site', sort: 'name' },
-    { label: 'Commune', sort: 'address.city' },
-    { label: 'Mise à jour', sort: 'updatedAt' },
+    { label: 'Salle', sort: 'name' },
+    { label: 'Site' },
+    { label: 'Capacité assise', sort: 'seatedCapacity' },
+    { label: 'Capacité debout', sort: 'standingCapacity' },
     { label: 'Actions' }
 ] %}
 
@@ -9,23 +10,24 @@
     <div class="overflow-x-auto overflow-y-visible">
         <table class="w-full text-left text-sm text-body">
             {% include '_partials/table/_header.html.twig' with {
-                route: 'app_admin_venues_index',
+                route: 'app_admin_rooms_index',
                 params: params,
                 columns: columns
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
-                {% for venue in pager %}
-                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) }}">
-                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ venue.name }}</th>
-                        <td class="px-6 py-4">{{ venue.address.city ?? '—' }}</td>
-                        <td class="px-6 py-4">{{ venue.updatedAt|date('d/m/Y') }}</td>
+                {% for room in pager %}
+                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_rooms_show', { id: room.id }) }}">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ room.name }}</th>
+                        <td class="px-6 py-4">{{ room.venue ? room.venue.name : '—' }}</td>
+                        <td class="px-6 py-4">{{ room.seatedCapacity ?? '—' }}</td>
+                        <td class="px-6 py-4">{{ room.standingCapacity ?? '—' }}</td>
                         <td class="px-6 py-4 text-center">
                             {% set action_items = [
-                                { label: 'Voir', href: path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) }
+                                { label: 'Voir', href: path('app_admin_rooms_show', { id: room.id }) }
                             ] %}
                             {% if is_granted('ROLE_BUSINESS_ADMIN') %}
                                 {% set action_items = action_items|merge([
-                                    { label: 'Éditer', href: path('app_admin_venues_edit', { publicIdentifier: venue.publicIdentifier }) }
+                                    { label: 'Éditer', href: path('app_admin_rooms_edit', { id: room.id }) }
                                 ]) %}
                             {% endif %}
                             {% if is_granted('ROLE_BUSINESS_ADMIN') %}
@@ -35,23 +37,23 @@
                                         href: '#',
                                         extra_class: 'text-fg-danger font-medium',
                                         data_attrs: {
-                                            'data-modal-target': 'venue-delete-modal',
-                                            'data-modal-toggle': 'venue-delete-modal',
-                                            'data-delete-url': path('app_admin_venues_delete', { publicIdentifier: venue.publicIdentifier }),
-                                            'data-delete-name': venue.name
+                                            'data-modal-target': 'room-delete-modal',
+                                            'data-modal-toggle': 'room-delete-modal',
+                                            'data-delete-url': path('app_admin_rooms_delete', { id: room.id }),
+                                            'data-delete-name': room.name
                                         }
                                     }
                                 ]) %}
                             {% endif %}
                             {{ include('components/_actions_dropdown.html.twig', {
-                                id: 'venue-actions-' ~ venue.id,
+                                id: 'room-actions-' ~ room.id,
                                 items: action_items
                             }) }}
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucun site ne correspond à votre recherche.</td>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucune salle ne correspond à votre recherche.</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -59,4 +61,4 @@
     </div>
 </div>
 
-{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_venues_index', params: params, pager: pager } %}
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_rooms_index', params: params, pager: pager } %}

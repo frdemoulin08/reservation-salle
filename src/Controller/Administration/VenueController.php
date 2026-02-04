@@ -64,6 +64,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/nouveau', name: 'app_admin_venues_new')]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $venue = new Venue();
@@ -496,6 +497,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/{publicIdentifier}/modifier', name: 'app_admin_venues_edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function edit(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
@@ -523,6 +525,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/{publicIdentifier}/supprimer', name: 'app_admin_venues_delete', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'], methods: ['POST'])]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function delete(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);

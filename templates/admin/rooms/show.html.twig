@@ -1,0 +1,175 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail de la salle{% endblock %}
+
+{% set active_menu = 'salles_catalogue' %}
+{% set page_heading = room.name %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/rooms/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Catalogue</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée de la salle.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {% if is_granted('ROLE_BUSINESS_ADMIN') %}
+                {{ include('components/_button.html.twig', {
+                    label: 'Éditer',
+                    href: path('app_admin_rooms_edit', { id: room.id }),
+                    variant: 'warning',
+                    size: 'sm'
+                }) }}
+            {% endif %}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_rooms_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <dl class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Site</dt>
+                <dd class="mt-2 text-base font-semibold text-heading">{{ room.venue ? room.venue.name : '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nom</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.name }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Description</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ room.description ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Surface</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.surfaceArea ? room.surfaceArea ~ ' m²' : '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Capacité assise</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.seatedCapacity ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Capacité debout</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.standingCapacity ?? '—' }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Types de salle</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if room.roomTypes|length > 0 %}
+                        <ul class="flex flex-wrap gap-2">
+                            {% for type in room.roomTypes %}
+                                <li class="rounded-full bg-neutral-secondary-soft px-3 py-1 text-xs font-semibold text-body">{{ type.label }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Configurations</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if room.roomLayouts|length > 0 %}
+                        <ul class="flex flex-wrap gap-2">
+                            {% for layout in room.roomLayouts %}
+                                <li class="rounded-full bg-neutral-secondary-soft px-3 py-1 text-xs font-semibold text-body">{{ layout.label }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-body">Accessibilité et sécurité</h2>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Accès PMR</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.isPmrAccessible ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Ascenseur</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.hasElevator ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Sanitaires PMR</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.hasPmrRestrooms ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Issues de secours</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.hasEmergencyExits ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Conformité ERP</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.isErpCompliant ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Agent/gardien requis</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.securityStaffRequired ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Type ERP</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.erpType ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Catégorie ERP</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.erpCategory ?? '—' }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-body">Règlement et usage</h2>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Horaires d’ouverture</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ room.openingHoursSchema ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Durée minimale (minutes)</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.minRentalDurationMinutes ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Durée maximale (minutes)</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.maxRentalDurationMinutes ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Délai de réservation (jours)</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.bookingLeadTimeDays ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Restauration autorisée</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.cateringAllowed ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Alcool autorisé</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.alcoholAllowed ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Musique autorisée</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.musicAllowed ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Déclaration SACEM</dt>
+                <dd class="mt-2 text-base text-heading">{{ room.sacemRequired ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div class="sm:col-span-2">
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Mention légale alcool</dt>
+                <dd class="mt-2 text-base text-heading whitespace-pre-line">{{ room.alcoholLegalNotice ?? '—' }}</dd>
+            </div>
+        </dl>
+    </section>
+{% endblock %}

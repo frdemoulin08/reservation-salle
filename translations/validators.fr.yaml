@@ -68,3 +68,8 @@ equipment_type:
   code:
     required: "Le code est obligatoire."
     format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+room:
+  name:
+    required: "Le nom de la salle est obligatoire."
+  venue:
+    required: "Le site est obligatoire."
