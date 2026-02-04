@@ -12,9 +12,6 @@ parameters:
         label: "Catalogue"
         roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
-          - key: equipements_catalogue
-            label: "Équipements"
-            url: "#"
           - key: salles_catalogue
             label: "Salles"
             url: "#"
@@ -128,6 +125,10 @@ parameters:
               - key: grilles_tarifaires
                 label: "Grilles tarifaires"
                 url: "#"
+          - key: types_equipement
+            label: "Types d’équipement"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
+            route: app_admin_equipment_types_index
           - key: types_evenement
             label: "Types d’événement"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
