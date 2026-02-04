@@ -1,0 +1,17 @@
+{% set current_label = current_label|default('Configurations de salle') %}
+
+{{ include('components/breadcrumb/crud_double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Paramétrage',
+    firstLevelHasLink: "false",
+    secondLevelIndexRoute: 'app_admin_room_layouts_index',
+    secondLevelIndexLabel: 'Configurations de salle',
+    secondLevelShowRoute: 'app_admin_room_layouts_show',
+    secondLevelShowLabel: current_label,
+    secondLevelCreateRoute: 'app_admin_room_layouts_new',
+    secondLevelCreateLabel: current_label,
+    secondLevelEditRoute: 'app_admin_room_layouts_edit',
+    secondLevelEditLabel: current_label
+}) }}

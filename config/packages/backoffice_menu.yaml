@@ -12,9 +12,6 @@ parameters:
         label: "Catalogue"
         roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
-          - key: configurations
-            label: "Configurations"
-            url: "#"
           - key: equipements_catalogue
             label: "Équipements"
             url: "#"
@@ -96,6 +93,10 @@ parameters:
         label: "Paramétrage"
         roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
         items:
+          - key: configurations
+            label: "Configurations de salle"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
+            route: app_admin_room_layouts_index
           - key: habilitations
             label: "Habilitations"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]

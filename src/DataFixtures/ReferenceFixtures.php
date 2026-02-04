@@ -22,6 +22,12 @@ class ReferenceFixtures extends Fixture
     public const ROOM_TYPE_SPORTS = 'room_type_sports';
     public const ROOM_TYPE_CULTURAL = 'room_type_cultural';
     public const ROOM_LAYOUT_THEATRE = 'room_layout_theatre';
+    public const ROOM_LAYOUT_U = 'room_layout_u';
+    public const ROOM_LAYOUT_CLASSROOM = 'room_layout_classroom';
+    public const ROOM_LAYOUT_COCKTAIL = 'room_layout_cocktail';
+    public const ROOM_LAYOUT_BANQUET = 'room_layout_banquet';
+    public const ROOM_LAYOUT_BLEACHERS = 'room_layout_bleachers';
+    public const ROOM_LAYOUT_AUDITORIUM = 'room_layout_auditorium';
     public const EQUIPMENT_PROJECTOR = 'equipment_projector';
     public const SERVICE_CLEANING = 'service_cleaning';
     public const USAGE_TRAINING = 'usage_training';
@@ -54,11 +60,23 @@ class ReferenceFixtures extends Fixture
             $this->addReference($reference, $roomType);
         }
 
-        $roomLayout = (new RoomLayout())
-            ->setCode('theatre')
-            ->setLabel('Théâtre');
-        $manager->persist($roomLayout);
-        $this->addReference(self::ROOM_LAYOUT_THEATRE, $roomLayout);
+        $roomLayouts = [
+            self::ROOM_LAYOUT_THEATRE => ['THEATRE_LAYOUT', 'Théâtre'],
+            self::ROOM_LAYOUT_U => ['U_SHAPE_LAYOUT', 'U'],
+            self::ROOM_LAYOUT_CLASSROOM => ['CLASSROOM_LAYOUT', 'Classe'],
+            self::ROOM_LAYOUT_COCKTAIL => ['COCKTAIL_LAYOUT', 'Cocktail'],
+            self::ROOM_LAYOUT_BANQUET => ['BANQUET_LAYOUT', 'Banquet'],
+            self::ROOM_LAYOUT_BLEACHERS => ['BLEACHERS_LAYOUT', 'Gradin'],
+            self::ROOM_LAYOUT_AUDITORIUM => ['AUDITORIUM_LAYOUT', 'Auditorium'],
+        ];
+
+        foreach ($roomLayouts as $reference => [$code, $label]) {
+            $roomLayout = (new RoomLayout())
+                ->setCode($code)
+                ->setLabel($label);
+            $manager->persist($roomLayout);
+            $this->addReference($reference, $roomLayout);
+        }
 
         $equipmentType = (new EquipmentType())
             ->setCode('projector')
