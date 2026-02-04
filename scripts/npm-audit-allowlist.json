@@ -6,6 +6,7 @@
     "tar"
   ],
   "advisories": [
+    "https://github.com/advisories/GHSA-7h2j-956f-4vf2",
     "https://github.com/advisories/GHSA-34x7-hfp2-rc4v"
   ]
 }

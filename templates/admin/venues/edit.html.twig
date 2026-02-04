@@ -34,12 +34,22 @@
         {% set country_required_message = 'venue.country.required'|trans({}, 'validators') %}
         {% set postal_required_message = 'venue.postal_code.required'|trans({}, 'validators') %}
         {% set city_required_message = 'venue.city.required'|trans({}, 'validators') %}
+        {% set description_required_message = 'venue.description.required'|trans({}, 'validators') %}
 
         {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-4', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
             {{ include('components/_form_field.html.twig', {
                 field: form.name,
                 wrapper_class: 'md:col-span-4',
                 required_message: name_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.description,
+                wrapper_class: 'md:col-span-4',
+                required_message: description_required_message
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.referenceContactUser,
+                wrapper_class: 'md:col-span-4'
             }) }}
             {{ include('components/_form_field.html.twig', {
                 field: form.addressCountry,
@@ -85,6 +95,14 @@
             {{ form_widget(form.addressExternalId) }}
             {{ form_widget(form.addressLatitude) }}
             {{ form_widget(form.addressLongitude) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.publicTransportAccess,
+                wrapper_class: 'md:col-span-4'
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.deliveryAccess,
+                wrapper_class: 'md:col-span-4'
+            }) }}
             {{ include('components/_form_field.html.twig', {
                 field: form.parkingType,
                 wrapper_class: 'md:col-span-2'

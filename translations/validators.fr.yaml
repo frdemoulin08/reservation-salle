@@ -9,6 +9,9 @@ venue:
     required: "Le code postal est obligatoire"
   city:
     required: "La commune est obligatoire"
+  description:
+    required: "Le texte descriptif est obligatoire"
+    max_length: "Le texte descriptif ne peut pas dépasser {{ limit }} caractères"
 country:
   code:
     unique: "Ce code ISO est déjà utilisé."

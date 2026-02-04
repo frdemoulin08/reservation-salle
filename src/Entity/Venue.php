@@ -37,11 +37,9 @@ class Venue
     #[ORM\Column(nullable: true)]
     private ?int $parkingCapacity = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $contactDetails = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $referenceContactName = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'reference_contact_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $referenceContactUser = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $deliveryAccess = null;
@@ -153,26 +151,14 @@ class Venue
         return $this;
     }
 
-    public function getContactDetails(): ?string
+    public function getReferenceContactUser(): ?User
     {
-        return $this->contactDetails;
+        return $this->referenceContactUser;
     }
 
-    public function setContactDetails(?string $contactDetails): self
+    public function setReferenceContactUser(?User $referenceContactUser): self
     {
-        $this->contactDetails = $contactDetails;
-
-        return $this;
-    }
-
-    public function getReferenceContactName(): ?string
-    {
-        return $this->referenceContactName;
-    }
-
-    public function setReferenceContactName(?string $referenceContactName): self
-    {
-        $this->referenceContactName = $referenceContactName;
+        $this->referenceContactUser = $referenceContactUser;
 
         return $this;
     }

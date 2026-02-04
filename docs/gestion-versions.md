@@ -59,3 +59,4 @@ et a les permissions nécessaires.
 ## TODO (sécurité)
 
 - Refaire un audit `npm audit` avant la livraison de fin février et réévaluer les dépendances `@semantic-release/*` si des correctifs sont publiés.
+- `@isaacs/brace-expansion` (GHSA-7h2j-956f-4vf2) est allowlisté car transitive via `semantic-release` -> `@semantic-release/npm` -> `npm`. À surveiller lors des mises à jour de `@semantic-release/*`/`npm`.
