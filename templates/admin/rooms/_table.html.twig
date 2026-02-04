@@ -16,18 +16,18 @@
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
                 {% for room in pager %}
-                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_rooms_show', { id: room.id }) }}">
+                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_rooms_show', { publicIdentifier: room.publicIdentifier }) }}">
                         <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ room.name }}</th>
                         <td class="px-6 py-4">{{ room.venue ? room.venue.name : '—' }}</td>
                         <td class="px-6 py-4">{{ room.seatedCapacity ?? '—' }}</td>
                         <td class="px-6 py-4">{{ room.standingCapacity ?? '—' }}</td>
                         <td class="px-6 py-4 text-center">
                             {% set action_items = [
-                                { label: 'Voir', href: path('app_admin_rooms_show', { id: room.id }) }
+                                { label: 'Voir', href: path('app_admin_rooms_show', { publicIdentifier: room.publicIdentifier }) }
                             ] %}
                             {% if is_granted('ROLE_BUSINESS_ADMIN') %}
                                 {% set action_items = action_items|merge([
-                                    { label: 'Éditer', href: path('app_admin_rooms_edit', { id: room.id }) }
+                                    { label: 'Éditer', href: path('app_admin_rooms_edit', { publicIdentifier: room.publicIdentifier }) }
                                 ]) %}
                             {% endif %}
                             {% if is_granted('ROLE_BUSINESS_ADMIN') %}
@@ -39,14 +39,14 @@
                                         data_attrs: {
                                             'data-modal-target': 'room-delete-modal',
                                             'data-modal-toggle': 'room-delete-modal',
-                                            'data-delete-url': path('app_admin_rooms_delete', { id: room.id }),
+                                            'data-delete-url': path('app_admin_rooms_delete', { publicIdentifier: room.publicIdentifier }),
                                             'data-delete-name': room.name
                                         }
                                     }
                                 ]) %}
                             {% endif %}
                             {{ include('components/_actions_dropdown.html.twig', {
-                                id: 'room-actions-' ~ room.id,
+                                id: 'room-actions-' ~ room.publicIdentifier,
                                 items: action_items
                             }) }}
                         </td>

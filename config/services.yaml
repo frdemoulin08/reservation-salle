@@ -44,5 +44,10 @@ services:
             $publicFilesystem: '@site_public_filesystem'
             $privateFilesystem: '@site_private_filesystem'
 
+    App\Service\RoomDocumentStorage:
+        arguments:
+            $publicFilesystem: '@site_public_filesystem'
+            $privateFilesystem: '@site_private_filesystem'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

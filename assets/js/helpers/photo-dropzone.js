@@ -13,7 +13,7 @@ const escapeHtml = (value) => {
         .replace(/'/g, '&#039;');
 };
 
-const createPhotoCard = (photo) => {
+const createPhotoCard = (photo, modalPrefix, deleteModalId) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'group overflow-hidden rounded-base border border-default bg-neutral-primary shadow-xs';
     wrapper.dataset.photoId = String(photo.id ?? '');
@@ -27,21 +27,21 @@ const createPhotoCard = (photo) => {
         <div class="relative aspect-[4/3] overflow-hidden bg-neutral-secondary-medium">
             <img src="${escapeHtml(photo.url)}" alt="${label}" class="h-full w-full object-cover" loading="lazy">
             <div class="absolute inset-0 flex items-center justify-center gap-2 bg-dark/40 opacity-0 transition-opacity group-hover:opacity-100">
-                <button type="button" class="rounded-base bg-neutral-primary px-3 py-1.5 text-xs font-medium text-heading shadow-xs" data-modal-target="venue-photo-preview-${photo.id}" data-modal-toggle="venue-photo-preview-${photo.id}">
+                <button type="button" class="rounded-base bg-neutral-primary px-3 py-1.5 text-xs font-medium text-heading shadow-xs" data-modal-target="${modalPrefix}-${photo.id}" data-modal-toggle="${modalPrefix}-${photo.id}">
                     Aperçu
                 </button>
-                <button type="button" class="rounded-base bg-danger px-3 py-1.5 text-xs font-medium text-white shadow-xs" data-modal-target="venue-photo-delete-modal" data-modal-toggle="venue-photo-delete-modal" data-delete-url="${escapeHtml(photo.deleteUrl)}" data-delete-token="${escapeHtml(photo.deleteToken)}" data-delete-name="${label}">
+                <button type="button" class="rounded-base bg-danger px-3 py-1.5 text-xs font-medium text-white shadow-xs" data-modal-target="${deleteModalId}" data-modal-toggle="${deleteModalId}" data-delete-url="${escapeHtml(photo.deleteUrl)}" data-delete-token="${escapeHtml(photo.deleteToken)}" data-delete-name="${label}">
                     Supprimer
                 </button>
             </div>
         </div>
         <div class="p-3" data-photo-label-card data-update-url="${updateUrl}" data-csrf-token="${updateToken}">
             <div class="flex items-start justify-between gap-3">
-                <div>
-                    <p class="text-sm font-medium text-heading" data-photo-label-text>${label}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-heading break-words" data-photo-label-text>${label}</p>
                     <p class="text-xs text-body-subtle">${createdAt}</p>
                 </div>
-                <button type="button" class="text-xs text-body-subtle hover:text-heading" data-photo-label-edit>Renommer</button>
+                <button type="button" class="shrink-0 text-xs text-body-subtle hover:text-heading" data-photo-label-edit>Renommer</button>
             </div>
             <div class="mt-2 hidden" data-photo-label-form>
                 <input type="text" class="w-full rounded-base border border-default bg-neutral-primary px-3 py-2 text-xs text-heading" value="${label}" data-photo-label-input>
@@ -57,9 +57,9 @@ const createPhotoCard = (photo) => {
     return wrapper;
 };
 
-const createPhotoPreviewModal = (photo) => {
+const createPhotoPreviewModal = (photo, modalPrefix) => {
     const modal = document.createElement('div');
-    modal.id = `venue-photo-preview-${photo.id}`;
+    modal.id = `${modalPrefix}-${photo.id}`;
     modal.tabIndex = -1;
     modal.className = 'hidden fixed left-0 right-0 top-0 z-50 h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0';
 
@@ -69,7 +69,7 @@ const createPhotoPreviewModal = (photo) => {
     modal.innerHTML = `
         <div class="relative w-full max-w-4xl p-4">
             <div class="relative rounded-base border border-default bg-neutral-primary-soft p-4 shadow-sm md:p-6">
-                <button type="button" class="absolute end-2.5 top-3 inline-flex h-9 w-9 items-center justify-center rounded-base bg-transparent text-sm text-body hover:bg-neutral-tertiary hover:text-heading" data-modal-hide="venue-photo-preview-${photo.id}">
+                <button type="button" class="absolute end-2.5 top-3 inline-flex h-9 w-9 items-center justify-center rounded-base bg-transparent text-sm text-body hover:bg-neutral-tertiary hover:text-heading" data-modal-hide="${modalPrefix}-${photo.id}">
                     <span class="sr-only">Fermer</span>
                     <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
@@ -121,6 +121,8 @@ const uploadFiles = async (container, files) => {
     const addTile = gallery ? gallery.querySelector('[data-photo-add-tile]') : null;
     const emptyState = gallery ? gallery.querySelector('[data-photo-empty]') : null;
     const status = container.querySelector('[data-photo-status]');
+    const modalPrefix = container.dataset.photoModalPrefix || 'venue-photo-preview';
+    const deleteModalId = container.dataset.photoDeleteModal || 'venue-photo-delete-modal';
 
     if (!uploadUrl || files.length === 0) {
         return;
@@ -160,14 +162,14 @@ const uploadFiles = async (container, files) => {
 
         if (Array.isArray(payload.photos) && gallery) {
             payload.photos.forEach((photo) => {
-                const card = createPhotoCard(photo);
+                const card = createPhotoCard(photo, modalPrefix, deleteModalId);
                 if (addTile) {
                     gallery.insertBefore(card, addTile);
                 } else {
                     gallery.appendChild(card);
                 }
 
-                const modal = createPhotoPreviewModal(photo);
+                const modal = createPhotoPreviewModal(photo, modalPrefix);
                 document.body.appendChild(modal);
             });
             if (emptyState) {
@@ -182,7 +184,7 @@ const uploadFiles = async (container, files) => {
     } finally {
         container.removeAttribute('aria-busy');
         if (status) {
-            status.textContent = 'JPG, PNG, WEBP · 5 Mo max';
+            status.textContent = 'JPG, PNG, WEBP · 2 Mo max';
         }
     }
 };

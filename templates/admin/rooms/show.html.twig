@@ -22,7 +22,7 @@
             {% if is_granted('ROLE_BUSINESS_ADMIN') %}
                 {{ include('components/_button.html.twig', {
                     label: 'Éditer',
-                    href: path('app_admin_rooms_edit', { id: room.id }),
+                    href: path('app_admin_rooms_edit', { publicIdentifier: room.publicIdentifier }),
                     variant: 'warning',
                     size: 'sm'
                 }) }}

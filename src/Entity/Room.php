@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 class Room
@@ -17,6 +18,9 @@ class Room
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 36, unique: true)]
+    private string $publicIdentifier = '';
 
     #[ORM\ManyToOne(inversedBy: 'rooms')]
     #[ORM\JoinColumn(nullable: false)]
@@ -138,6 +142,7 @@ class Room
 
     public function __construct()
     {
+        $this->publicIdentifier = Uuid::v4()->toRfc4122();
         $this->roomTypes = new ArrayCollection();
         $this->roomLayouts = new ArrayCollection();
         $this->roomEquipments = new ArrayCollection();
@@ -151,6 +156,11 @@ class Room
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPublicIdentifier(): string
+    {
+        return $this->publicIdentifier;
     }
 
     public function getVenue(): ?Venue
