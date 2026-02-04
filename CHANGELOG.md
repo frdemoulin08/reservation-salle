@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.1...v1.0.2) (2026-02-04)
+
+
+### Bug Fixes
+
+* finalisation de la modélisation des sites ([8e86e05](https://github.com/frdemoulin08/reservation-salle/commit/8e86e0543393fe79099aa10d871e1abc2b005689))
+* gestion du menu en yaml uniquement ([77f164a](https://github.com/frdemoulin08/reservation-salle/commit/77f164a82a9b1dec72ef168ff9ff791c52852618))
+
 ## [1.0.1](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.0...v1.0.1) (2026-02-03)
 
 
