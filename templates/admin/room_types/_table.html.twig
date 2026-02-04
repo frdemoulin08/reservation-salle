@@ -1,0 +1,51 @@
+{% set columns = [
+    { label: 'Type de salle', sort: 'label' },
+    { label: 'Code', sort: 'code' },
+    { label: 'Actions' }
+] %}
+
+<div class="relative overflow-visible rounded-base border border-default bg-neutral-primary-soft shadow-xs">
+    <div class="overflow-x-auto overflow-y-visible">
+        <table class="w-full text-left text-sm text-body">
+            {% include '_partials/table/_header.html.twig' with {
+                route: 'app_admin_room_types_index',
+                params: params,
+                columns: columns
+            } %}
+            <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+                {% for room_type in pager %}
+                    <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_room_types_show', { id: room_type.id }) }}">
+                        <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ room_type.label }}</th>
+                        <td class="px-6 py-4">{{ room_type.code }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {{ include('components/_actions_dropdown.html.twig', {
+                                id: 'room-type-actions-' ~ room_type.id,
+                                items: [
+                                    { label: 'Voir', href: path('app_admin_room_types_show', { id: room_type.id }) },
+                                    { label: 'Éditer', href: path('app_admin_room_types_edit', { id: room_type.id }) },
+                                    {
+                                        label: 'Supprimer',
+                                        href: '#',
+                                        extra_class: 'text-fg-danger font-medium',
+                                        data_attrs: {
+                                            'data-modal-target': 'room-type-delete-modal',
+                                            'data-modal-toggle': 'room-type-delete-modal',
+                                            'data-delete-url': path('app_admin_room_types_delete', { id: room_type.id }),
+                                            'data-delete-name': room_type.label
+                                        }
+                                    }
+                                ]
+                            }) }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="{{ columns|length }}">Aucun type de salle ne correspond à votre recherche.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_room_types_index', params: params, pager: pager } %}

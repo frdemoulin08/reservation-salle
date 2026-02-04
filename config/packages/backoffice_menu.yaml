@@ -27,9 +27,6 @@ parameters:
           - key: sites
             label: "Sites"
             route: app_admin_venues_index
-          - key: types_salle
-            label: "Types de salle"
-            url: "#"
           - key: usages
             label: "Usages autorisés"
             url: "#"
@@ -130,6 +127,10 @@ parameters:
               - key: grilles_tarifaires
                 label: "Grilles tarifaires"
                 url: "#"
+          - key: types_salle
+            label: "Types de salle"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
+            route: app_admin_room_types_index
       - key: pilotage
         label: "Pilotage"
         roles: [ROLE_SUPERVISOR]
