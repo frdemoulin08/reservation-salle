@@ -28,7 +28,10 @@ class ReferenceFixtures extends Fixture
     public const ROOM_LAYOUT_BANQUET = 'room_layout_banquet';
     public const ROOM_LAYOUT_BLEACHERS = 'room_layout_bleachers';
     public const ROOM_LAYOUT_AUDITORIUM = 'room_layout_auditorium';
-    public const EQUIPMENT_PROJECTOR = 'equipment_projector';
+    public const EQUIPMENT_TECHNICAL = 'equipment_technical';
+    public const EQUIPMENT_CATERING = 'equipment_catering';
+    public const EQUIPMENT_SPORTS = 'equipment_sports';
+    public const EQUIPMENT_STAGE = 'equipment_stage';
     public const SERVICE_CLEANING = 'service_cleaning';
     public const USAGE_TRAINING = 'usage_training';
     public const FEE_CLEANING = 'fee_cleaning';
@@ -78,12 +81,21 @@ class ReferenceFixtures extends Fixture
             $this->addReference($reference, $roomLayout);
         }
 
-        $equipmentType = (new EquipmentType())
-            ->setCode('projector')
-            ->setLabel('Projecteur')
-            ->setCategory('technical');
-        $manager->persist($equipmentType);
-        $this->addReference(self::EQUIPMENT_PROJECTOR, $equipmentType);
+        $equipmentTypes = [
+            self::EQUIPMENT_TECHNICAL => ['TECHNICAL_EQUIPMENT', 'Technique', 'technical'],
+            self::EQUIPMENT_CATERING => ['CATERING_EQUIPMENT', 'Restauration', 'catering'],
+            self::EQUIPMENT_SPORTS => ['SPORTS_EQUIPMENT', 'Sportif', 'sports'],
+            self::EQUIPMENT_STAGE => ['STAGE_EQUIPMENT', 'Scénique', 'stage'],
+        ];
+
+        foreach ($equipmentTypes as $reference => [$code, $label, $category]) {
+            $equipmentType = (new EquipmentType())
+                ->setCode($code)
+                ->setLabel($label)
+                ->setCategory($category);
+            $manager->persist($equipmentType);
+            $this->addReference($reference, $equipmentType);
+        }
 
         $serviceType = (new ServiceType())
             ->setCode('cleaning')

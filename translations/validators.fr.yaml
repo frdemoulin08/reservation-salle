@@ -62,3 +62,9 @@ room_layout:
   code:
     required: "Le code est obligatoire."
     format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+equipment_type:
+  label:
+    required: "Le libellé est obligatoire."
+  code:
+    required: "Le code est obligatoire."
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
