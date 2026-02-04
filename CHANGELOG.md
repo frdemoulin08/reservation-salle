@@ -1,3 +1,13 @@
+## [1.0.3](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.2...v1.0.3) (2026-02-04)
+
+
+### Bug Fixes
+
+* gestion des configurations de salle ([d9b2781](https://github.com/frdemoulin08/reservation-salle/commit/d9b278145a656188fb31e7bdcb5b97d632177d33))
+* gestion des types d'équipement ([931e31b](https://github.com/frdemoulin08/reservation-salle/commit/931e31b1a62932abfd5cf9c1f99a98d6995aadf4))
+* gestion des types d'événement ([70ed147](https://github.com/frdemoulin08/reservation-salle/commit/70ed14720d65d0019617733b1265892f6eac8d1a))
+* gestion des types de salle ([b1526b5](https://github.com/frdemoulin08/reservation-salle/commit/b1526b5529541825446f8e060b81530181ff2974))
+
 ## [1.0.2](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.1...v1.0.2) (2026-02-04)
 
 
