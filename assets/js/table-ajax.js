@@ -56,6 +56,9 @@ const fetchFragment = async (url, container) => {
 
     const html = await response.text();
     container.innerHTML = html;
+    if (typeof window !== 'undefined' && typeof window.initDropdowns === 'function') {
+        window.initDropdowns();
+    }
 
     if (window.history && window.history.pushState) {
         window.history.pushState({}, '', url);

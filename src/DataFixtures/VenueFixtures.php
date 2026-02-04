@@ -109,7 +109,7 @@ class VenueFixtures extends Fixture implements DependentFixtureInterface
                 ->setIsPublic(true);
             $manager->persist($plan);
 
-            $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_PROJECTOR, EquipmentType::class);
+            $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_TECHNICAL, EquipmentType::class);
             $venueEquipment = (new VenueEquipment())
                 ->setVenue($mainVenue)
                 ->setEquipmentType($equipmentType)

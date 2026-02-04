@@ -60,7 +60,7 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($room);
         $this->addReference(self::ROOM_MAIN, $room);
 
-        $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_PROJECTOR, EquipmentType::class);
+        $equipmentType = $this->getReference(ReferenceFixtures::EQUIPMENT_TECHNICAL, EquipmentType::class);
         $roomEquipment = (new RoomEquipment())
             ->setRoom($room)
             ->setEquipmentType($equipmentType)

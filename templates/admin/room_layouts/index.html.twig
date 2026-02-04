@@ -1,0 +1,53 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Configurations de salle{% endblock %}
+
+{% set active_menu = 'configurations' %}
+{% set page_heading = 'Configurations de salle' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/room_layouts/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Paramétrage</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Liste des configurations de salle disponibles.</p>
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+        {{ include('components/_table_header.html.twig', {
+            route: 'app_admin_room_layouts_index',
+            params: params,
+            target: 'room-layouts',
+            search_id: 'room-layouts-search',
+            search_placeholder: 'Rechercher une configuration ou un code',
+            search_value: params.filters.q ?? '',
+            actions: [
+                {
+                    label: 'Ajouter une configuration',
+                    variant: 'primary',
+                    href: path('app_admin_room_layouts_new'),
+                    size: 'sm',
+                    extra_class: 'flex items-center justify-center',
+                    icon: '<svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>'
+                }
+            ]
+        }) }}
+        <div id="room-layouts-table-container" data-table-ajax="room-layouts">
+            {% include 'admin/room_layouts/_table.html.twig' with { pager: pager, params: params } %}
+        </div>
+    </section>
+
+    {% include 'admin/_partials/_delete_modal.html.twig' with {
+        modal_id: 'room-layout-delete-modal',
+        message: 'Confirmez la suppression de cette configuration ?',
+        csrf_token_id: 'delete_room_layout',
+        show_name: true
+    } %}
+{% endblock %}
