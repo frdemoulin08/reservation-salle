@@ -26,7 +26,13 @@ class ReferenceFixtures extends Fixture
     public const SERVICE_CLEANING = 'service_cleaning';
     public const USAGE_TRAINING = 'usage_training';
     public const FEE_CLEANING = 'fee_cleaning';
+    public const EVENT_PROFESSIONAL_MEETING = 'event_professional_meeting';
+    public const EVENT_TRAINING = 'event_training';
     public const EVENT_CONFERENCE = 'event_conference';
+    public const EVENT_ASSOCIATION = 'event_association';
+    public const EVENT_SHOW = 'event_show';
+    public const EVENT_EXHIBITION = 'event_exhibition';
+    public const EVENT_SPORTS = 'event_sports';
 
     public function load(ObjectManager $manager): void
     {
@@ -79,11 +85,23 @@ class ReferenceFixtures extends Fixture
         $manager->persist($additionalFeeType);
         $this->addReference(self::FEE_CLEANING, $additionalFeeType);
 
-        $eventType = (new EventType())
-            ->setCode('conference')
-            ->setLabel('Conférence');
-        $manager->persist($eventType);
-        $this->addReference(self::EVENT_CONFERENCE, $eventType);
+        $eventTypes = [
+            self::EVENT_PROFESSIONAL_MEETING => ['PROFESSIONAL_MEETING_EVENT', 'Réunion professionnelle'],
+            self::EVENT_TRAINING => ['TRAINING_EVENT', 'Formation'],
+            self::EVENT_CONFERENCE => ['CONFERENCE_EVENT', 'Conférence'],
+            self::EVENT_ASSOCIATION => ['ASSOCIATION_EVENT', 'Événement associatif'],
+            self::EVENT_SHOW => ['SHOW_EVENT', 'Spectacle'],
+            self::EVENT_EXHIBITION => ['EXHIBITION_EVENT', 'Exposition'],
+            self::EVENT_SPORTS => ['SPORTS_EVENT', 'Manifestation sportive'],
+        ];
+
+        foreach ($eventTypes as $reference => [$code, $label]) {
+            $eventType = (new EventType())
+                ->setCode($code)
+                ->setLabel($label);
+            $manager->persist($eventType);
+            $this->addReference($reference, $eventType);
+        }
 
         $manager->flush();
     }

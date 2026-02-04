@@ -50,3 +50,9 @@ room_type:
   code:
     required: "Le code est obligatoire."
     format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+event_type:
+  label:
+    required: "Le libellé est obligatoire."
+  code:
+    required: "Le code est obligatoire."
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."

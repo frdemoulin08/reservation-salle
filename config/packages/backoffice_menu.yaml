@@ -127,6 +127,10 @@ parameters:
               - key: grilles_tarifaires
                 label: "Grilles tarifaires"
                 url: "#"
+          - key: types_evenement
+            label: "Types d’événement"
+            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
+            route: app_admin_event_types_index
           - key: types_salle
             label: "Types de salle"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
