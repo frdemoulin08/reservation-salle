@@ -5,6 +5,11 @@ country:
     unique: "Ce code ISO est déjà utilisé."
   label:
     required: "Le libellé est obligatoire."
+equipment:
+  label:
+    required: "Le libellé est obligatoire."
+  type:
+    required: "Le type d’équipement est obligatoire."
 equipment_type:
   code:
     format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."

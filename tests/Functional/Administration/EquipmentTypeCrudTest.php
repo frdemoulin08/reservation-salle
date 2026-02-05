@@ -32,7 +32,6 @@ class EquipmentTypeCrudTest extends DatabaseWebTestCase
         $form = $crawler->selectButton('Créer le type')->form();
         $form['equipment_type[label]'] = 'Équipement test';
         $form['equipment_type[code]'] = 'TEST_EQUIPMENT';
-        $form['equipment_type[category]'] = 'technical';
 
         $client->submit($form);
 

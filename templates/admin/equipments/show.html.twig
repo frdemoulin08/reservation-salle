@@ -1,0 +1,49 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail de l’équipement{% endblock %}
+
+{% set active_menu = 'equipements' %}
+{% set page_heading = equipment.label %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/equipments/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Paramétrage</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée de l’équipement.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Éditer',
+                href: path('app_admin_equipments_edit', { id: equipment.id }),
+                variant: 'primary',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_equipments_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <dl class="grid gap-6 md:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Libellé</dt>
+                <dd class="mt-2 text-base font-semibold text-heading">{{ equipment.label }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Type d’équipement</dt>
+                <dd class="mt-2 text-base text-heading">{{ equipment.equipmentType.label }}</dd>
+            </div>
+        </dl>
+    </section>
+{% endblock %}

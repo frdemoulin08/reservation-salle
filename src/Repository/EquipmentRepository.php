@@ -2,30 +2,31 @@
 
 namespace App\Repository;
 
-use App\Entity\EquipmentType;
+use App\Entity\Equipment;
 use App\Table\TableParams;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<EquipmentType>
+ * @extends ServiceEntityRepository<Equipment>
  */
-class EquipmentTypeRepository extends ServiceEntityRepository
+class EquipmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, EquipmentType::class);
+        parent::__construct($registry, Equipment::class);
     }
 
     public function createTableQb(TableParams $params): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('et');
+        $qb = $this->createQueryBuilder('e')
+            ->join('e.equipmentType', 'et');
 
         $search = trim((string) ($params->filters['q'] ?? ''));
         if ('' !== $search) {
             $qb
-                ->andWhere('et.label LIKE :search OR et.code LIKE :search')
+                ->andWhere('e.label LIKE :search OR et.label LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
 
