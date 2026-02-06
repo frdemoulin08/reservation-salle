@@ -46,10 +46,8 @@ final class Version20260203121500 extends AbstractMigration
         $this->addSql('CREATE TABLE room_pricing (id INT AUTO_INCREMENT NOT NULL, price_category VARCHAR(50) NOT NULL, hourly_rate NUMERIC(10, 2) DEFAULT NULL, daily_rate NUMERIC(10, 2) DEFAULT NULL, currency VARCHAR(3) DEFAULT "EUR" NOT NULL, room_id INT NOT NULL, INDEX IDX_9D310D354177093 (room_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE room_service (id INT AUTO_INCREMENT NOT NULL, is_included TINYINT DEFAULT 1 NOT NULL, room_id INT NOT NULL, service_type_id INT NOT NULL, INDEX IDX_DBF263254177093 (room_id), INDEX IDX_DBF2632AC8DE0F (service_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE room_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_EFDABD4D77153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE room_usage (id INT AUTO_INCREMENT NOT NULL, room_id INT NOT NULL, usage_type_id INT NOT NULL, INDEX IDX_9A57FFDB54177093 (room_id), INDEX IDX_9A57FFDB9BC8FA8C (usage_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE service_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_429DE3C577153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE site_document_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, is_public TINYINT(1) DEFAULT 1 NOT NULL, is_required TINYINT(1) DEFAULT 0 NOT NULL, is_multiple_allowed TINYINT(1) DEFAULT 1 NOT NULL, is_active TINYINT(1) DEFAULT 1 NOT NULL, position INT DEFAULT 0 NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_B1B95E1C77153098 (code), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE usage_type (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(50) NOT NULL, label VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_2774453277153098 (code), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE venue (id INT AUTO_INCREMENT NOT NULL, reference_contact_user_id INT DEFAULT NULL, public_identifier VARCHAR(36) NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, public_transport_access LONGTEXT DEFAULT NULL, parking_type VARCHAR(50) DEFAULT NULL, parking_capacity INT DEFAULT NULL, delivery_access LONGTEXT DEFAULT NULL, access_map_url VARCHAR(255) DEFAULT NULL, house_rules LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, address_line1 VARCHAR(255) NOT NULL, address_line2 VARCHAR(255) DEFAULT NULL, address_line3 VARCHAR(255) DEFAULT NULL, address_postal_code VARCHAR(10) NOT NULL, address_city VARCHAR(100) DEFAULT NULL, address_country VARCHAR(2) NOT NULL, address_source VARCHAR(50) DEFAULT NULL, address_external_id VARCHAR(255) DEFAULT NULL, address_latitude DOUBLE PRECISION DEFAULT NULL, address_longitude DOUBLE PRECISION DEFAULT NULL, INDEX IDX_7A404EBA6DBB19C6 (reference_contact_user_id), UNIQUE INDEX UNIQ_7A404EBA1FC56738 (public_identifier), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE venue_document (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(255) NOT NULL, file_path VARCHAR(255) NOT NULL, original_filename VARCHAR(255) DEFAULT NULL, size INT DEFAULT NULL, mime_type VARCHAR(100) DEFAULT NULL, is_public TINYINT(1) DEFAULT 1 NOT NULL, venue_id INT NOT NULL, document_type_id INT NOT NULL, INDEX IDX_B9B2BD5240A73EBA (venue_id), INDEX IDX_B9B2BD5F1A8B5E7 (document_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE venue_equipment (id INT AUTO_INCREMENT NOT NULL, max_quantity INT DEFAULT NULL, is_included TINYINT DEFAULT 1 NOT NULL, venue_id INT NOT NULL, equipment_type_id INT NOT NULL, INDEX IDX_EF5AEA6540A73EBA (venue_id), INDEX IDX_EF5AEA65B337437C (equipment_type_id), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
@@ -79,8 +77,6 @@ final class Version20260203121500 extends AbstractMigration
         $this->addSql('ALTER TABLE room_pricing ADD CONSTRAINT FK_9D310D354177093 FOREIGN KEY (room_id) REFERENCES room (id)');
         $this->addSql('ALTER TABLE room_service ADD CONSTRAINT FK_DBF263254177093 FOREIGN KEY (room_id) REFERENCES room (id)');
         $this->addSql('ALTER TABLE room_service ADD CONSTRAINT FK_DBF2632AC8DE0F FOREIGN KEY (service_type_id) REFERENCES service_type (id)');
-        $this->addSql('ALTER TABLE room_usage ADD CONSTRAINT FK_9A57FFDB54177093 FOREIGN KEY (room_id) REFERENCES room (id)');
-        $this->addSql('ALTER TABLE room_usage ADD CONSTRAINT FK_9A57FFDB9BC8FA8C FOREIGN KEY (usage_type_id) REFERENCES usage_type (id)');
         $this->addSql('ALTER TABLE venue ADD CONSTRAINT FK_7A404EBA6DBB19C6 FOREIGN KEY (reference_contact_user_id) REFERENCES app_user (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE venue_document ADD CONSTRAINT FK_1B5F2B2A40A73EBA FOREIGN KEY (venue_id) REFERENCES venue (id)');
         $this->addSql('ALTER TABLE venue_document ADD CONSTRAINT FK_B9B2BD5F1A8B5E7 FOREIGN KEY (document_type_id) REFERENCES site_document_type (id)');
@@ -97,7 +93,6 @@ final class Version20260203121500 extends AbstractMigration
         $this->addSql('DROP TABLE room_document');
         $this->addSql('DROP TABLE room_equipment');
         $this->addSql('DROP TABLE room_service');
-        $this->addSql('DROP TABLE room_usage');
         $this->addSql('DROP TABLE room_room_layout');
         $this->addSql('DROP TABLE room_room_type');
         $this->addSql('DROP TABLE room_pricing');
@@ -114,7 +109,6 @@ final class Version20260203121500 extends AbstractMigration
         $this->addSql('DROP TABLE room_type');
         $this->addSql('DROP TABLE service_type');
         $this->addSql('DROP TABLE site_document_type');
-        $this->addSql('DROP TABLE usage_type');
         $this->addSql('DROP TABLE venue');
 
         $this->addSql('DROP TABLE log_authentication');

@@ -221,9 +221,6 @@ service_type:
     code: "Code"
     label: "Libellé"
 
-usage_type:
-  singular: "Usage autorisé"
-  plural: "Usages autorisés"
   values:
     professional_meeting: "Réunions professionnelles"
     training: "Formations"

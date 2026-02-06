@@ -182,7 +182,6 @@ class RoomController extends AbstractController
 
         $hasDependencies = $room->getRoomEquipments()->count() > 0
             || $room->getRoomServices()->count() > 0
-            || $room->getRoomUsages()->count() > 0
             || $room->getRoomDocuments()->count() > 0
             || $room->getRoomPricings()->count() > 0
             || $room->getReservations()->count() > 0;
