@@ -18,11 +18,11 @@ class ImpersonationOptionsTest extends DatabaseWebTestCase
         self::assertIsString($content);
 
         $expectedOrder = [
-            'DEMOULIN Frederic',
-            'GARNIER Luc',
-            'JACQUET Clément',
-            'LEBLANC Marion',
-            'MOREL Sophie',
+            'DEMOULIN Frederic — Super administrateur',
+            'GARNIER Luc — Gestionnaire applicatif',
+            'JACQUET Clément — Superviseur',
+            'LEBLANC Marion — Gestionnaire applicatif',
+            'MOREL Sophie — Administrateur métier, Gestionnaire applicatif',
         ];
 
         $positions = [];

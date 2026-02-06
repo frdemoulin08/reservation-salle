@@ -67,4 +67,17 @@ abstract class DatabaseWebTestCase extends WebTestCase
 
         return $client;
     }
+
+    protected function loginAsBusinessAdmin(): KernelBrowser
+    {
+        $client = $this->client ?? self::createClient();
+        $repository = self::getContainer()->get(UserRepository::class);
+        $user = $repository->findOneBy(['email' => 'gestion.metier@cd08.fr']);
+
+        self::assertNotNull($user, 'Utilisateur administrateur métier introuvable pour les tests.');
+
+        $client->loginUser($user);
+
+        return $client;
+    }
 }

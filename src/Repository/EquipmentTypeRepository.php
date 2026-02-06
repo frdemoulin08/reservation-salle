@@ -25,7 +25,7 @@ class EquipmentTypeRepository extends ServiceEntityRepository
         $search = trim((string) ($params->filters['q'] ?? ''));
         if ('' !== $search) {
             $qb
-                ->andWhere('et.label LIKE :search OR et.code LIKE :search OR et.category LIKE :search')
+                ->andWhere('et.label LIKE :search OR et.code LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
         }
 

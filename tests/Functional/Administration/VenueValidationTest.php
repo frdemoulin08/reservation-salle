@@ -13,7 +13,7 @@ class VenueValidationTest extends DatabaseWebTestCase
 
     public function testCreateVenueRequiresNameAndCity(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
@@ -41,7 +41,7 @@ class VenueValidationTest extends DatabaseWebTestCase
 
     public function testCreateVenueRejectsDescriptionTooLong(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
@@ -64,7 +64,7 @@ class VenueValidationTest extends DatabaseWebTestCase
 
     public function testEditVenueRejectsDescriptionTooLong(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $repository = self::getContainer()->get(\App\Repository\VenueRepository::class);
         $venue = $repository->findOneBy([]);

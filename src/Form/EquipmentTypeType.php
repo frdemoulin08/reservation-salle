@@ -37,11 +37,6 @@ class EquipmentTypeType extends AbstractType
                             message: 'equipment_type.code.format'
                         ),
                     ],
-            ])
-            ->add('category', TextType::class, [
-                'label' => 'Catégorie',
-                'required' => false,
-                'empty_data' => '',
             ]);
     }
 

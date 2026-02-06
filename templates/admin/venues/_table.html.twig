@@ -20,11 +20,16 @@
                         <td class="px-6 py-4">{{ venue.address.city ?? '—' }}</td>
                         <td class="px-6 py-4">{{ venue.updatedAt|date('d/m/Y') }}</td>
                         <td class="px-6 py-4 text-center">
-                            {{ include('components/_actions_dropdown.html.twig', {
-                                id: 'venue-actions-' ~ venue.id,
-                                items: [
-                                    { label: 'Voir', href: path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) },
-                                    { label: 'Éditer', href: path('app_admin_venues_edit', { publicIdentifier: venue.publicIdentifier }) },
+                            {% set action_items = [
+                                { label: 'Voir', href: path('app_admin_venues_show', { publicIdentifier: venue.publicIdentifier }) }
+                            ] %}
+                            {% if is_granted('ROLE_BUSINESS_ADMIN') %}
+                                {% set action_items = action_items|merge([
+                                    { label: 'Éditer', href: path('app_admin_venues_edit', { publicIdentifier: venue.publicIdentifier }) }
+                                ]) %}
+                            {% endif %}
+                            {% if is_granted('ROLE_BUSINESS_ADMIN') %}
+                                {% set action_items = action_items|merge([
                                     {
                                         label: 'Supprimer',
                                         href: '#',
@@ -36,7 +41,11 @@
                                             'data-delete-name': venue.name
                                         }
                                     }
-                                ]
+                                ]) %}
+                            {% endif %}
+                            {{ include('components/_actions_dropdown.html.twig', {
+                                id: 'venue-actions-' ~ venue.id,
+                                items: action_items
                             }) }}
                         </td>
                     </tr>

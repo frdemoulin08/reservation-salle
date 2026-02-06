@@ -32,7 +32,6 @@
         {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
             {{ include('components/_form_field.html.twig', { field: form.label }) }}
             {{ include('components/_form_field.html.twig', { field: form.code }) }}
-            {{ include('components/_form_field.html.twig', { field: form.category, wrapper_class: 'md:col-span-2' }) }}
             <div class="md:col-span-2 flex items-center justify-end gap-3">
                 {{ include('components/_button.html.twig', {
                     label: 'Annuler',

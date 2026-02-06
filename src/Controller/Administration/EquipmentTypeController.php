@@ -31,7 +31,7 @@ class EquipmentTypeController extends AbstractController
         ]);
 
         $qb = $equipmentTypeRepository->createTableQb($params);
-        $pager = $tablePaginator->paginate($qb, $params, ['label', 'code', 'category'], 'et');
+        $pager = $tablePaginator->paginate($qb, $params, ['label', 'code'], 'et');
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('admin/equipment_types/_table.html.twig', [
@@ -126,7 +126,7 @@ class EquipmentTypeController extends AbstractController
             return $this->redirectToRoute('app_admin_equipment_types_index');
         }
 
-        if ($equipmentType->getRoomEquipments()->count() > 0 || $equipmentType->getVenueEquipments()->count() > 0) {
+        if ($equipmentType->getRoomEquipments()->count() > 0 || $equipmentType->getVenueEquipments()->count() > 0 || $equipmentType->getEquipments()->count() > 0) {
             $this->addFlash('error', 'Impossible de supprimer un type d’équipement déjà utilisé.');
 
             return $this->redirectToRoute('app_admin_equipment_types_index');

@@ -9,7 +9,7 @@ class VenueCrudTest extends DatabaseWebTestCase
 {
     public function testCreateVenueSucceeds(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
@@ -34,7 +34,7 @@ class VenueCrudTest extends DatabaseWebTestCase
 
     public function testEditVenueSucceeds(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $repository = self::getContainer()->get(VenueRepository::class);
         $venue = $repository->findOneBy([]);
 
@@ -59,7 +59,7 @@ class VenueCrudTest extends DatabaseWebTestCase
 
     public function testDeleteVenueSucceeds(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $repository = self::getContainer()->get(VenueRepository::class);
         $venue = $repository->findOneBy([]);
 

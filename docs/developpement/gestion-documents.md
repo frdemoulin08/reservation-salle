@@ -41,18 +41,20 @@ Aucun document privé ne doit être exposé directement par un chemin public.
 
 ---
 
-### 2.2. Abstraction du stockage via Flysystem
+### 2.2. Stockage local via Flysystem
 
 L’accès au système de fichiers est réalisé via **Flysystem** (OneupFlysystemBundle),
 afin de :
 
 - découpler le code du backend du support de stockage,
-- permettre une évolution ultérieure (S3, MinIO, etc.),
+- permettre une évolution ultérieure (ex. stockage objet),
 - centraliser les opérations (upload, lecture, suppression).
 
 Deux filesystems sont définis :
 - `site_public_filesystem`
 - `site_private_filesystem`
+
+**Périmètre V1 :** stockage **local** uniquement (pas de S3/MinIO).
 
 ---
 
@@ -63,6 +65,9 @@ Les fichiers sont stockés avec un **nom technique opaque** :
 - UUID + extension,
 - éventuellement répartis dans des sous-dossiers par entité (ex. par site).
 
+Format actuel :
+`uploads/venues/{publicIdentifier}/{category}/{uuid}.{ext}`
+
 Le nom de fichier d’origine :
 - n’est **jamais utilisé comme clé technique**,
 - peut être conservé comme **métadonnée informative**.
@@ -71,20 +76,20 @@ Le nom de fichier d’origine :
 
 ## 3. Modélisation des données
 
-### 3.1. Entité `SiteDocument`
+### 3.1. Entité `VenueDocument`
 
 Chaque document est représenté par une entité dédiée.
 
 Champs principaux :
 
-- `site` : site auquel le document est rattaché,
-- `type` : type fonctionnel du document (relation),
+- `venue` : site auquel le document est rattaché,
+- `documentType` : type fonctionnel du document (relation),
 - `label` : libellé libre, lisible côté UI (optionnel),
 - `originalFilename` : nom du fichier téléversé (optionnel),
-- `storagePath` : chemin technique dans le filesystem,
+- `filePath` : chemin technique dans le filesystem,
 - `mimeType` : type MIME,
 - `size` : taille en octets,
-- `public` : visibilité publique ou privée,
+- `isPublic` : visibilité publique ou privée,
 - `createdAt` : date d’ajout.
 
 Le document est **indépendant du nom du fichier physique**.
@@ -106,13 +111,16 @@ Champs recommandés :
   Exemples : `PLAN_ACCES`, `PHOTO`, `CONVENTION`, `FACTURE`
 - `label` (libellé affiché)
 - `description` (aide contextuelle)
-- `public` (document visible côté front)
-- `required` (obligatoire pour un site)
-- `multipleAllowed` (plusieurs documents autorisés ou non)
-- `active` (activation/désactivation sans suppression)
+- `isPublic` (document visible côté front)
+- `isRequired` (obligatoire pour un site)
+- `isMultipleAllowed` (plusieurs documents autorisés ou non)
+- `isActive` (activation/désactivation sans suppression)
 - `position` (ordre d’affichage)
 
-L’entité `SiteDocument` référence obligatoirement un `SiteDocumentType`.
+Le `code` suit la norme **UPPER_SNAKE_CASE** et n’est **jamais modifié**
+après création (voir `docs/technique/norme-codes-techniques.md`).
+
+L’entité `VenueDocument` référence obligatoirement un `SiteDocumentType`.
 
 ---
 
@@ -147,19 +155,23 @@ Dans l’interface d’administration d’un site :
   - unicité si `multipleAllowed = false`,
   - présence obligatoire si `required = true`.
 
+Pour les **photos**, l’UX repose sur un **drag & drop** + une **galerie inline**
+avec actions d’aperçu, suppression et renommage (voir
+`docs/developpement/gestion-photos-pattern-ui.md`).
+
 ---
 
 ## 5. Exposition et accès aux documents
 
 ### 5.1. Documents publics
 
-- stockés sous `public/uploads/...`,
+- stockés sous `public/uploads/...` (stockage local),
 - accessibles via URL directe,
 - affichés dans le front-office (images, liens).
 
 ### 5.2. Documents privés
 
-- stockés sous `var/uploads/...`,
+- stockés sous `var/uploads/...` (stockage local),
 - accessibles uniquement via un contrôleur Symfony,
 - contrôle des droits avant envoi du fichier,
 - téléchargement via réponse streamée.
@@ -185,9 +197,9 @@ Des extensions ultérieures peuvent être prévues :
 
 ## 7. Bonnes pratiques d’implémentation
 
-- centraliser la logique d’upload dans un service dédié,
+- centraliser la logique d’upload dans un service dédié (ex. `SiteDocumentStorage`),
 - ne jamais manipuler directement le filesystem dans les contrôleurs,
-- ne jamais exposer le `storagePath` côté front,
+- ne jamais exposer le `filePath` côté front,
 - utiliser le `label` ou le libellé du type pour l’affichage utilisateur,
 - conserver le `originalFilename` uniquement à des fins informatives.
 

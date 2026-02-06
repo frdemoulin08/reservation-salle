@@ -9,6 +9,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class RoomDocument
 {
     use TimestampableEntity;
+    public const TYPE_PHOTO = 'photo';
+    public const TYPE_PLAN = 'plan';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

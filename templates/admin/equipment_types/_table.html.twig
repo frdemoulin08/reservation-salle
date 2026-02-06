@@ -1,7 +1,6 @@
 {% set columns = [
-    { label: 'Équipement', sort: 'label' },
+    { label: 'Type d’équipement', sort: 'label' },
     { label: 'Code', sort: 'code' },
-    { label: 'Catégorie', sort: 'category' },
     { label: 'Actions' }
 ] %}
 
@@ -18,7 +17,6 @@
                     <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_equipment_types_show', { id: equipment_type.id }) }}">
                         <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">{{ equipment_type.label }}</th>
                         <td class="px-6 py-4">{{ equipment_type.code }}</td>
-                        <td class="px-6 py-4">{{ equipment_type.category ?? '—' }}</td>
                         <td class="px-6 py-4 text-center">
                             {{ include('components/_actions_dropdown.html.twig', {
                                 id: 'equipment-type-actions-' ~ equipment_type.id,

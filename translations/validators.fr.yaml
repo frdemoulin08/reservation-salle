@@ -1,70 +1,103 @@
-venue:
-  name:
-    required: "Le nom du site est obligatoire"
-  address:
-    required: "L’adresse du site est obligatoire"
-  country:
-    required: "Le pays est obligatoire"
-  postal_code:
-    required: "Le code postal est obligatoire"
-  city:
-    required: "La commune est obligatoire"
-  description:
-    required: "Le texte descriptif est obligatoire"
-    max_length: "Le texte descriptif ne peut pas dépasser {{ limit }} caractères"
 country:
   code:
-    unique: "Ce code ISO est déjà utilisé."
-    required: "Le code ISO est obligatoire."
     length: "Le code ISO doit contenir exactement {{ limit }} caractères."
+    required: "Le code ISO est obligatoire."
+    unique: "Ce code ISO est déjà utilisé."
   label:
     required: "Le libellé est obligatoire."
+equipment:
+  label:
+    required: "Le libellé est obligatoire."
+  type:
+    required: "Le type d’équipement est obligatoire."
+equipment_type:
+  code:
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+    required: "Le code est obligatoire."
+  label:
+    required: "Le libellé est obligatoire."
+event_type:
+  code:
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+    required: "Le code est obligatoire."
+  label:
+    required: "Le libellé est obligatoire."
+photo:
+  context:
+    room_not_found: "Salle introuvable."
+    venue_not_found: "Site introuvable."
+  delete:
+    success: "La photo a été supprimée."
+  label:
+    required: "Le libellé est obligatoire."
+    too_long: "Le libellé est trop long."
+  not_found: "Photo introuvable."
+  security:
+    invalid_csrf: "Jeton CSRF invalide."
+  type:
+    missing: "Le type de photo est obligatoire."
+    not_found: "Le type de photo est introuvable."
+  upload:
+    invalid_mime: "Formats autorisés : JPG, PNG, WEBP."
+    max_size: "La photo ne doit pas dépasser 2 Mo."
+    min_files: "Veuillez sélectionner au moins une photo."
+    no_files: "Aucune photo reçue."
+    single_not_allowed: "Une seule photo est autorisée."
+    success: "Les photos ont été ajoutées avec succès."
+    success_short: "Photos ajoutées."
+role:
+  code:
+    unique: "Ce code est déjà utilisé."
+room:
+  name:
+    required: "Le nom de la salle est obligatoire."
+  venue:
+    required: "Le site est obligatoire."
+room_layout:
+  code:
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+    required: "Le code est obligatoire."
+  label:
+    required: "Le libellé est obligatoire."
+room_type:
+  code:
+    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+    required: "Le code est obligatoire."
+  label:
+    required: "Le libellé est obligatoire."
+site_document_type:
+  code:
+    unique: "Ce code est déjà utilisé."
 user:
+  email:
+    invalid: "Le format de l’email est invalide"
+    required: "L’email est obligatoire"
+    unique: "Cet email est déjà utilisé"
   firstname:
     required: "Le prénom est obligatoire"
   lastname:
     required: "Le nom est obligatoire"
-  email:
-    required: "L’email est obligatoire"
-    invalid: "Le format de l’email est invalide"
-    unique: "Cet email est déjà utilisé"
+  password:
+    categories: "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
+    invalid_chars: "Le mot de passe contient des caractères non autorisés"
+    max_length: "Le mot de passe ne peut pas dépasser {{ limit }} caractères"
+    min_length: "Le mot de passe doit contenir au moins {{ limit }} caractères"
+    required: "Le mot de passe est obligatoire"
   public_identifier:
     unique: "Cet identifiant public est déjà utilisé"
-  password:
-    required: "Le mot de passe est obligatoire"
-    min_length: "Le mot de passe doit contenir au moins {{ limit }} caractères"
-    max_length: "Le mot de passe ne peut pas dépasser {{ limit }} caractères"
-    invalid_chars: "Le mot de passe contient des caractères non autorisés"
-    categories: "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial"
   roles:
     required: "Au moins un rôle est obligatoire"
-role:
-  code:
-    unique: "Ce code est déjà utilisé."
-site_document_type:
-  code:
-    unique: "Ce code est déjà utilisé."
-room_type:
-  label:
-    required: "Le libellé est obligatoire."
-  code:
-    required: "Le code est obligatoire."
-    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
-event_type:
-  label:
-    required: "Le libellé est obligatoire."
-  code:
-    required: "Le code est obligatoire."
-    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
-room_layout:
-  label:
-    required: "Le libellé est obligatoire."
-  code:
-    required: "Le code est obligatoire."
-    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
-equipment_type:
-  label:
-    required: "Le libellé est obligatoire."
-  code:
-    required: "Le code est obligatoire."
-    format: "Le code doit être en anglais et au format UPPER_SNAKE_CASE."
+venue:
+  address:
+    required: "L’adresse du site est obligatoire"
+  city:
+    required: "La commune est obligatoire"
+  country:
+    required: "Le pays est obligatoire"
+  description:
+    max_length: "Le texte descriptif ne peut pas dépasser {{ limit }} caractères"
+    required: "Le texte descriptif est obligatoire"
+  name:
+    required: "Le nom du site est obligatoire"
+  postal_code:
+    required: "Le code postal est obligatoire"

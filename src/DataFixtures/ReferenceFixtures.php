@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\AdditionalFeeType;
+use App\Entity\Equipment;
 use App\Entity\EquipmentType;
 use App\Entity\EventType;
 use App\Entity\RoomLayout;
@@ -82,19 +83,46 @@ class ReferenceFixtures extends Fixture
         }
 
         $equipmentTypes = [
-            self::EQUIPMENT_TECHNICAL => ['TECHNICAL_EQUIPMENT', 'Technique', 'technical'],
-            self::EQUIPMENT_CATERING => ['CATERING_EQUIPMENT', 'Restauration', 'catering'],
-            self::EQUIPMENT_SPORTS => ['SPORTS_EQUIPMENT', 'Sportif', 'sports'],
-            self::EQUIPMENT_STAGE => ['STAGE_EQUIPMENT', 'Scénique', 'stage'],
+            self::EQUIPMENT_TECHNICAL => ['TECHNICAL_EQUIPMENT', 'Technique'],
+            self::EQUIPMENT_CATERING => ['CATERING_EQUIPMENT', 'Restauration'],
+            self::EQUIPMENT_SPORTS => ['SPORTS_EQUIPMENT', 'Sportif'],
+            self::EQUIPMENT_STAGE => ['STAGE_EQUIPMENT', 'Scénique'],
         ];
 
-        foreach ($equipmentTypes as $reference => [$code, $label, $category]) {
+        foreach ($equipmentTypes as $reference => [$code, $label]) {
             $equipmentType = (new EquipmentType())
                 ->setCode($code)
-                ->setLabel($label)
-                ->setCategory($category);
+                ->setLabel($label);
             $manager->persist($equipmentType);
             $this->addReference($reference, $equipmentType);
+        }
+
+        $equipments = [
+            ['Mange-debout', self::EQUIPMENT_CATERING],
+            ['Table ronde', self::EQUIPMENT_CATERING],
+            ['Table rectangulaire', self::EQUIPMENT_CATERING],
+            ['Chaise', self::EQUIPMENT_CATERING],
+            ['Tabouret', self::EQUIPMENT_CATERING],
+            ['Buffet mobile', self::EQUIPMENT_CATERING],
+            ['Réfrigérateur', self::EQUIPMENT_CATERING],
+            ['Fontaine à eau', self::EQUIPMENT_CATERING],
+            ['Sonorisation', self::EQUIPMENT_TECHNICAL],
+            ['Micro sans fil', self::EQUIPMENT_TECHNICAL],
+            ['Écran', self::EQUIPMENT_TECHNICAL],
+            ['Éclairage scénique', self::EQUIPMENT_STAGE],
+            ['Estrade', self::EQUIPMENT_STAGE],
+            ['Pupitre', self::EQUIPMENT_STAGE],
+            ['Tapis de sport', self::EQUIPMENT_SPORTS],
+            ['Ballons', self::EQUIPMENT_SPORTS],
+            ['Filet', self::EQUIPMENT_SPORTS],
+        ];
+
+        foreach ($equipments as [$label, $typeReference]) {
+            $equipmentType = $this->getReference($typeReference, EquipmentType::class);
+            $equipment = (new Equipment())
+                ->setLabel($label)
+                ->setEquipmentType($equipmentType);
+            $manager->persist($equipment);
         }
 
         $serviceType = (new ServiceType())

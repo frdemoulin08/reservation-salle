@@ -61,7 +61,8 @@ Bonnes pratiques UX :
 
 Actions disponibles sur une photo (au survol) :
 - 👁️ Aperçu (modal Flowbite) ;
-- 🗑️ Suppression (avec confirmation).
+- 🗑️ Suppression (avec confirmation) ;
+- ✏️ Renommage du libellé (inline).
 
 Optionnel :
 - badge discret :
@@ -83,20 +84,37 @@ Optionnel :
 
 ## 6. Intégration technique (Symfony)
 
-### 6.1 Organisation Twig
+### 6.1 Organisation Twig (implémentation actuelle)
 
 ```twig
-<section class="mt-8">
-  <h3 class="text-lg font-semibold mb-4">Photos du site</h3>
+<section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+  <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-body">Photos</h2>
 
-  {# Zone d’upload #}
-  {% include 'components/photo_dropzone.html.twig' %}
+  <div class="mt-4 rounded-base border border-default bg-neutral-primary p-4"
+       data-photo-dropzone
+       data-upload-url="{{ path('app_admin_venues_photo_upload', { publicIdentifier: venue.publicIdentifier }) }}"
+       data-csrf-token="{{ csrf_token('upload_venue_photo_' ~ venue.publicIdentifier) }}"
+       data-gallery-target="venue-photo-gallery">
+    {{ form_start(photo_form, { attr: { class: 'grid gap-4', novalidate: 'novalidate' } }) }}
+      <label for="venue-photo-input" class="flex cursor-pointer flex-col items-center justify-center rounded-base border-2 border-dashed border-default bg-neutral-primary-soft px-6 py-8 text-center">
+        <p class="text-sm font-semibold text-heading">Cliquez pour téléverser ou glissez-déposez</p>
+        <p class="text-xs text-body" data-photo-status>JPG, PNG, WEBP · 5 Mo max</p>
+        {{ form_widget(photo_form.photo, { attr: { id: 'venue-photo-input', class: 'sr-only' } }) }}
+      </label>
+      <div class="text-xs text-danger" data-photo-error>{{ form_errors(photo_form.photo) }}</div>
+      <div class="flex items-center justify-end" data-photo-submit>
+        {{ include('components/_button.html.twig', { label: 'Ajouter les photos', variant: 'primary', size: 'sm', type: 'submit' }) }}
+      </div>
+    {{ form_end(photo_form) }}
+  </div>
 
-  {# Galerie #}
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-    {% for photo in site.photos %}
-      {% include 'components/photo_card.html.twig' with { photo: photo } %}
+  <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" id="venue-photo-gallery">
+    {% for photo in venue_photos %}
+      {# carte photo + actions + renommage inline #}
+    {% else %}
+      <p class="text-body-subtle">Aucune photo disponible.</p>
     {% endfor %}
+    <label for="venue-photo-input" class="flex cursor-pointer items-center justify-center rounded-base border border-dashed border-default bg-neutral-primary-soft text-sm text-body">+</label>
   </div>
 </section>
 ```
@@ -106,13 +124,16 @@ Optionnel :
 ### 6.2 Principes backend
 
 - upload traité via un endpoint dédié :  
-  `POST /site/{id}/photos` ;
+  `POST /administration/sites/{publicIdentifier}/photos` ;
+- renommage via :  
+  `POST /administration/sites/{publicIdentifier}/photos/{id}/libelle` ;
+- suppression via :  
+  `POST /administration/sites/{publicIdentifier}/photos/{id}/supprimer` ;
 - stockage des fichiers via la stratégie de gestion documentaire retenue ;
 - persistance en base des métadonnées suivantes :
-  - chemin du fichier ;
-  - type = `photo` ;
-  - ordre d’affichage ;
-  - métadonnées éventuelles (taille, mime-type, label).
+  - chemin du fichier (`filePath`) ;
+  - type = `PHOTO` (référencé via `SiteDocumentType`) ;
+  - taille, mime-type, libellé.
 
 ---
 

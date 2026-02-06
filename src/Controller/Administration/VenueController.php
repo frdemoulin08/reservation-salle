@@ -5,12 +5,13 @@ namespace App\Controller\Administration;
 use App\Entity\SiteDocumentType;
 use App\Entity\Venue;
 use App\Entity\VenueDocument;
+use App\Form\PhotoUploadType;
 use App\Form\VenueDocumentUploadType;
-use App\Form\VenuePhotoType;
 use App\Form\VenueType;
 use App\Repository\CountryRepository;
 use App\Repository\SiteDocumentTypeRepository;
 use App\Repository\VenueRepository;
+use App\Service\PhotoUploadHelper;
 use App\Service\SiteDocumentStorage;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
@@ -29,8 +30,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Constraints\Image;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted(new Expression('is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_BUSINESS_ADMIN") or is_granted("ROLE_APP_MANAGER")'))]
 class VenueController extends AbstractController
@@ -64,6 +63,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/nouveau', name: 'app_admin_venues_new')]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $venue = new Venue();
@@ -95,6 +95,7 @@ class VenueController extends AbstractController
         SiteDocumentTypeRepository $documentTypeRepository,
         EntityManagerInterface $entityManager,
         SiteDocumentStorage $documentStorage,
+        PhotoUploadHelper $photoUploadHelper,
     ): Response {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -107,38 +108,37 @@ class VenueController extends AbstractController
             static fn (SiteDocumentType $type) => SiteDocumentType::CODE_PHOTO !== $type->getCode()
         ));
 
-        $photoForm = $this->createForm(VenuePhotoType::class, new VenueDocument(), [
+        $photoForm = $this->createForm(PhotoUploadType::class, new VenueDocument(), [
             'action' => $this->generateUrl('app_admin_venues_show', ['publicIdentifier' => $publicIdentifier]),
+            'data_class' => VenueDocument::class,
         ]);
         $photoForm->handleRequest($request);
 
         if ($photoForm->isSubmitted() && $photoForm->isValid()) {
             if (!$photoType) {
-                $photoForm->addError(new FormError('Le type de document photo est manquant.'));
+                $photoForm->addError(new FormError($photoUploadHelper->getPhotoTypeMissingMessage()));
             }
-            $uploadedFiles = $photoForm->get('photo')->getData();
-            $uploadedFiles = is_array($uploadedFiles) ? $uploadedFiles : ($uploadedFiles ? [$uploadedFiles] : []);
+            $uploadedFiles = $photoUploadHelper->normalizeFiles($photoForm->get('photo')->getData());
             if ($photoType && [] !== $uploadedFiles) {
                 if (!$photoType->isMultipleAllowed() && ($this->hasDocumentOfType($venue, $photoType) || count($uploadedFiles) > 1)) {
-                    $photoForm->addError(new FormError('Une seule photo est autorisée pour ce site.'));
+                    $photoForm->addError(new FormError($photoUploadHelper->getSinglePhotoNotAllowedMessage()));
                 } else {
                     foreach ($uploadedFiles as $uploadedFile) {
                         if (!$uploadedFile instanceof UploadedFile) {
                             continue;
                         }
 
-                        $originalName = $uploadedFile->getClientOriginalName();
                         $size = $uploadedFile->getSize();
                         $mimeType = $uploadedFile->getMimeType() ?? $uploadedFile->getClientMimeType();
                         $relativePath = $documentStorage->storeUploadedFile($venue, $uploadedFile, 'photos', $photoType->isPublic());
-                        $label = pathinfo($originalName, PATHINFO_FILENAME) ?: 'Photo';
+                        $label = $photoUploadHelper->createDefaultLabel($uploadedFile);
 
                         $photoDocument = (new VenueDocument())
                             ->setVenue($venue)
                             ->setLabel($label)
                             ->setFilePath($relativePath)
                             ->setMimeType($mimeType)
-                            ->setOriginalFilename($originalName)
+                            ->setOriginalFilename($uploadedFile->getClientOriginalName())
                             ->setSize($size)
                             ->setIsPublic($photoType->isPublic())
                             ->setDocumentType($photoType);
@@ -147,7 +147,7 @@ class VenueController extends AbstractController
                     }
                     $entityManager->flush();
 
-                    $this->addFlash('success', 'Les photos ont été ajoutées avec succès.');
+                    $this->addFlash('success', $photoUploadHelper->getPhotosAddedMessage());
 
                     return $this->redirectToRoute('app_admin_venues_show', [
                         'publicIdentifier' => $publicIdentifier,
@@ -233,6 +233,7 @@ class VenueController extends AbstractController
         VenueRepository $venueRepository,
         EntityManagerInterface $entityManager,
         SiteDocumentStorage $documentStorage,
+        PhotoUploadHelper $photoUploadHelper,
     ): Response {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -258,7 +259,7 @@ class VenueController extends AbstractController
         $entityManager->remove($document);
         $entityManager->flush();
 
-        $this->addFlash('success', 'La photo a été supprimée.');
+        $this->addFlash('success', $photoUploadHelper->getPhotoDeletedMessage());
 
         return $this->redirectToRoute('app_admin_venues_show', [
             'publicIdentifier' => $publicIdentifier,
@@ -273,72 +274,52 @@ class VenueController extends AbstractController
         SiteDocumentTypeRepository $documentTypeRepository,
         SiteDocumentStorage $documentStorage,
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator,
         CsrfTokenManagerInterface $csrfTokenManager,
         Packages $packages,
+        PhotoUploadHelper $photoUploadHelper,
     ): JsonResponse {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
-            return new JsonResponse(['message' => 'Site introuvable.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => $photoUploadHelper->getVenueNotFoundMessage()], Response::HTTP_NOT_FOUND);
         }
 
         $token = (string) $request->request->get('_token');
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('upload_venue_photo_'.$publicIdentifier, $token))) {
-            return new JsonResponse(['message' => 'Jeton CSRF invalide.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => $photoUploadHelper->getInvalidCsrfMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $photoType = $documentTypeRepository->findOneByCode(SiteDocumentType::CODE_PHOTO);
         if (!$photoType) {
-            return new JsonResponse(['message' => 'Type de photo introuvable.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => $photoUploadHelper->getPhotoTypeNotFoundMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $files = $request->files->get('photos');
-        if (!$files) {
-            return new JsonResponse(['message' => 'Aucune photo reçue.'], Response::HTTP_BAD_REQUEST);
+        $files = $photoUploadHelper->normalizeFiles($request->files->get('photos'));
+        if ([] === $files) {
+            return new JsonResponse(['message' => $photoUploadHelper->getNoFilesMessage()], Response::HTTP_BAD_REQUEST);
         }
-
-        $files = is_array($files) ? $files : [$files];
 
         if (!$photoType->isMultipleAllowed() && ($this->hasDocumentOfType($venue, $photoType) || count($files) > 1)) {
-            return new JsonResponse(['message' => 'Une seule photo est autorisée pour ce site.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => $photoUploadHelper->getSinglePhotoNotAllowedMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $constraint = new Image(
-            maxSize: '5M',
-            mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-            mimeTypesMessage: 'Formats autorisés : JPG, PNG, WEBP.',
-            maxSizeMessage: 'La photo ne doit pas dépasser 5 Mo.',
-        );
-
-        foreach ($files as $file) {
-            if (!$file instanceof UploadedFile) {
-                continue;
-            }
-
-            $violations = $validator->validate($file, $constraint);
-            if (count($violations) > 0) {
-                return new JsonResponse(['message' => $violations[0]->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+        $validationError = $photoUploadHelper->validateFiles($files);
+        if (null !== $validationError) {
+            return new JsonResponse(['message' => $validationError], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $createdDocuments = [];
         foreach ($files as $file) {
-            if (!$file instanceof UploadedFile) {
-                continue;
-            }
-
-            $originalName = $file->getClientOriginalName();
             $size = $file->getSize();
             $mimeType = $file->getMimeType() ?? $file->getClientMimeType();
             $relativePath = $documentStorage->storeUploadedFile($venue, $file, 'photos', $photoType->isPublic());
-            $label = pathinfo($originalName, PATHINFO_FILENAME) ?: 'Photo';
+            $label = $photoUploadHelper->createDefaultLabel($file);
 
             $photoDocument = (new VenueDocument())
                 ->setVenue($venue)
                 ->setLabel($label)
                 ->setFilePath($relativePath)
                 ->setMimeType($mimeType)
-                ->setOriginalFilename($originalName)
+                ->setOriginalFilename($file->getClientOriginalName())
                 ->setSize($size)
                 ->setIsPublic($photoType->isPublic())
                 ->setDocumentType($photoType);
@@ -370,7 +351,7 @@ class VenueController extends AbstractController
         }
 
         return new JsonResponse([
-            'message' => 'Photos ajoutées.',
+            'message' => $photoUploadHelper->getPhotosAddedShortMessage(),
             'photos' => $photos,
         ]);
     }
@@ -383,33 +364,34 @@ class VenueController extends AbstractController
         VenueRepository $venueRepository,
         EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager,
+        PhotoUploadHelper $photoUploadHelper,
     ): JsonResponse {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
-            return new JsonResponse(['message' => 'Site introuvable.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => $photoUploadHelper->getVenueNotFoundMessage()], Response::HTTP_NOT_FOUND);
         }
 
         $document = $entityManager->getRepository(VenueDocument::class)->find($id);
         if (!$document instanceof VenueDocument) {
-            return new JsonResponse(['message' => 'Photo introuvable.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => $photoUploadHelper->getPhotoNotFoundMessage()], Response::HTTP_NOT_FOUND);
         }
 
         if ($document->getVenue()?->getId() !== $venue->getId() || SiteDocumentType::CODE_PHOTO !== $document->getDocumentType()?->getCode()) {
-            return new JsonResponse(['message' => 'Photo introuvable.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => $photoUploadHelper->getPhotoNotFoundMessage()], Response::HTTP_NOT_FOUND);
         }
 
         $token = (string) $request->request->get('_token');
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('update_venue_photo_label_'.$document->getId(), $token))) {
-            return new JsonResponse(['message' => 'Jeton CSRF invalide.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => $photoUploadHelper->getInvalidCsrfMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $label = trim((string) $request->request->get('label', ''));
         if ('' === $label) {
-            return new JsonResponse(['message' => 'Le libellé est obligatoire.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['message' => $photoUploadHelper->getLabelRequiredMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (mb_strlen($label) > 255) {
-            return new JsonResponse(['message' => 'Le libellé est trop long.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['message' => $photoUploadHelper->getLabelTooLongMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $document->setLabel($label);
@@ -496,6 +478,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/{publicIdentifier}/modifier', name: 'app_admin_venues_edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function edit(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
@@ -523,6 +506,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/administration/sites/{publicIdentifier}/supprimer', name: 'app_admin_venues_delete', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'], methods: ['POST'])]
+    #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
     public function delete(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);

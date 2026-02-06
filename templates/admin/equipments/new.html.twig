@@ -1,0 +1,52 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Ajouter un équipement{% endblock %}
+
+{% set active_menu = 'equipements' %}
+{% set page_heading = 'Ajouter un équipement' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/equipments/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Paramétrage</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Ajoutez un équipement disponible pour la saisie.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_equipments_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+            {{ include('components/_form_field.html.twig', { field: form.label }) }}
+            {{ include('components/_form_field.html.twig', { field: form.equipmentType }) }}
+            <div class="md:col-span-2 flex items-center justify-end gap-3">
+                {{ include('components/_button.html.twig', {
+                    label: 'Annuler',
+                    href: path('app_admin_equipments_index'),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Créer l’équipement',
+                    variant: 'primary',
+                    size: 'sm',
+                    type: 'submit',
+                    extra_class: 'min-w-[160px]'
+                }) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

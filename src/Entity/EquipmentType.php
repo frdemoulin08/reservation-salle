@@ -22,9 +22,6 @@ class EquipmentType
     #[ORM\Column(length: 255)]
     private string $label = '';
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $category = null;
-
     /**
      * @var Collection<int, RoomEquipment>
      */
@@ -37,10 +34,17 @@ class EquipmentType
     #[ORM\OneToMany(mappedBy: 'equipmentType', targetEntity: VenueEquipment::class)]
     private Collection $venueEquipments;
 
+    /**
+     * @var Collection<int, Equipment>
+     */
+    #[ORM\OneToMany(mappedBy: 'equipmentType', targetEntity: Equipment::class)]
+    private Collection $equipments;
+
     public function __construct()
     {
         $this->roomEquipments = new ArrayCollection();
         $this->venueEquipments = new ArrayCollection();
+        $this->equipments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,18 +76,6 @@ class EquipmentType
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?string $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, RoomEquipment>
      */
@@ -98,5 +90,13 @@ class EquipmentType
     public function getVenueEquipments(): Collection
     {
         return $this->venueEquipments;
+    }
+
+    /**
+     * @return Collection<int, Equipment>
+     */
+    public function getEquipments(): Collection
+    {
+        return $this->equipments;
     }
 }
