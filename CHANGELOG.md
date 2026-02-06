@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.3...v1.0.4) (2026-02-06)
+
+
+### Bug Fixes
+
+* gestion des photos des salles ([2b8e567](https://github.com/frdemoulin08/reservation-salle/commit/2b8e567fdaf1aa94791df6828d5ff2e0c7899a0c))
+* mise en place de la gestion des salles ([47be2a1](https://github.com/frdemoulin08/reservation-salle/commit/47be2a1ccbc301c0e86ecc0ee3d6d9df0782e82c))
+* mise en place de la liste des équipements ([bfa927d](https://github.com/frdemoulin08/reservation-salle/commit/bfa927def9b4fa2efa4b72bebe1fcb61d26c6ab0))
+
 ## [1.0.3](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.2...v1.0.3) (2026-02-04)
 
 
