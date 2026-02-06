@@ -8,7 +8,7 @@ class AdminTablesTest extends DatabaseWebTestCase
 {
     public function testVenuesIndexRenders(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $client->request('GET', '/administration/sites');
 

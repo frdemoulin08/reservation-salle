@@ -14,7 +14,10 @@ echo "Installing PHP dependencies..."
 composer install
 
 echo "Installing Node dependencies..."
-npm install
+if command -v nvm >/dev/null 2>&1; then
+  nvm use
+fi
+npm ci
 
 echo "Building assets (dev)..."
 npm run dev

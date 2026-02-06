@@ -65,6 +65,47 @@ room_type:
     required: "Le code est obligatoire."
   label:
     required: "Le libellé est obligatoire."
+organization:
+  siret:
+    required: "Le SIRET est obligatoire pour cette structure."
+    length: "Le SIRET doit contenir exactement 14 chiffres."
+    invalid: "Le SIRET est invalide."
+  organization_type:
+    required: "Le type de structure est obligatoire."
+  legal_nature:
+    invalid: "La nature juridique n’est pas compatible avec le type de structure."
+  legal_name:
+    required: "La dénomination légale est obligatoire."
+  display_name:
+    required: "Le nom d’usage est obligatoire."
+  head_office:
+    country:
+      required: "Le pays du siège est obligatoire."
+    address:
+      required: "L’adresse du siège est obligatoire."
+    postal_code:
+      required: "Le code postal du siège est obligatoire."
+    city:
+      required: "La commune du siège est obligatoire."
+  billing:
+    country:
+      required: "Le pays de facturation est obligatoire."
+    address:
+      required: "L’adresse de facturation est obligatoire."
+    postal_code:
+      required: "Le code postal de facturation est obligatoire."
+    city:
+      required: "La commune de facturation est obligatoire."
+organization_contact:
+  role:
+    required: "Le rôle est obligatoire."
+  first_name:
+    required: "Le prénom est obligatoire."
+  last_name:
+    required: "Le nom est obligatoire."
+  email:
+    required: "L’email est obligatoire."
+    invalid: "Le format de l’email est invalide."
 site_document_type:
   code:
     unique: "Ce code est déjà utilisé."

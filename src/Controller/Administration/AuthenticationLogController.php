@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/administration', name: 'app_admin_')]
-#[IsGranted(new Expression('is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_BUSINESS_ADMIN") or is_granted("ROLE_APP_MANAGER")'))]
+#[IsGranted(new Expression('is_granted("ROLE_SUPER_ADMIN")'))]
 class AuthenticationLogController extends AbstractController
 {
     #[Route('/authentication-logs', name: 'authentication_logs_index')]

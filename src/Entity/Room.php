@@ -117,12 +117,6 @@ class Room
     private Collection $roomServices;
 
     /**
-     * @var Collection<int, RoomUsage>
-     */
-    #[ORM\OneToMany(mappedBy: 'room', targetEntity: RoomUsage::class)]
-    private Collection $roomUsages;
-
-    /**
      * @var Collection<int, RoomDocument>
      */
     #[ORM\OneToMany(mappedBy: 'room', targetEntity: RoomDocument::class)]
@@ -147,7 +141,6 @@ class Room
         $this->roomLayouts = new ArrayCollection();
         $this->roomEquipments = new ArrayCollection();
         $this->roomServices = new ArrayCollection();
-        $this->roomUsages = new ArrayCollection();
         $this->roomDocuments = new ArrayCollection();
         $this->roomPricings = new ArrayCollection();
         $this->reservations = new ArrayCollection();
@@ -539,35 +532,6 @@ class Room
         if ($this->roomServices->removeElement($roomService)) {
             if ($roomService->getRoom() === $this) {
                 $roomService->setRoom(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, RoomUsage>
-     */
-    public function getRoomUsages(): Collection
-    {
-        return $this->roomUsages;
-    }
-
-    public function addRoomUsage(RoomUsage $roomUsage): self
-    {
-        if (!$this->roomUsages->contains($roomUsage)) {
-            $this->roomUsages->add($roomUsage);
-            $roomUsage->setRoom($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRoomUsage(RoomUsage $roomUsage): self
-    {
-        if ($this->roomUsages->removeElement($roomUsage)) {
-            if ($roomUsage->getRoom() === $this) {
-                $roomUsage->setRoom(null);
             }
         }
 

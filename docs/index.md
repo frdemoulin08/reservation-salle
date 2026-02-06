@@ -18,6 +18,9 @@
 - [Flowbite + Tailwind](interface/integration-flowbite-tailwind.md)
 - [Guidelines Flowbite + Tailwind](interface/recommandations-flowbite-tailwind.md)
 
+## Développement
+- [Règles de gestion](developpement/regles-gestion.md)
+
 ## Technique
 - [CRUD standard](technique/crud.md)
 - [Formulaires (technique)](technique/validation-formulaires.md)

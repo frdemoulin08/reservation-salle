@@ -1,0 +1,57 @@
+{% set field = form.siret %}
+{% set has_error = field.vars.errors|length > 0 %}
+{% set error_id = field.vars.id ~ '-error' %}
+{% set input_attr = field.vars.attr|default({}) %}
+
+{% set base_label_class = 'mb-2 block text-sm font-medium ' ~ (has_error ? 'text-danger dark:text-fg-danger-strong' : 'text-heading') %}
+{% set label_attr = {
+    class: base_label_class,
+    'data-validate-label': 'true',
+    'data-validate-valid-class': 'text-heading',
+    'data-validate-invalid-class': 'text-danger dark:text-fg-danger-strong'
+} %}
+
+{% set base_input_class = 'w-full rounded-base border bg-neutral-primary px-3 py-2 text-sm text-heading placeholder:text-body focus:ring-2 ' ~ (has_error ? 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger' : 'border-default focus:border-brand-medium focus:ring-brand-medium/40') %}
+{% set input_class = base_input_class ~ (input_attr.class is defined ? ' ' ~ input_attr.class : '') %}
+
+{% set input_attr = input_attr|merge({
+    class: input_class,
+    'aria-invalid': has_error ? 'true' : 'false',
+    'aria-describedby': error_id,
+    'data-validate-input': 'true',
+    'data-validate-required-message': 'organization.siret.required'|trans({}, 'validators'),
+    'data-validate-pattern-message': 'organization.siret.length'|trans({}, 'validators'),
+    'data-validate-valid-class': 'border-default focus:border-brand-medium focus:ring-brand-medium/40',
+    'data-validate-invalid-class': 'border-danger/60 dark:border-danger-subtle focus:border-danger focus:ring-danger-medium/40 dark:focus:ring-danger',
+    'data-company-invalid-luhn': 'organization.siret.invalid'|trans({}, 'validators'),
+    'data-company-lookup': 'true',
+    'data-company-endpoint': path('app_api_company_siret', { siret: 'SIRET_PLACEHOLDER' }),
+    'data-company-country-id': form.headOfficeAddressCountry.vars.id,
+    'data-company-legal-name-id': form.legalName.vars.id,
+    'data-company-display-name-id': form.displayName.vars.id,
+    'data-company-legal-nature-id': form.legalNature.vars.id,
+    'data-company-organization-type-id': form.organizationType.vars.id,
+    'data-company-association-registered-id': form.associationRegistered.vars.id,
+    'data-company-address-line1-id': form.headOfficeAddressLine1.vars.id,
+    'data-company-address-line2-id': form.headOfficeAddressLine2.vars.id,
+    'data-company-address-line3-id': form.headOfficeAddressLine3.vars.id,
+    'data-company-address-postal-id': form.headOfficeAddressPostalCode.vars.id,
+    'data-company-address-city-id': form.headOfficeAddressCity.vars.id,
+    'data-company-address-country-id': form.headOfficeAddressCountry.vars.id,
+    placeholder: 'Ex. 12345678901234'
+}) %}
+
+<div class="md:col-span-2" data-validate-field data-company-field>
+    {{ form_label(field, null, { label_attr: label_attr }) }}
+    {{ form_widget(field, { attr: input_attr }) }}
+    <div id="{{ error_id }}" data-validate-error class="mt-1 text-xs text-danger dark:text-fg-danger-strong{% if not has_error %} hidden{% endif %}">
+        {{ form_errors(field) }}
+    </div>
+    <p class="mt-2 text-xs text-body" data-company-hint aria-live="polite"
+        data-company-hint-default="Renseignez un SIRET pour préremplir les informations de l'organisation."
+        data-company-hint-success="Données issues des référentiels administratifs (Annuaire des entreprises)."
+        data-company-hint-not-found="Aucune structure trouvée pour ce SIRET. Vous pouvez saisir les informations manuellement."
+        data-company-hint-unavailable="Service d'enrichissement indisponible. La saisie reste manuelle."
+        data-company-hint-foreign="SIRET disponible uniquement pour les structures françaises."
+    ></p>
+</div>

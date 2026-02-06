@@ -31,4 +31,30 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    public function createUsagerTableQb(TableParams $params): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb
+            ->leftJoin('u.roles', 'role', 'WITH', 'role.isActive = true AND role.code IN (:adminRoles)')
+            ->andWhere('role.id IS NULL')
+            ->setParameter('adminRoles', [
+                User::ROLE_SUPER_ADMIN,
+                User::ROLE_BUSINESS_ADMIN,
+                User::ROLE_APP_MANAGER,
+                User::ROLE_SUPERVISOR,
+            ]);
+
+        $qb->leftJoin('u.organization', 'org');
+
+        $search = trim((string) ($params->filters['q'] ?? ''));
+        if ('' !== $search) {
+            $qb
+                ->andWhere('u.firstname LIKE :search OR u.lastname LIKE :search OR u.email LIKE :search OR u.publicIdentifier LIKE :search OR org.displayName LIKE :search OR org.legalName LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        return $qb;
+    }
 }

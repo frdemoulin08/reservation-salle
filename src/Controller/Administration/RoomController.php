@@ -23,7 +23,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted(new Expression('is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_BUSINESS_ADMIN") or is_granted("ROLE_APP_MANAGER")'))]
+#[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN") or is_granted("ROLE_APP_MANAGER")'))]
 class RoomController extends AbstractController
 {
     #[Route('/administration/salles', name: 'app_admin_rooms_index')]
@@ -182,7 +182,6 @@ class RoomController extends AbstractController
 
         $hasDependencies = $room->getRoomEquipments()->count() > 0
             || $room->getRoomServices()->count() > 0
-            || $room->getRoomUsages()->count() > 0
             || $room->getRoomDocuments()->count() > 0
             || $room->getRoomPricings()->count() > 0
             || $room->getReservations()->count() > 0;

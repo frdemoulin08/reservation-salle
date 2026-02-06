@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\OrganizationContactRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: OrganizationContactRepository::class)]
 class OrganizationContact
 {
     use TimestampableEntity;
