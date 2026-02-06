@@ -1,3 +1,15 @@
+## [1.0.5](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.4...v1.0.5) (2026-02-06)
+
+
+### Bug Fixes
+
+* mise à jour de la configuration du menu ([d176ca2](https://github.com/frdemoulin08/reservation-salle/commit/d176ca2a5a4bd1321d2aec9f152cecd1882d403e))
+* mise à jour des tests ([68f9aa4](https://github.com/frdemoulin08/reservation-salle/commit/68f9aa4ac3ee933a274e6e99efd63f70787b2ff9))
+* mise à jour du readme et gestion de la version de npm ([37dc003](https://github.com/frdemoulin08/reservation-salle/commit/37dc003076ae3958a564f089a987d7a79d03f429))
+* mise en place de la gestion des usagers ([4ba913a](https://github.com/frdemoulin08/reservation-salle/commit/4ba913ac4107fd5ed1f29559857ddf21473c496d))
+* mise en place des règles de gestion ([5d46a12](https://github.com/frdemoulin08/reservation-salle/commit/5d46a12e7319b6afedd91262fbdd72c5517340ef))
+* montée de version de phpunit vers la v12.5.9 ([150d3f0](https://github.com/frdemoulin08/reservation-salle/commit/150d3f05335a31840df0961cfce2db683643e13f))
+
 ## [1.0.4](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.3...v1.0.4) (2026-02-06)
 
 
