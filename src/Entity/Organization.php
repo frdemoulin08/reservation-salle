@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use App\Entity\Embeddable\Address;
+use App\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 class Organization
 {
     use TimestampableEntity;
@@ -43,6 +44,12 @@ class Organization
     private ?Address $billingAddress = null;
 
     /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: User::class)]
+    private Collection $users;
+
+    /**
      * @var Collection<int, OrganizationContact>
      */
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: OrganizationContact::class)]
@@ -56,6 +63,9 @@ class Organization
 
     public function __construct()
     {
+        $this->headOfficeAddress = new Address();
+        $this->billingAddress = new Address();
+        $this->users = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->reservations = new ArrayCollection();
     }
@@ -157,6 +167,35 @@ class Organization
     public function setBillingAddress(?Address $billingAddress): self
     {
         $this->billingAddress = $billingAddress;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setOrganization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            if ($user->getOrganization() === $this) {
+                $user->setOrganization(null);
+            }
+        }
 
         return $this;
     }

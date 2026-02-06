@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Organization;
 use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,6 +17,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     public const APP_MANAGER_USER = 'app-manager-user';
     public const APP_MANAGER_BUSINESS_USER = 'app-manager-business-user';
     public const SUPERVISOR_USER = 'supervisor-user';
+    public const CUSTOMER_USER = 'customer-user';
+    public const EXTERNAL_USER = 'external-user';
 
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
@@ -24,6 +27,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
+        $firstNames = ['Claire', 'Marc', 'Julie', 'Hugo', 'Emma', 'Nicolas', 'Camille', 'Lucas', 'Chloé', 'Pierre', 'Sarah', 'Thomas', 'Léa', 'Antoine', 'Manon', 'Adrien'];
+        $lastNames = ['Dupont', 'Leroy', 'Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit', 'Durand', 'Moreau', 'Simon', 'Laurent', 'Garcia', 'Roux', 'Fournier'];
+
         $superAdmin = $this->createUser(
             $manager,
             'frederic.demoulin@cd08.fr',
@@ -77,12 +83,89 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         );
         $this->addReference(self::SUPERVISOR_USER, $supervisor);
 
+        $organization = $this->getReference(OrganizationFixtures::ORG_MAIN, Organization::class);
+
+        $customer = $this->createUser(
+            $manager,
+            'claire.dupont@asso-exemple.org',
+            'Claire',
+            'Dupont',
+            'Abcdef123456@',
+            [],
+            $organization
+        );
+        $this->addReference(self::CUSTOMER_USER, $customer);
+
+        $external = $this->createUser(
+            $manager,
+            'marc.leroy@asso-exemple.org',
+            'Marc',
+            'Leroy',
+            'Abcdef123456@',
+            [],
+            $organization
+        );
+        $this->addReference(self::EXTERNAL_USER, $external);
+
+        $organizations = $manager->getRepository(Organization::class)->findAll();
+        $counter = 1;
+
+        foreach ($organizations as $org) {
+            for ($i = 0; $i < 2; $i++) {
+                $firstName = $firstNames[$counter % count($firstNames)];
+                $lastName = $lastNames[$counter % count($lastNames)];
+                $domain = $this->slugify($org->getDisplayName() ?: $org->getLegalName());
+                if ('' === $domain) {
+                    $domain = sprintf('org%d', $counter);
+                }
+
+                $email = sprintf(
+                    '%s.%s.%02d@%s.example.org',
+                    $this->slugify($firstName),
+                    $this->slugify($lastName),
+                    $counter,
+                    $domain
+                );
+
+                $this->createUser(
+                    $manager,
+                    $email,
+                    $firstName,
+                    $lastName,
+                    'Abcdef123456@',
+                    [],
+                    $org
+                );
+
+                $counter++;
+            }
+        }
+
+        $this->createUser(
+            $manager,
+            sprintf('usager.%02d@exemple.org', $counter++),
+            $firstNames[$counter % count($firstNames)],
+            $lastNames[$counter % count($lastNames)],
+            'Abcdef123456@',
+            [],
+            null
+        );
+        $this->createUser(
+            $manager,
+            sprintf('usager.%02d@exemple.org', $counter++),
+            $firstNames[$counter % count($firstNames)],
+            $lastNames[$counter % count($lastNames)],
+            'Abcdef123456@',
+            [],
+            null
+        );
+
         $manager->flush();
     }
 
     public function getDependencies(): array
     {
-        return [RoleFixtures::class];
+        return [RoleFixtures::class, OrganizationFixtures::class];
     }
 
     /**
@@ -95,12 +178,14 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         string $lastname,
         string $plainPassword,
         array $roles,
+        ?Organization $organization = null,
     ): User {
         $user = new User();
         $user->setEmail($email);
         $user->setFirstname($firstname);
         $user->setLastname($lastname);
         $user->setIsActive(true);
+        $user->setOrganization($organization);
 
         foreach ($roles as $role) {
             $user->addRoleEntity($role);
@@ -112,5 +197,19 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($user);
 
         return $user;
+    }
+
+    private function slugify(string $value): string
+    {
+        $normalized = iconv('UTF-8', 'ASCII//TRANSLIT', $value);
+        if (false !== $normalized) {
+            $value = $normalized;
+        }
+
+        $value = strtolower($value);
+        $value = preg_replace('/[^a-z0-9]+/', '-', $value) ?? '';
+        $value = trim($value, '-');
+
+        return $value;
     }
 }

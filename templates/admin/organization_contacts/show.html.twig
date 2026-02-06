@@ -1,0 +1,77 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail du contact{% endblock %}
+
+{% set active_menu = 'organisations' %}
+{% set org_label = organization.displayName ?: organization.legalName %}
+{% set page_heading = 'Détail du contact' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/organization_contacts/_breadcrumb.html.twig' with { organization: organization, current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Contact rattaché à {{ org_label }}.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Éditer',
+                href: path('app_admin_organization_contacts_edit', { organizationId: organization.id, id: contact.id }),
+                variant: 'warning',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour aux contacts',
+                href: path('app_admin_organization_contacts_index', { organizationId: organization.id }),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    {% set role_labels = {
+        'REQUESTER': 'Demandeur',
+        'PAYER': 'Payeur',
+        'CONTACT': 'Contact',
+        'OTHER': 'Autre'
+    } %}
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <dl class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Rôle</dt>
+                <dd class="mt-2 text-base text-heading">{{ role_labels[contact.role] ?? (contact.role ?? '—') }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Civilité</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.title ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nom</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.lastName }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Prénom</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.firstName }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Fonction</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.jobTitle ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Email</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.email }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Téléphone</dt>
+                <dd class="mt-2 text-base text-heading">{{ contact.phone ?? '—' }}</dd>
+            </div>
+        </dl>
+    </section>
+{% endblock %}

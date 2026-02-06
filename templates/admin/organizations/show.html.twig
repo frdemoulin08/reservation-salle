@@ -1,0 +1,168 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Détail de l’organisation{% endblock %}
+
+{% set active_menu = 'organisations' %}
+{% set page_heading = 'Détail de l’organisation' %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/organizations/_breadcrumb.html.twig' with { current_label: page_heading } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Fiche détaillée de l’organisation.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Éditer',
+                href: path('app_admin_organizations_edit', { id: organization.id }),
+                variant: 'warning',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Contacts',
+                href: path('app_admin_organization_contacts_index', { organizationId: organization.id }),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à la liste',
+                href: path('app_admin_organizations_index'),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <dl class="grid gap-4 sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Dénomination légale</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.legalName }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nom d’usage</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.displayName }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Type</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.organizationType ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nature juridique</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.legalNature ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">SIRET</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.siret ?? '—' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Adresse de facturation identique</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.billingSameAsHeadOffice ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Usagers rattachés</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.users|length }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Contacts</dt>
+                <dd class="mt-2 text-base text-heading">{{ organization.contacts|length }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-body">Contacts</h2>
+                <p class="mt-1 text-sm text-body-subtle">{{ organization.contacts|length }} contact(s) rattaché(s).</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                {{ include('components/_button.html.twig', {
+                    label: 'Ajouter un contact',
+                    href: path('app_admin_organization_contacts_new', { organizationId: organization.id }),
+                    variant: 'primary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Voir tous',
+                    href: path('app_admin_organization_contacts_index', { organizationId: organization.id }),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+            </div>
+        </div>
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-left text-sm text-body">
+                <thead class="bg-neutral-secondary-soft text-xs uppercase tracking-[0.12em] text-heading">
+                    <tr>
+                        <th class="px-4 py-3 font-semibold">Nom</th>
+                        <th class="px-4 py-3 font-semibold">Rôle</th>
+                        <th class="px-4 py-3 font-semibold">Email</th>
+                        <th class="px-4 py-3 font-semibold">Téléphone</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
+                    {% set role_labels = {
+                        'REQUESTER': 'Demandeur',
+                        'PAYER': 'Payeur',
+                        'CONTACT': 'Contact',
+                        'OTHER': 'Autre'
+                    } %}
+                    {% for contact in organization.contacts %}
+                        <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_organization_contacts_show', { organizationId: organization.id, id: contact.id }) }}">
+                            <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
+                                {{ contact.lastName|upper }} {{ contact.firstName }}
+                            </th>
+                            <td class="px-6 py-4">{{ role_labels[contact.role] ?? (contact.role ?? '—') }}</td>
+                            <td class="px-6 py-4">{{ contact.email }}</td>
+                            <td class="px-6 py-4">{{ contact.phone ?? '—' }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="px-6 py-6 text-center text-sm text-body-subtle" colspan="4">Aucun contact pour cette organisation.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-body">Siège</h2>
+        {% set head = organization.headOfficeAddress %}
+        <div class="mt-3 text-sm text-heading">
+            {% if head %}
+                <p>{{ head.line1 }}</p>
+                {% if head.line2 %}<p>{{ head.line2 }}</p>{% endif %}
+                {% if head.line3 %}<p>{{ head.line3 }}</p>{% endif %}
+                <p>{{ head.postalCode }} {{ head.city }}</p>
+                <p>{{ head.country }}</p>
+            {% else %}
+                <p>—</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="mt-6 rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-body">Facturation</h2>
+        {% set billing = organization.billingAddress %}
+        <div class="mt-3 text-sm text-heading">
+            {% if billing %}
+                <p>{{ billing.line1 }}</p>
+                {% if billing.line2 %}<p>{{ billing.line2 }}</p>{% endif %}
+                {% if billing.line3 %}<p>{{ billing.line3 }}</p>{% endif %}
+                <p>{{ billing.postalCode }} {{ billing.city }}</p>
+                <p>{{ billing.country }}</p>
+            {% else %}
+                <p>—</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

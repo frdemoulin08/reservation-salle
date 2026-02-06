@@ -1,9 +1,9 @@
 {% extends 'admin/_layout.html.twig' %}
 
-{% block title %}Détail utilisateur{% endblock %}
+{% block title %}Détail de l’utilisateur{% endblock %}
 
 {% set active_menu = 'users' %}
-{% set page_heading = user.lastname|upper ~ ' ' ~ user.firstname %}
+{% set page_heading = 'Détail de l’utilisateur' %}
 
 {% block admin_breadcrumb %}
     <div class="mb-4">
@@ -48,6 +48,16 @@
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Email</dt>
                 <dd class="mt-2 text-base text-heading">{{ user.email }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Organisation</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if user.organization %}
+                        {{ user.organization.displayName ?: user.organization.legalName }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Statut</dt>

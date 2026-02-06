@@ -52,6 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 20, nullable: true)]
     private ?string $fixedPhone = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(name: 'organization_id', referencedColumnName: 'id', nullable: true)]
+    private ?Organization $organization = null;
+
     #[ORM\Column(options: ['default' => true])]
     private bool $isActive = true;
 
@@ -242,6 +246,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFixedPhone(?string $fixedPhone): self
     {
         $this->fixedPhone = $fixedPhone;
+
+        return $this;
+    }
+
+    public function getOrganization(): ?Organization
+    {
+        return $this->organization;
+    }
+
+    public function setOrganization(?Organization $organization): self
+    {
+        $this->organization = $organization;
 
         return $this;
     }

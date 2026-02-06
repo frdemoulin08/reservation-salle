@@ -25,18 +25,21 @@ parameters:
         label: "Gestion"
         roles: [ROLE_APP_MANAGER]
         items:
-          - key: devis
-            label: "Devis"
-            url: "#"
           - key: demandes
             label: "Demandes à valider"
             url: "#"
+          - key: devis
+            label: "Devis"
+            url: "#"
+          - key: organisations
+            label: "Organisations"
+            route: app_admin_organizations_index
           - key: reservations
             label: "Réservations"
             url: "#"
           - key: usagers
             label: "Usagers"
-            url: "#"
+            route: app_admin_usagers_index
       - key: planning
         label: "Planning"
         roles: [ROLE_APP_MANAGER]
@@ -51,14 +54,14 @@ parameters:
         label: "Documents"
         roles: [ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
-          - key: documents_reservation
-            label: "Pièces jointes réservation"
-            url: "#"
           - key: docs_salle
             label: "Documents de salle"
             url: "#"
           - key: docs_site
             label: "Documents de site"
+            url: "#"
+          - key: documents_reservation
+            label: "Pièces jointes réservation"
             url: "#"
           - key: document_types
             label: "Types de documents"
@@ -70,12 +73,12 @@ parameters:
           - key: authentication_logs
             label: "Journaux d’authentification"
             route: app_admin_authentication_logs_index
-          - key: cron_tasks
-            label: "Journaux des tâches"
-            route: app_admin_cron_tasks_index
           - key: reset_password_logs
             label: "Journaux de réinitialisation"
             route: app_admin_reset_password_logs_index
+          - key: cron_tasks
+            label: "Journaux des tâches"
+            route: app_admin_cron_tasks_index
           - key: users
             label: "Utilisateurs"
             route: app_admin_users_index
