@@ -26,7 +26,8 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress",
         "audit:ci": "node scripts/npm-audit-policy.mjs",
-        "release": "semantic-release"
+        "release": "semantic-release",
+        "install:ci": "npm ci"
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.18",
@@ -34,5 +35,9 @@
         "postcss": "^8.5.6",
         "postcss-loader": "^8.2.0",
         "tailwindcss": "^4.1.18"
+    },
+    "engines": {
+        "node": "25.2.1",
+        "npm": "11.9.0"
     }
 }
