@@ -30,11 +30,12 @@ class OrganizationFixtures extends Fixture
         $billing = $this->createAddress('10 rue de la République', '08000', 'Charleville-Mézières');
 
         $organization = (new Organization())
-            ->setSiret('12345678901234')
+            ->setSiret('10000000000008')
             ->setLegalName('Association Exemple')
             ->setDisplayName('Association Exemple')
-            ->setLegalNature('Association')
+            ->setLegalNature('Association loi 1901')
             ->setOrganizationType('ASSOCIATION')
+            ->setAssociationRegistered(true)
             ->setBillingSameAsHeadOffice(true)
             ->setHeadOfficeAddress($headOffice)
             ->setBillingAddress($billing);
@@ -74,9 +75,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_SPORT,
                 'legalName' => 'Association Sportive Ardennes',
                 'displayName' => 'ASA',
-                'legalNature' => 'Association',
+                'legalNature' => 'Association loi 1901',
                 'organizationType' => 'ASSOCIATION',
-                'siret' => '23456789012345',
+                'siret' => '10000000000016',
                 'headOffice' => ['1 avenue des Sports', '08000', 'Charleville-Mézières'],
                 'billing' => ['1 avenue des Sports', '08000', 'Charleville-Mézières'],
             ],
@@ -86,7 +87,7 @@ class OrganizationFixtures extends Fixture
                 'displayName' => 'Dupont Événementiel',
                 'legalNature' => 'SARL',
                 'organizationType' => 'ENTREPRISE',
-                'siret' => '34567890123456',
+                'siret' => '10000000000024',
                 'headOffice' => ['12 rue des Tilleuls', '08200', 'Sedan'],
                 'billing' => ['3 rue du Commerce', '08200', 'Sedan'],
             ],
@@ -94,9 +95,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_COLLECTIVITE,
                 'legalName' => 'Commune de Sedan',
                 'displayName' => 'Mairie de Sedan',
-                'legalNature' => 'Collectivité',
+                'legalNature' => 'Commune',
                 'organizationType' => 'COLLECTIVITE',
-                'siret' => '45678901234567',
+                'siret' => '10000000000032',
                 'headOffice' => ['Place d’Armes', '08200', 'Sedan'],
                 'billing' => ['Place d’Armes', '08200', 'Sedan'],
             ],
@@ -104,9 +105,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_CD08,
                 'legalName' => 'CD08 - Direction de la Culture',
                 'displayName' => 'CD08 Culture',
-                'legalNature' => 'Service CD08',
+                'legalNature' => 'Conseil départemental des Ardennes',
                 'organizationType' => 'CD08_SERVICE',
-                'siret' => '56789012345678',
+                'siret' => '10000000000040',
                 'headOffice' => ['19 rue de l’Arquebuse', '08000', 'Charleville-Mézières'],
                 'billing' => ['19 rue de l’Arquebuse', '08000', 'Charleville-Mézières'],
             ],
@@ -116,7 +117,7 @@ class OrganizationFixtures extends Fixture
                 'displayName' => 'Lycée Sévigné',
                 'legalNature' => 'Établissement public',
                 'organizationType' => 'AUTRE',
-                'siret' => '67890123456789',
+                'siret' => '10000000000057',
                 'headOffice' => ['5 boulevard Victor Hugo', '08000', 'Charleville-Mézières'],
                 'billing' => ['5 boulevard Victor Hugo', '08000', 'Charleville-Mézières'],
             ],
@@ -124,9 +125,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_PHOTO,
                 'legalName' => 'Club Photo 08',
                 'displayName' => 'Club Photo 08',
-                'legalNature' => 'Association',
+                'legalNature' => 'Association loi 1901',
                 'organizationType' => 'ASSOCIATION',
-                'siret' => '78901234567890',
+                'siret' => '10000000000065',
                 'headOffice' => ['22 rue des Arts', '08110', 'Carignan'],
                 'billing' => ['22 rue des Arts', '08110', 'Carignan'],
             ],
@@ -134,9 +135,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_MJC,
                 'legalName' => 'Maison des Jeunes et de la Culture',
                 'displayName' => 'MJC Nouzonville',
-                'legalNature' => 'Association',
+                'legalNature' => 'Association loi 1901',
                 'organizationType' => 'ASSOCIATION',
-                'siret' => '89012345678901',
+                'siret' => '10000000000073',
                 'headOffice' => ['8 rue de la Gare', '08700', 'Nouzonville'],
                 'billing' => ['8 rue de la Gare', '08700', 'Nouzonville'],
             ],
@@ -146,7 +147,7 @@ class OrganizationFixtures extends Fixture
                 'displayName' => 'Techno Ardennes',
                 'legalNature' => 'SAS',
                 'organizationType' => 'ENTREPRISE',
-                'siret' => '90123456789012',
+                'siret' => '10000000000081',
                 'headOffice' => ['14 rue des Forges', '08100', 'Villers-Semeuse'],
                 'billing' => ['14 rue des Forges', '08100', 'Villers-Semeuse'],
             ],
@@ -154,9 +155,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_THEATRE,
                 'legalName' => 'Compagnie Théâtre des Ardennes',
                 'displayName' => 'Théâtre des Ardennes',
-                'legalNature' => 'Association',
+                'legalNature' => 'Association loi 1901',
                 'organizationType' => 'ASSOCIATION',
-                'siret' => '01234567890123',
+                'siret' => '10000000000099',
                 'headOffice' => ['9 place du Théâtre', '08000', 'Charleville-Mézières'],
                 'billing' => ['9 place du Théâtre', '08000', 'Charleville-Mézières'],
             ],
@@ -164,9 +165,9 @@ class OrganizationFixtures extends Fixture
                 'key' => self::ORG_TOURISME,
                 'legalName' => 'Office de Tourisme des Crêtes',
                 'displayName' => 'Tourisme des Crêtes',
-                'legalNature' => 'Association',
+                'legalNature' => 'Association loi 1901',
                 'organizationType' => 'ASSOCIATION',
-                'siret' => '11234567890123',
+                'siret' => '10000000000107',
                 'headOffice' => ['2 rue du Panorama', '08600', 'Givet'],
                 'billing' => ['2 rue du Panorama', '08600', 'Givet'],
             ],
@@ -187,6 +188,7 @@ class OrganizationFixtures extends Fixture
                 ->setDisplayName($data['displayName'])
                 ->setLegalNature($data['legalNature'])
                 ->setOrganizationType($data['organizationType'])
+                ->setAssociationRegistered($data['organizationType'] === 'ASSOCIATION')
                 ->setBillingSameAsHeadOffice($data['headOffice'] === $data['billing'])
                 ->setHeadOfficeAddress($headOffice)
                 ->setBillingAddress($billing);
@@ -218,7 +220,7 @@ class OrganizationFixtures extends Fixture
                 ->setPhone(sprintf('06%02d%02d%02d%02d', $index + 1, $index + 2, $index + 3, $index + 4));
             $manager->persist($contact);
 
-            $index++;
+            ++$index;
         }
 
         $manager->flush();

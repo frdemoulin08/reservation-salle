@@ -111,7 +111,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $counter = 1;
 
         foreach ($organizations as $org) {
-            for ($i = 0; $i < 2; $i++) {
+            for ($i = 0; $i < 2; ++$i) {
                 $firstName = $firstNames[$counter % count($firstNames)];
                 $lastName = $lastNames[$counter % count($lastNames)];
                 $domain = $this->slugify($org->getDisplayName() ?: $org->getLegalName());
@@ -137,7 +137,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                     $org
                 );
 
-                $counter++;
+                ++$counter;
             }
         }
 

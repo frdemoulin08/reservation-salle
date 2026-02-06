@@ -31,27 +31,35 @@
     <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
         {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
             <div class="md:col-span-2">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Identité</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Structure</p>
             </div>
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressCountry }) }}
+            {{ include('components/_form_field.html.twig', { field: form.organizationType }) }}
+            <div class="md:col-span-2 flex items-center" data-association-registered-field>
+                {{ form_widget(form.associationRegistered, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
+                {{ form_label(form.associationRegistered, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
+                {{ form_errors(form.associationRegistered) }}
+            </div>
+            {{ include('admin/organizations/_siret_field.html.twig', { form: form }) }}
             {{ include('components/_form_field.html.twig', { field: form.legalName, wrapper_class: 'md:col-span-2' }) }}
             {{ include('components/_form_field.html.twig', { field: form.displayName, wrapper_class: 'md:col-span-2' }) }}
-            {{ include('components/_form_field.html.twig', { field: form.organizationType }) }}
-            {{ include('components/_form_field.html.twig', { field: form.legalNature }) }}
-            {{ include('components/_form_field.html.twig', { field: form.siret, wrapper_class: 'md:col-span-2' }) }}
+            <div class="md:col-span-2 mt-2">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Adresse</p>
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine1, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine2, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine3, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressPostalCode, wrapper_class: 'md:col-span-1' }) }}
+            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressCity, wrapper_class: 'md:col-span-1' }) }}
+            <div class="md:col-span-2 mt-2">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Champs complémentaires</p>
+            </div>
+            {{ include('components/_form_field.html.twig', { field: form.legalNature, wrapper_class: 'md:col-span-2' }) }}
             <div class="md:col-span-2 flex items-center">
                 {{ form_widget(form.billingSameAsHeadOffice, { attr: { class: 'w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft' } }) }}
                 {{ form_label(form.billingSameAsHeadOffice, null, { label_attr: { class: 'select-none ms-2 text-sm font-medium text-heading' } }) }}
                 {{ form_errors(form.billingSameAsHeadOffice) }}
             </div>
-            <div class="md:col-span-2 mt-2">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Siège</p>
-            </div>
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressCountry }) }}
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressPostalCode }) }}
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressCity }) }}
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine1, wrapper_class: 'md:col-span-2' }) }}
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine2, wrapper_class: 'md:col-span-2' }) }}
-            {{ include('components/_form_field.html.twig', { field: form.headOfficeAddressLine3, wrapper_class: 'md:col-span-2' }) }}
             <div class="md:col-span-2 mt-2">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-body">Facturation</p>
             </div>

@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use App\Entity\Embeddable\Address;
+use App\Reference\OrganizationLegalNature;
 use App\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 class Organization
@@ -33,6 +36,9 @@ class Organization
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $organizationType = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $associationRegistered = false;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $billingSameAsHeadOffice = false;
@@ -135,6 +141,18 @@ class Organization
         return $this;
     }
 
+    public function isAssociationRegistered(): bool
+    {
+        return $this->associationRegistered;
+    }
+
+    public function setAssociationRegistered(bool $associationRegistered): self
+    {
+        $this->associationRegistered = $associationRegistered;
+
+        return $this;
+    }
+
     public function isBillingSameAsHeadOffice(): bool
     {
         return $this->billingSameAsHeadOffice;
@@ -169,6 +187,42 @@ class Organization
         $this->billingAddress = $billingAddress;
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateSiretRequirement(ExecutionContextInterface $context): void
+    {
+        $country = strtoupper((string) ($this->headOfficeAddress?->getCountry() ?? ''));
+        if ('FR' !== $country) {
+            return;
+        }
+
+        $type = $this->organizationType;
+        $requiresSiret = in_array($type, ['ENTREPRISE', 'COLLECTIVITE'], true)
+            || ('ASSOCIATION' === $type && $this->associationRegistered);
+
+        if (!$requiresSiret) {
+            return;
+        }
+
+        $siret = trim((string) ($this->siret ?? ''));
+        if ('' === $siret) {
+            $context->buildViolation('organization.siret.required')
+                ->atPath('siret')
+                ->addViolation();
+        }
+    }
+
+    #[Assert\Callback]
+    public function validateLegalNature(ExecutionContextInterface $context): void
+    {
+        if (OrganizationLegalNature::isAllowed($this->organizationType, $this->legalNature)) {
+            return;
+        }
+
+        $context->buildViolation('organization.legal_nature.invalid')
+            ->atPath('legalNature')
+            ->addViolation();
     }
 
     /**

@@ -79,7 +79,7 @@ Représente la **personne qui se connecte à l’application**.
 
 - Un utilisateur peut être rattaché à **une organisation principale** (`organization`).
 - Ce rattachement sert :
-  - au pré-remplissage des réservations,
+  - au préremplissage des réservations,
   - à la cohérence métier,
   - sans enfermer les cas plus complexes (facturation distincte).
 
@@ -470,7 +470,7 @@ flowchart TD
 
 ### 6.2. UX / Formulaires
 
-- Pré-remplissage automatique :
+- Préremplissage automatique :
   - demandeur ← User
   - structure ← User.organization
 - Option “Le payeur est le demandeur” pour limiter la saisie.

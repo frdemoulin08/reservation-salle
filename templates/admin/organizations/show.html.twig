@@ -55,6 +55,16 @@
                 <dd class="mt-2 text-base text-heading">{{ organization.organizationType ?? '—' }}</dd>
             </div>
             <div>
+                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Association immatriculée</dt>
+                <dd class="mt-2 text-base text-heading">
+                    {% if organization.organizationType == 'ASSOCIATION' %}
+                        {{ organization.associationRegistered ? 'Oui' : 'Non' }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Nature juridique</dt>
                 <dd class="mt-2 text-base text-heading">{{ organization.legalNature ?? '—' }}</dd>
             </div>

@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted(new Expression('is_granted("ROLE_APP_MANAGER") or is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_BUSINESS_ADMIN")'))]
+#[IsGranted(new Expression('is_granted("ROLE_APP_MANAGER")'))]
 class OrganizationController extends AbstractController
 {
     #[Route('/administration/gestion/organisations', name: 'app_admin_organizations_index')]

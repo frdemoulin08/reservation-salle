@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Embeddable\Address;
 use App\Entity\Organization;
 use App\Repository\CountryRepository;
+use App\Reference\OrganizationLegalNature;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -13,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Luhn;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrganizationType extends AbstractType
@@ -32,6 +35,20 @@ class OrganizationType extends AbstractType
         }
 
         $builder
+            ->add('siret', TextType::class, [
+                'label' => 'SIRET',
+                'required' => false,
+                'empty_data' => null,
+                'attr' => [
+                    'inputmode' => 'numeric',
+                    'autocomplete' => 'off',
+                    'pattern' => '\\d{14}',
+                ],
+                'constraints' => [
+                    new Length(min: 14, max: 14, exactMessage: 'organization.siret.length'),
+                    new Luhn(message: 'organization.siret.invalid'),
+                ],
+            ])
             ->add('legalName', TextType::class, [
                 'label' => 'Dénomination légale',
                 'empty_data' => '',
@@ -48,30 +65,38 @@ class OrganizationType extends AbstractType
             ])
             ->add('organizationType', ChoiceType::class, [
                 'label' => 'Type de structure',
-                'required' => false,
+                'required' => true,
                 'placeholder' => 'Sélectionner un type',
                 'choices' => [
                     'Association' => 'ASSOCIATION',
                     'Entreprise' => 'ENTREPRISE',
                     'Collectivité' => 'COLLECTIVITE',
-                    'Service CD08' => 'CD08_SERVICE',
+                    'Conseil départemental des Ardennes' => 'CD08_SERVICE',
                     'Autre' => 'AUTRE',
                 ],
+                'constraints' => [
+                    new NotBlank(message: 'organization.organization_type.required'),
+                ],
             ])
-            ->add('legalNature', TextType::class, [
+            ->add('associationRegistered', CheckboxType::class, [
+                'label' => 'Association immatriculée',
+                'required' => false,
+            ])
+            ->add('legalNature', ChoiceType::class, [
                 'label' => 'Nature juridique',
                 'required' => false,
-            ])
-            ->add('siret', TextType::class, [
-                'label' => 'SIRET',
-                'required' => false,
+                'placeholder' => 'Sélectionner une nature juridique',
+                'choices' => OrganizationLegalNature::choices(),
+                'choice_attr' => static fn (mixed $choice, string $label, string $value): array => [
+                    'data-legal-types' => implode(',', OrganizationLegalNature::typesFor($value)),
+                ],
             ])
             ->add('billingSameAsHeadOffice', CheckboxType::class, [
                 'label' => 'Adresse de facturation identique au siège',
                 'required' => false,
             ])
             ->add('headOfficeAddressCountry', ChoiceType::class, [
-                'label' => 'Pays (siège)',
+                'label' => 'Pays',
                 'required' => true,
                 'property_path' => 'headOfficeAddress.country',
                 'choices' => $countryChoices,

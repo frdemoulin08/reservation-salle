@@ -66,6 +66,14 @@ room_type:
   label:
     required: "Le libellé est obligatoire."
 organization:
+  siret:
+    required: "Le SIRET est obligatoire pour cette structure."
+    length: "Le SIRET doit contenir exactement 14 chiffres."
+    invalid: "Le SIRET est invalide."
+  organization_type:
+    required: "Le type de structure est obligatoire."
+  legal_nature:
+    invalid: "La nature juridique n’est pas compatible avec le type de structure."
   legal_name:
     required: "La dénomination légale est obligatoire."
   display_name:
