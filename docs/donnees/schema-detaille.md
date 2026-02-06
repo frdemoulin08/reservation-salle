@@ -63,13 +63,13 @@ Relations
 | Champ | Type | Nullable | Notes |
 | --- | --- | --- | --- |
 | id | PK | no |  |
+| publicIdentifier | string(36) | no | UUID public |
 | name | string | no |  |
 | description | text | yes |  |
 | publicTransportAccess | text | yes |  |
 | parkingType | string | yes |  |
 | parkingCapacity | int | yes |  |
-| contactDetails | text | yes |  |
-| referenceContactName | string | yes |  |
+| referenceContactUser | FK | yes | ManyToOne User |
 | deliveryAccess | text | yes |  |
 | accessMapUrl | string | yes |  |
 | houseRules | text | yes | règlement intérieur |
@@ -79,6 +79,7 @@ Relations
 - Venue 1—N Room
 - Venue 1—N VenueDocument
 - Venue 1—N VenueEquipment
+- Venue N—1 User (referenceContactUser)
 
 ---
 
@@ -88,10 +89,13 @@ Relations
 | --- | --- | --- | --- |
 | id | PK | no |  |
 | venue | FK | no | ManyToOne Venue |
+| documentType | FK | no | ManyToOne SiteDocumentType |
 | label | string | no |  |
 | filePath | string | no |  |
+| originalFilename | string | yes |  |
+| size | int | yes |  |
 | mimeType | string | yes |  |
-| type | string | yes | photo / plan / other |
+| isPublic | bool | no | défaut true |
 
 ---
 
@@ -252,3 +256,4 @@ Relations
 | UsageType | code (unique), label |  |
 | AdditionalFeeType | code (unique), label |  |
 | EventType | code (unique), label |  |
+| SiteDocumentType | code (unique), label, isPublic, isRequired, isMultipleAllowed, isActive, position |  |

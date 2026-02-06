@@ -10,7 +10,7 @@ class VenueReferentTest extends DatabaseWebTestCase
 {
     public function testReferentSelectFiltersRoles(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $crawler = $client->request('GET', '/administration/sites/nouveau');
         self::assertResponseIsSuccessful();
@@ -29,7 +29,7 @@ class VenueReferentTest extends DatabaseWebTestCase
 
     public function testCreateVenueWithReferentPersists(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $userRepository = self::getContainer()->get(UserRepository::class);
         $venueRepository = self::getContainer()->get(VenueRepository::class);
 
@@ -66,7 +66,7 @@ class VenueReferentTest extends DatabaseWebTestCase
 
     public function testCreateVenueWithoutReferentShowsPlaceholder(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $venueRepository = self::getContainer()->get(VenueRepository::class);
 
         $crawler = $client->request('GET', '/administration/sites/nouveau');
@@ -97,7 +97,7 @@ class VenueReferentTest extends DatabaseWebTestCase
 
     public function testEditVenueUpdatesReferent(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $userRepository = self::getContainer()->get(UserRepository::class);
         $venueRepository = self::getContainer()->get(VenueRepository::class);
 
@@ -131,7 +131,7 @@ class VenueReferentTest extends DatabaseWebTestCase
 
     public function testEditVenueRemovesReferent(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $userRepository = self::getContainer()->get(UserRepository::class);
         $venueRepository = self::getContainer()->get(VenueRepository::class);
 

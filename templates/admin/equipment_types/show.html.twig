@@ -45,10 +45,6 @@
                 <dd class="mt-2 text-base text-heading">{{ equipment_type.code }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Catégorie</dt>
-                <dd class="mt-2 text-base text-heading">{{ equipment_type.category ?? '—' }}</dd>
-            </div>
-            <div>
                 <dt class="text-xs font-semibold uppercase tracking-[0.12em] text-body">Usages</dt>
                 <dd class="mt-2 text-base text-heading">
                     {{ equipment_type.roomEquipments|length + equipment_type.venueEquipments|length }}

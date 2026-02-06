@@ -69,8 +69,7 @@ Un site regroupe une ou plusieurs salles.
 
 * Nom du site
 * Adresse postale
-* Coordonnées de contact
-* Nom du référent SPSL
+* Référent SPSL (utilisateur lié)
 
 ### Contenus et descriptifs
 

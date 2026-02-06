@@ -14,7 +14,7 @@ parameters:
         items:
           - key: salles_catalogue
             label: "Salles"
-            url: "#"
+            route: app_admin_rooms_index
           - key: services_catalogue
             label: "Services"
             url: "#"
@@ -102,10 +102,6 @@ parameters:
             label: "Pays"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             route: app_admin_countries_index
-          - key: rapports
-            label: "Rapports"
-            roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
-            url: "#"
           - key: regles_reservation
             label: "Règles de réservation"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
@@ -125,6 +121,10 @@ parameters:
               - key: grilles_tarifaires
                 label: "Grilles tarifaires"
                 url: "#"
+          - key: equipements
+            label: "Équipements"
+            roles: [ROLE_BUSINESS_ADMIN]
+            route: app_admin_equipments_index
           - key: types_equipement
             label: "Types d’équipement"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]

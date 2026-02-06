@@ -105,11 +105,8 @@ Remarques :
 
 ### Relation fonctionnelle spécifique
 
-- Le rôle `ROLE_BUSINESS_ADMIN` inclut l’ensemble des prérogatives du rôle `ROLE_APP_MANAGER`.
-
-Cette relation peut être :
-- documentée uniquement ;
-- ou implémentée techniquement via la hiérarchie des rôles Symfony.
+- Aucun lien hiérarchique implicite n’est défini entre les rôles.
+- Si un cumul est nécessaire, il est attribué explicitement (ex. `ROLE_BUSINESS_ADMIN` + `ROLE_APP_MANAGER`).
 
 ---
 

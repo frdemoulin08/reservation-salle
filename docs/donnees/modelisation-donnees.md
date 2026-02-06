@@ -46,6 +46,8 @@ Le modèle doit :
 | Service                | `ServiceType` / `RoomService`                    |
 | Usage autorisé         | `UsageType` / `RoomUsage`                        |
 | Document de salle      | `RoomDocument`                                   |
+| Document de site       | `VenueDocument`                                  |
+| Type de document site  | `SiteDocumentType`                               |
 | Type d’événement       | `EventType`                                      |
 | Réservation            | `Reservation`                                    |
 | Tarification           | `RoomPricing`                                    |
@@ -156,18 +158,34 @@ Relations :
 Champs clés :
 
 * `name`
+* `publicIdentifier` (UUID public)
 * `address`
 * `description`
 * `publicTransportAccess`
 * `parkingType`, `parkingCapacity`
+* `referenceContactUser` (référent SPSL)
+* `deliveryAccess`
+* `accessMapUrl`
+* `houseRules`
 
 Relations :
 
 * `Venue` 1—N `Room`
+* `Venue` 1—N `VenueDocument`
+* `Venue` 1—N `VenueEquipment`
+* `Venue` N—1 `User` (référent SPSL)
 
 ---
 
-### 3.4. Room (Salle)
+### 3.4. Documents de site (VenueDocument)
+
+* Chaque document rattaché à un site est stocké dans `VenueDocument`.
+* Le type fonctionnel est porté par `SiteDocumentType` (code + règles).
+* La visibilité est gérée via `isPublic` (public / privé).
+
+---
+
+### 3.5. Room (Salle)
 
 * Rattachée à un `Venue`
 * **Pas d’adresse propre** (héritage via le site)
@@ -191,7 +209,7 @@ Relations :
 
 ---
 
-### 3.5. Référentiels
+### 3.6. Référentiels
 
 Entités simples avec `code` + `label` :
 
@@ -201,12 +219,14 @@ Entités simples avec `code` + `label` :
 * `ServiceType`
 * `UsageType`
 * `AdditionalFeeType`
+* `EventType`
+* `SiteDocumentType`
 
 Ces entités sont **administrables** et utilisées en relations.
 
 ---
 
-### 3.6. Reservation
+### 3.7. Reservation
 
 * Rattache :
 
@@ -227,7 +247,7 @@ Relations :
 
 ---
 
-### 3.7. Tarification et frais annexes
+### 3.8. Tarification et frais annexes
 
 * `RoomPricing` : tarifs par type d’usager
 * `AdditionalFeeType` : référentiel

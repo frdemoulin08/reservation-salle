@@ -64,8 +64,8 @@ L’application repose sur des **rôles fonctionnels clairement identifiés**, e
 
 ### Relation entre rôles
 
-- Le rôle `ROLE_BUSINESS_ADMIN` inclut l’ensemble des prérogatives du rôle `ROLE_APP_MANAGER`.
-- Aucun autre lien hiérarchique implicite n’est défini entre les rôles.
+- Aucun lien hiérarchique implicite n’est défini entre les rôles.
+- Si un utilisateur doit cumuler des périmètres, il reçoit **explicitement** plusieurs rôles (ex. `ROLE_BUSINESS_ADMIN` + `ROLE_APP_MANAGER`).
 
 ---
 

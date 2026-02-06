@@ -1,0 +1,17 @@
+{% set current_label = current_label|default('Salles') %}
+
+{{ include('components/breadcrumb/crud_double.html.twig', {
+    homeRoute: 'app_admin_index',
+    homeLabel: 'Accueil',
+    firstLevelRoute: 'app_admin_index',
+    firstLevelLabel: 'Catalogue',
+    firstLevelHasLink: "false",
+    secondLevelIndexRoute: 'app_admin_rooms_index',
+    secondLevelIndexLabel: 'Salles',
+    secondLevelShowRoute: 'app_admin_rooms_show',
+    secondLevelShowLabel: current_label,
+    secondLevelCreateRoute: 'app_admin_rooms_new',
+    secondLevelCreateLabel: current_label,
+    secondLevelEditRoute: 'app_admin_rooms_edit',
+    secondLevelEditLabel: current_label
+}) }}

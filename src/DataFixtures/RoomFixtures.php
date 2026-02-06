@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\EquipmentType;
 use App\Entity\Room;
-use App\Entity\RoomDocument;
 use App\Entity\RoomEquipment;
 use App\Entity\RoomLayout;
 use App\Entity\RoomPricing;
@@ -81,22 +80,6 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface
             ->setRoom($room)
             ->setUsageType($usageType);
         $manager->persist($roomUsage);
-
-        $photo = (new RoomDocument())
-            ->setRoom($room)
-            ->setLabel('Photo principale')
-            ->setFilePath('rooms/salle-conseil/photo.jpg')
-            ->setMimeType('image/jpeg')
-            ->setType('photo');
-        $manager->persist($photo);
-
-        $plan = (new RoomDocument())
-            ->setRoom($room)
-            ->setLabel('Plan de salle')
-            ->setFilePath('rooms/salle-conseil/plan.pdf')
-            ->setMimeType('application/pdf')
-            ->setType('plan');
-        $manager->persist($plan);
 
         $pricing = (new RoomPricing())
             ->setRoom($room)
