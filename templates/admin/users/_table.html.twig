@@ -1,6 +1,9 @@
+{% set route = route|default('app_admin_users_index') %}
+{% set route_params = route_params|default({}) %}
 {% set columns = [
     { label: 'NOM PRÉNOM', sort: 'lastname' },
     { label: 'Email', sort: 'email' },
+    { label: 'Organisation' },
     { label: 'Rôles' },
     { label: 'Statut', sort: 'isActive' },
     { label: 'Mise à jour', sort: 'updatedAt' },
@@ -11,9 +14,10 @@
     <div class="overflow-x-auto overflow-y-visible">
         <table class="w-full text-left text-sm text-body">
             {% include '_partials/table/_header.html.twig' with {
-                route: 'app_admin_users_index',
+                route: route,
                 params: params,
-                columns: columns
+                columns: columns,
+                route_params: route_params
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
             {% for user in pager %}
@@ -22,6 +26,13 @@
                             {{ user.lastname|upper }} {{ user.firstname }}
                         </th>
                         <td class="px-6 py-4">{{ user.email }}</td>
+                        <td class="px-6 py-4">
+                            {% if user.organization %}
+                                {{ user.organization.displayName ?: user.organization.legalName }}
+                            {% else %}
+                                <span class="text-body-subtle">—</span>
+                            {% endif %}
+                        </td>
                         <td class="px-6 py-4">
                             {% set role_labels = [] %}
                             {% for role_code in user.roles %}
@@ -63,4 +74,4 @@
     </div>
 </div>
 
-{% include '_partials/table/_pagination.html.twig' with { route: 'app_admin_users_index', params: params, pager: pager } %}
+{% include '_partials/table/_pagination.html.twig' with { route: route, params: params, pager: pager, route_params: route_params } %}

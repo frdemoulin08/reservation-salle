@@ -1,0 +1,63 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Contacts organisation{% endblock %}
+
+{% set active_menu = 'organisations' %}
+{% set org_label = organization.displayName ?: organization.legalName %}
+{% set page_heading = 'Contacts - ' ~ org_label %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/organization_contacts/_breadcrumb.html.twig' with { organization: organization, current_label: 'Contacts' } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Gérez les contacts rattachés à cette organisation.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour à l\'organisation',
+                href: path('app_admin_organizations_show', { id: organization.id }),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-5 shadow-xs">
+        {{ include('components/_table_header.html.twig', {
+            route: 'app_admin_organization_contacts_index',
+            params: params,
+            route_params: { organizationId: organization.id },
+            target: 'organization-contacts',
+            search_id: 'organization-contacts-search',
+            search_placeholder: 'Rechercher un contact, un rôle ou un email',
+            search_value: params.filters.q ?? '',
+            actions: [
+                {
+                    label: 'Ajouter un contact',
+                    variant: 'primary',
+                    href: path('app_admin_organization_contacts_new', { organizationId: organization.id }),
+                    size: 'sm',
+                    extra_class: 'flex items-center justify-center',
+                    icon: '<svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>'
+                }
+            ]
+        }) }}
+        <div id="organization-contacts-table-container" data-table-ajax="organization-contacts">
+            {% include 'admin/organization_contacts/_table.html.twig' with { organization: organization, pager: pager, params: params } %}
+        </div>
+    </section>
+
+    {% include 'admin/_partials/_delete_modal.html.twig' with {
+        modal_id: 'organization-contact-delete-modal',
+        message: 'Confirmez la suppression de ce contact ? ',
+        csrf_token_id: 'delete_organization_contact',
+        show_name: true
+    } %}
+{% endblock %}

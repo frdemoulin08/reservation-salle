@@ -2,6 +2,7 @@
 params:
 - route (string) : route Symfony
 - params (TableParams) : params de table (pagination/tri)
+- route_params (array) : paramètres de route Symfony
 - target (string) : clé pour data-table-target
 - search_id (string)
 - search_placeholder (string)
@@ -11,6 +12,7 @@ params:
 #}
 {% set route = route|default('') %}
 {% set params = params ?? null %}
+{% set route_params = route_params|default({}) %}
 {% set target = target|default('') %}
 {% set search_id = search_id|default('table-search') %}
 {% set search_placeholder = search_placeholder|default('Rechercher...') %}
@@ -19,7 +21,7 @@ params:
 {% set actions = actions|default([]) %}
 
 <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-    <form class="flex w-full flex-1 flex-col gap-3 sm:flex-row sm:items-center md:w-auto" method="get" action="{{ path(route) }}" data-table-form data-table-target="{{ target }}">
+    <form class="flex w-full flex-1 flex-col gap-3 sm:flex-row sm:items-center md:w-auto" method="get" action="{{ path(route, route_params) }}" data-table-form data-table-target="{{ target }}">
         <label class="sr-only" for="{{ search_id }}">Rechercher</label>
         <div class="relative w-full md:min-w-70">
             <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">

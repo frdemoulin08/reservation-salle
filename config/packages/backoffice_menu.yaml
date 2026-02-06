@@ -10,7 +10,7 @@ parameters:
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER, ROLE_SUPERVISOR]
       - key: catalogue
         label: "Catalogue"
-        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
+        roles: [ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
           - key: salles_catalogue
             label: "Salles"
@@ -21,25 +21,25 @@ parameters:
           - key: sites
             label: "Sites"
             route: app_admin_venues_index
-          - key: usages
-            label: "Usages autorisés"
-            url: "#"
       - key: gestion
         label: "Gestion"
         roles: [ROLE_APP_MANAGER]
         items:
-          - key: devis
-            label: "Devis"
-            url: "#"
           - key: demandes
             label: "Demandes à valider"
             url: "#"
+          - key: devis
+            label: "Devis"
+            url: "#"
+          - key: organisations
+            label: "Organisations"
+            route: app_admin_organizations_index
           - key: reservations
             label: "Réservations"
             url: "#"
           - key: usagers
             label: "Usagers"
-            url: "#"
+            route: app_admin_usagers_index
       - key: planning
         label: "Planning"
         roles: [ROLE_APP_MANAGER]
@@ -52,24 +52,20 @@ parameters:
             url: "#"
       - key: documents
         label: "Documents"
-        roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
+        roles: [ROLE_BUSINESS_ADMIN, ROLE_APP_MANAGER]
         items:
-          - key: documents_reservation
-            label: "Pièces jointes réservation"
-            url: "#"
           - key: docs_salle
             label: "Documents de salle"
             url: "#"
           - key: docs_site
             label: "Documents de site"
             url: "#"
+          - key: documents_reservation
+            label: "Pièces jointes réservation"
+            url: "#"
           - key: document_types
             label: "Types de documents"
             route: app_admin_site_document_types_index
-      - key: administration_metier
-        label: "Administration métier"
-        roles: [ROLE_BUSINESS_ADMIN]
-        items:
       - key: administration_generale
         label: "Administration générale"
         roles: [ROLE_SUPER_ADMIN]
@@ -77,12 +73,12 @@ parameters:
           - key: authentication_logs
             label: "Journaux d’authentification"
             route: app_admin_authentication_logs_index
-          - key: cron_tasks
-            label: "Journaux des tâches"
-            route: app_admin_cron_tasks_index
           - key: reset_password_logs
             label: "Journaux de réinitialisation"
             route: app_admin_reset_password_logs_index
+          - key: cron_tasks
+            label: "Journaux des tâches"
+            route: app_admin_cron_tasks_index
           - key: users
             label: "Utilisateurs"
             route: app_admin_users_index
@@ -94,10 +90,10 @@ parameters:
             label: "Configurations de salle"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
             route: app_admin_room_layouts_index
-          - key: habilitations
-            label: "Habilitations"
+          - key: equipements
+            label: "Équipements"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
-            url: "#"
+            route: app_admin_equipments_index
           - key: countries
             label: "Pays"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
@@ -121,10 +117,6 @@ parameters:
               - key: grilles_tarifaires
                 label: "Grilles tarifaires"
                 url: "#"
-          - key: equipements
-            label: "Équipements"
-            roles: [ROLE_BUSINESS_ADMIN]
-            route: app_admin_equipments_index
           - key: types_equipement
             label: "Types d’équipement"
             roles: [ROLE_SUPER_ADMIN, ROLE_BUSINESS_ADMIN]
@@ -143,23 +135,18 @@ parameters:
         items:
           - key: analyse_demande
             label: "Analyse de la demande"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: annulations
             label: "Annulations / no-show"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: exports_rapports
             label: "Exports / rapports"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: performance_sites
             label: "Performance des sites/salles"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: previsions
             label: "Prévisions"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: rapports_synthese
             label: "Rapports de synthèse"
@@ -172,9 +159,7 @@ parameters:
             url: "#"
           - key: tableau_bord_kpi
             label: "Tableau de bord KPI"
-            roles: [ROLE_SUPERVISOR]
             url: "#"
           - key: taux_occupation
             label: "Taux d’occupation"
-            roles: [ROLE_SUPERVISOR]
             url: "#"

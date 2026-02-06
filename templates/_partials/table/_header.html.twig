@@ -1,6 +1,7 @@
 {% set params = params ?? null %}
 {% set route = route ?? null %}
 {% set columns = columns ?? [] %}
+{% set route_params = route_params|default({}) %}
 
 <thead class="bg-neutral-secondary-soft text-xs uppercase tracking-[0.12em] text-heading">
     <tr>
@@ -13,7 +14,7 @@
             <th class="px-4 py-3 font-semibold">
                 {% if isSortable and route and params %}
                     <a class="inline-flex items-center gap-2 hover:text-heading"
-                       href="{{ path(route, params.toQueryArray()|merge({ sort: nextDirection == '' ? '' : column.sort, direction: nextDirection, page: 1 })) }}"
+                       href="{{ path(route, route_params|merge(params.toQueryArray()|merge({ sort: nextDirection == '' ? '' : column.sort, direction: nextDirection, page: 1 }))) }}"
                        data-table-link>
                         <span>{{ column.label }}</span>
                         {% if isActive and params.direction in ['asc', 'desc'] %}

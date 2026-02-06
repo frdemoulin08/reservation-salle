@@ -9,7 +9,6 @@ use App\Entity\EventType;
 use App\Entity\RoomLayout;
 use App\Entity\RoomType;
 use App\Entity\ServiceType;
-use App\Entity\UsageType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -34,7 +33,6 @@ class ReferenceFixtures extends Fixture
     public const EQUIPMENT_SPORTS = 'equipment_sports';
     public const EQUIPMENT_STAGE = 'equipment_stage';
     public const SERVICE_CLEANING = 'service_cleaning';
-    public const USAGE_TRAINING = 'usage_training';
     public const FEE_CLEANING = 'fee_cleaning';
     public const EVENT_PROFESSIONAL_MEETING = 'event_professional_meeting';
     public const EVENT_TRAINING = 'event_training';
@@ -130,12 +128,6 @@ class ReferenceFixtures extends Fixture
             ->setLabel('Ménage');
         $manager->persist($serviceType);
         $this->addReference(self::SERVICE_CLEANING, $serviceType);
-
-        $usageType = (new UsageType())
-            ->setCode('training')
-            ->setLabel('Formations');
-        $manager->persist($usageType);
-        $this->addReference(self::USAGE_TRAINING, $usageType);
 
         $additionalFeeType = (new AdditionalFeeType())
             ->setCode('cleaning')

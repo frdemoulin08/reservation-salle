@@ -16,6 +16,8 @@ Quickstart (script) :
 ./scripts/init-dev.sh
 ```
 
+Ce script suffit pour une première installation : il installe les dépendances (PHP + front), build les assets (dev), applique les migrations et charge les fixtures (purge DB). Il n’est donc pas nécessaire d’exécuter les étapes 1 à 5 si tu utilises ce script.
+
 1) Préparer l’environnement
 ```
 cp .env.example .env.local
@@ -24,8 +26,11 @@ cp .env.example .env.local
 2) Installer les dépendances (PHP + front)
 ```
 composer install
-npm install
+nvm use
+npm ci
 ```
+
+Astuce : la commande `nvm use` force la version Node/NPM du projet (`.nvmrc`) pour éviter les réécritures de `package-lock.json`.
 
 3) Configurer les variables clés (ex. `.env.local`)
 ```
@@ -45,7 +50,7 @@ php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 ```
 
-Alternative rapide : utiliser le script ci-dessus.
+Alternative rapide : `./scripts/fixtures-dev.sh` (fixtures + purge).
 
 ## Commandes utiles
 

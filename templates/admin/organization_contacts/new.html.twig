@@ -1,0 +1,74 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Ajouter un contact{% endblock %}
+
+{% set active_menu = 'organisations' %}
+{% set org_label = organization.displayName ?: organization.legalName %}
+{% set page_heading = 'Ajouter un contact - ' ~ org_label %}
+
+{% block admin_breadcrumb %}
+    <div class="mb-4">
+        {% include 'admin/organization_contacts/_breadcrumb.html.twig' with { organization: organization, current_label: 'Nouveau contact' } %}
+    </div>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gestion</p>
+            <h1 class="mt-3 text-3xl font-semibold text-heading">{{ page_heading }}</h1>
+            <p class="mt-2 max-w-2xl text-sm text-body">Création d’un nouveau contact pour cette organisation.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            {{ include('components/_button.html.twig', {
+                label: 'Retour aux contacts',
+                href: path('app_admin_organization_contacts_index', { organizationId: organization.id }),
+                variant: 'tertiary',
+                size: 'sm'
+            }) }}
+        </div>
+    </div>
+
+    <section class="rounded-2xl border border-default bg-neutral-primary-soft p-6 shadow-xs">
+        {{ form_start(form, { attr: { class: 'grid gap-6 md:grid-cols-2', novalidate: 'novalidate', 'data-validate-form': 'true' } }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.role,
+                required_message: 'organization_contact.role.required'|trans({}, 'validators')
+            }) }}
+            {{ include('components/_form_field.html.twig', { field: form.title }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.firstName,
+                required_message: 'organization_contact.first_name.required'|trans({}, 'validators')
+            }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.lastName,
+                required_message: 'organization_contact.last_name.required'|trans({}, 'validators')
+            }) }}
+            {{ include('components/_form_field.html.twig', { field: form.jobTitle, wrapper_class: 'md:col-span-2' }) }}
+            {{ include('components/_form_field.html.twig', {
+                field: form.email,
+                wrapper_class: 'md:col-span-2',
+                required_message: 'organization_contact.email.required'|trans({}, 'validators'),
+                email_message: 'organization_contact.email.invalid'|trans({}, 'validators'),
+                pattern: '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$',
+                pattern_message: 'organization_contact.email.invalid'|trans({}, 'validators')
+            }) }}
+            {{ include('components/_form_field.html.twig', { field: form.phone, wrapper_class: 'md:col-span-2', input_attr: { placeholder: '06 12 34 56 78', 'data-phone-mask': true } }) }}
+            <div class="md:col-span-2 flex items-center justify-end gap-3">
+                {{ include('components/_button.html.twig', {
+                    label: 'Annuler',
+                    href: path('app_admin_organization_contacts_index', { organizationId: organization.id }),
+                    variant: 'tertiary',
+                    size: 'sm'
+                }) }}
+                {{ include('components/_button.html.twig', {
+                    label: 'Créer le contact',
+                    variant: 'primary',
+                    size: 'sm',
+                    type: 'submit',
+                    extra_class: 'min-w-[150px]'
+                }) }}
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

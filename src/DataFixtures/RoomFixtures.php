@@ -9,9 +9,7 @@ use App\Entity\RoomLayout;
 use App\Entity\RoomPricing;
 use App\Entity\RoomService;
 use App\Entity\RoomType;
-use App\Entity\RoomUsage;
 use App\Entity\ServiceType;
-use App\Entity\UsageType;
 use App\Entity\Venue;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -74,12 +72,6 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface
             ->setServiceType($serviceType)
             ->setIsIncluded(true);
         $manager->persist($roomService);
-
-        $usageType = $this->getReference(ReferenceFixtures::USAGE_TRAINING, UsageType::class);
-        $roomUsage = (new RoomUsage())
-            ->setRoom($room)
-            ->setUsageType($usageType);
-        $manager->persist($roomUsage);
 
         $pricing = (new RoomPricing())
             ->setRoom($room)

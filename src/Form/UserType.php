@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Organization;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Repository\RoleRepository;
@@ -73,6 +74,26 @@ class UserType extends AbstractType
                         ),
                     ]),
                 ],
+            ])
+            ->add('organization', EntityType::class, [
+                'label' => 'Organisation',
+                'class' => Organization::class,
+                'choice_label' => static function (Organization $organization): string {
+                    $displayName = $organization->getDisplayName();
+                    if ('' !== $displayName) {
+                        return $displayName;
+                    }
+
+                    return $organization->getLegalName();
+                },
+                'query_builder' => static function ($repository) {
+                    return $repository
+                        ->createQueryBuilder('o')
+                        ->addOrderBy('o.displayName', 'ASC')
+                        ->addOrderBy('o.legalName', 'ASC');
+                },
+                'placeholder' => 'Aucune',
+                'required' => false,
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',

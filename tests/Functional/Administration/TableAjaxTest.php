@@ -8,7 +8,7 @@ class TableAjaxTest extends DatabaseWebTestCase
 {
     public function testVenuesAjaxReturnsTableFragment(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
 
         $client->xmlHttpRequest('GET', '/administration/sites', [
             'page' => 1,
