@@ -188,7 +188,7 @@ class OrganizationFixtures extends Fixture
                 ->setDisplayName($data['displayName'])
                 ->setLegalNature($data['legalNature'])
                 ->setOrganizationType($data['organizationType'])
-                ->setAssociationRegistered($data['organizationType'] === 'ASSOCIATION')
+                ->setAssociationRegistered('ASSOCIATION' === $data['organizationType'])
                 ->setBillingSameAsHeadOffice($data['headOffice'] === $data['billing'])
                 ->setHeadOfficeAddress($headOffice)
                 ->setBillingAddress($billing);

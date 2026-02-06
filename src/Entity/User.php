@@ -11,7 +11,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'app_user')]
@@ -37,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(type: Types::STRING, length: 26, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 36, unique: true)]
     private ?string $publicIdentifier = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -77,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->authenticationLogs = new ArrayCollection();
         $this->roles = new ArrayCollection();
-        $this->publicIdentifier = (string) new Ulid();
+        $this->publicIdentifier = Uuid::v4()->toRfc4122();
     }
 
     public function getId(): ?int

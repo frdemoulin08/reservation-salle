@@ -14,7 +14,7 @@ class VenuePhotoTest extends DatabaseWebTestCase
 {
     public function testUploadPhotoSucceeds(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $venue = self::getContainer()->get(VenueRepository::class)->findOneBy([]);
 
         self::assertNotNull($venue, 'Aucun site disponible pour le test.');
@@ -67,7 +67,7 @@ class VenuePhotoTest extends DatabaseWebTestCase
 
     public function testUpdatePhotoLabelSucceeds(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
         $photo = $entityManager->getRepository(VenueDocument::class)
@@ -110,7 +110,7 @@ class VenuePhotoTest extends DatabaseWebTestCase
 
     public function testUpdatePhotoLabelRejectsEmptyLabel(): void
     {
-        $client = $this->loginAsAdmin();
+        $client = $this->loginAsBusinessAdmin();
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
         $photo = $entityManager->getRepository(VenueDocument::class)

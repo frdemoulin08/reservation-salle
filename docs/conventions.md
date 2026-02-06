@@ -18,7 +18,7 @@ Un identifiant lisible peut être dérivé à la volée (ex. `user-000123`) sans
 
 L’adresse email est l’identifiant de connexion. Elle est unique, normalisée (minuscule) et modifiable.
 
-Pour les usages publics (URLs exposées), un identifiant opaque `publicIdentifier` (UUID/ULID) est utilisé afin de limiter les risques de manipulation d’URL.
+Pour les usages publics (URLs exposées), un identifiant opaque `publicIdentifier` (UUID v4) est utilisé afin de limiter les risques de manipulation d’URL.
 
 ### Identifiants dans les URLs
 
@@ -31,7 +31,7 @@ Ce choix est acceptable car :
 - l’accès au backoffice est strictement réservé aux profils habilités ;
 - des contrôles d’accès sont systématiquement appliqués côté serveur.
 
-Pour les parties de l’application éventuellement exposées à des profils non administrateurs, il est recommandé d’utiliser des identifiants **opaques** (ex. `publicId` de type UUID/ULID) ou des routes sans identifiant explicite (ex. `/mon-compte`), afin de limiter les risques de manipulation des URLs (IDOR).
+Pour les parties de l’application éventuellement exposées à des profils non administrateurs, il est recommandé d’utiliser des identifiants **opaques** (ex. `publicId` de type UUID v4) ou des routes sans identifiant explicite (ex. `/mon-compte`), afin de limiter les risques de manipulation des URLs (IDOR).
 
 ### Libellés de formulaires (champs optionnels)
 

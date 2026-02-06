@@ -64,7 +64,7 @@ Un identifiant lisible peut être dérivé à la volée (ex. `user-000123`) sans
 
 Un identifiant public optionnel est associé à l’utilisateur :
 
-- type recommandé : UUID/ULID ;
+- type recommandé : UUID v4 ;
 - unique et non devinable ;
 - utilisé pour les URLs exposées.
 

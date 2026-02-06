@@ -4,8 +4,8 @@ namespace App\Form;
 
 use App\Entity\Embeddable\Address;
 use App\Entity\Organization;
-use App\Repository\CountryRepository;
 use App\Reference\OrganizationLegalNature;
+use App\Repository\CountryRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

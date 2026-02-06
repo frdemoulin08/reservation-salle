@@ -66,7 +66,7 @@ L’email n’est pas utilisé comme clé technique interne.
 
 Un identifiant public optionnel peut être associé à l’utilisateur :
 
-- type recommandé : UUID ou ULID ;
+- type recommandé : UUID v4 ;
 - unique et non devinable ;
 - indépendant de l’identifiant interne (`id`).
 

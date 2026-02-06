@@ -26,14 +26,14 @@ class CompanyLookupController extends AbstractController
 
         $result = $companyLookupService->findBySiret($normalized);
 
-        if ($result->status === CompanyLookupResult::STATUS_UNAVAILABLE) {
+        if (CompanyLookupResult::STATUS_UNAVAILABLE === $result->status) {
             return $this->json([
                 'status' => 'unavailable',
                 'message' => 'Le service d\'enrichissement est temporairement indisponible.',
             ], 503);
         }
 
-        if ($result->status === CompanyLookupResult::STATUS_NOT_FOUND) {
+        if (CompanyLookupResult::STATUS_NOT_FOUND === $result->status) {
             return $this->json([
                 'status' => 'not_found',
                 'found' => false,

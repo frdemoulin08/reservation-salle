@@ -81,7 +81,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{publicIdentifier}', name: 'show', requirements: ['publicIdentifier' => '[0-9A-HJKMNP-TV-Z]{26}'])]
+    #[Route('/{publicIdentifier}', name: 'show', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
     public function show(string $publicIdentifier, UserRepository $userRepository): Response
     {
         $user = $userRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
@@ -94,7 +94,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{publicIdentifier}/edition', name: 'edit', requirements: ['publicIdentifier' => '[0-9A-HJKMNP-TV-Z]{26}'])]
+    #[Route('/{publicIdentifier}/edition', name: 'edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
     public function edit(
         Request $request,
         string $publicIdentifier,
