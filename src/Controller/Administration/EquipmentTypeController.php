@@ -7,7 +7,9 @@ use App\Form\EquipmentTypeType;
 use App\Repository\EquipmentTypeRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\EquipmentType\CreateEquipmentType;
+use App\UseCase\EquipmentType\DeleteEquipmentType;
+use App\UseCase\EquipmentType\UpdateEquipmentType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class EquipmentTypeController extends AbstractController
     }
 
     #[Route('/administration/parametrage/types-equipement/nouveau', name: 'app_admin_equipment_types_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateEquipmentType $createEquipmentType): Response
     {
         $equipmentType = new EquipmentType();
         $form = $this->createForm(EquipmentTypeType::class, $equipmentType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($equipmentType);
-            $entityManager->flush();
+            $createEquipmentType->execute($equipmentType);
 
             $this->addFlash('success', 'Le type d’équipement a été créé avec succès.');
 
@@ -85,7 +86,7 @@ class EquipmentTypeController extends AbstractController
         Request $request,
         int $id,
         EquipmentTypeRepository $equipmentTypeRepository,
-        EntityManagerInterface $entityManager,
+        UpdateEquipmentType $updateEquipmentType,
     ): Response {
         $equipmentType = $equipmentTypeRepository->find($id);
         if (!$equipmentType instanceof EquipmentType) {
@@ -98,7 +99,7 @@ class EquipmentTypeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateEquipmentType->execute($equipmentType);
             $this->addFlash('success', 'Le type d’équipement a été mis à jour.');
 
             return $this->redirectToRoute('app_admin_equipment_types_index');
@@ -115,7 +116,7 @@ class EquipmentTypeController extends AbstractController
         Request $request,
         int $id,
         EquipmentTypeRepository $equipmentTypeRepository,
-        EntityManagerInterface $entityManager,
+        DeleteEquipmentType $deleteEquipmentType,
     ): Response {
         $equipmentType = $equipmentTypeRepository->find($id);
         if (!$equipmentType instanceof EquipmentType) {
@@ -126,14 +127,11 @@ class EquipmentTypeController extends AbstractController
             return $this->redirectToRoute('app_admin_equipment_types_index');
         }
 
-        if ($equipmentType->getRoomEquipments()->count() > 0 || $equipmentType->getVenueEquipments()->count() > 0 || $equipmentType->getEquipments()->count() > 0) {
+        if (!$deleteEquipmentType->execute($equipmentType)) {
             $this->addFlash('error', 'Impossible de supprimer un type d’équipement déjà utilisé.');
 
             return $this->redirectToRoute('app_admin_equipment_types_index');
         }
-
-        $entityManager->remove($equipmentType);
-        $entityManager->flush();
         $this->addFlash('success', 'Le type d’équipement a été supprimé.');
 
         return $this->redirectToRoute('app_admin_equipment_types_index');

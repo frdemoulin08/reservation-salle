@@ -7,7 +7,9 @@ use App\Form\SiteDocumentTypeType;
 use App\Repository\SiteDocumentTypeRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\SiteDocumentType\CreateSiteDocumentType;
+use App\UseCase\SiteDocumentType\DeleteSiteDocumentType;
+use App\UseCase\SiteDocumentType\UpdateSiteDocumentType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class SiteDocumentTypeController extends AbstractController
     }
 
     #[Route('/administration/parametrage/types-documents/nouveau', name: 'app_admin_site_document_types_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateSiteDocumentType $createSiteDocumentType): Response
     {
         $documentType = new SiteDocumentType();
         $form = $this->createForm(SiteDocumentTypeType::class, $documentType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($documentType);
-            $entityManager->flush();
+            $createSiteDocumentType->execute($documentType);
 
             $this->addFlash('success', 'Le type de document a été créé avec succès.');
 
@@ -85,7 +86,7 @@ class SiteDocumentTypeController extends AbstractController
         Request $request,
         int $id,
         SiteDocumentTypeRepository $siteDocumentTypeRepository,
-        EntityManagerInterface $entityManager,
+        UpdateSiteDocumentType $updateSiteDocumentType,
     ): Response {
         $documentType = $siteDocumentTypeRepository->find($id);
         if (!$documentType instanceof SiteDocumentType) {
@@ -98,7 +99,7 @@ class SiteDocumentTypeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateSiteDocumentType->execute($documentType);
 
             $this->addFlash('success', 'Le type de document a été mis à jour.');
 
@@ -116,7 +117,7 @@ class SiteDocumentTypeController extends AbstractController
         Request $request,
         int $id,
         SiteDocumentTypeRepository $siteDocumentTypeRepository,
-        EntityManagerInterface $entityManager,
+        DeleteSiteDocumentType $deleteSiteDocumentType,
     ): Response {
         $documentType = $siteDocumentTypeRepository->find($id);
         if (!$documentType instanceof SiteDocumentType) {
@@ -127,14 +128,11 @@ class SiteDocumentTypeController extends AbstractController
             return $this->redirectToRoute('app_admin_site_document_types_index');
         }
 
-        if ($documentType->getDocuments()->count() > 0) {
+        if (!$deleteSiteDocumentType->execute($documentType)) {
             $this->addFlash('error', 'Impossible de supprimer un type de document déjà utilisé.');
 
             return $this->redirectToRoute('app_admin_site_document_types_index');
         }
-
-        $entityManager->remove($documentType);
-        $entityManager->flush();
 
         $this->addFlash('success', 'Le type de document a été supprimé.');
 

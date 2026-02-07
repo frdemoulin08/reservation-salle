@@ -7,7 +7,9 @@ use App\Form\OrganizationType;
 use App\Repository\OrganizationRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\Organization\CreateOrganization;
+use App\UseCase\Organization\DeleteOrganization;
+use App\UseCase\Organization\UpdateOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class OrganizationController extends AbstractController
     }
 
     #[Route('/administration/gestion/organisations/nouveau', name: 'app_admin_organizations_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateOrganization $createOrganization): Response
     {
         $organization = new Organization();
         $form = $this->createForm(OrganizationType::class, $organization);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($organization);
-            $entityManager->flush();
+            $createOrganization->execute($organization);
 
             $this->addFlash('success', 'L\'organisation a été créée avec succès.');
 
@@ -87,7 +88,7 @@ class OrganizationController extends AbstractController
         Request $request,
         int $id,
         OrganizationRepository $organizationRepository,
-        EntityManagerInterface $entityManager,
+        UpdateOrganization $updateOrganization,
     ): Response {
         $organization = $organizationRepository->find($id);
         if (!$organization instanceof Organization) {
@@ -98,7 +99,7 @@ class OrganizationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateOrganization->execute($organization);
             $this->addFlash('success', 'L\'organisation a été mise à jour.');
 
             return $this->redirectToRoute('app_admin_organizations_show', [
@@ -117,7 +118,7 @@ class OrganizationController extends AbstractController
         Request $request,
         int $id,
         OrganizationRepository $organizationRepository,
-        EntityManagerInterface $entityManager,
+        DeleteOrganization $deleteOrganization,
     ): Response {
         $organization = $organizationRepository->find($id);
         if (!$organization instanceof Organization) {
@@ -128,18 +129,12 @@ class OrganizationController extends AbstractController
             return $this->redirectToRoute('app_admin_organizations_index');
         }
 
-        if (
-            $organization->getUsers()->count() > 0
-            || $organization->getContacts()->count() > 0
-            || $organization->getReservations()->count() > 0
-        ) {
+        if (!$deleteOrganization->execute($organization)) {
             $this->addFlash('error', 'Impossible de supprimer une organisation utilisée.');
 
             return $this->redirectToRoute('app_admin_organizations_index');
         }
 
-        $entityManager->remove($organization);
-        $entityManager->flush();
         $this->addFlash('success', 'L\'organisation a été supprimée.');
 
         return $this->redirectToRoute('app_admin_organizations_index');

@@ -23,6 +23,8 @@ class CompanyLookupServiceTest extends TestCase
         self::assertTrue($service->isValidSiret('10000000000016'));
         self::assertFalse($service->isValidSiret('10000000000015'));
         self::assertFalse($service->isValidSiret('123'));
+        self::assertFalse($service->isValidSiret('00000000000000'));
+        self::assertFalse($service->isValidSiret('1000000000001A'));
     }
 
     private function createService(): CompanyLookupService

@@ -7,13 +7,13 @@ use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\User\CreateUser;
+use App\UseCase\User\UpdateUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -28,13 +28,28 @@ class UserController extends AbstractController
         TablePaginator $tablePaginator,
     ): Response {
         $params = TableParams::fromRequest($request, [
-            'sort' => 'updatedAt',
-            'direction' => 'desc',
+            'sort' => 'lastname',
+            'direction' => 'asc',
             'per_page' => 10,
         ]);
 
         $qb = $userRepository->createTableQb($params);
-        $pager = $tablePaginator->paginate($qb, $params, ['firstname', 'lastname', 'email', 'isActive', 'updatedAt'], 'u');
+        $pager = $tablePaginator->paginate(
+            $qb,
+            $params,
+            ['firstname', 'lastname', 'email', 'organization', 'isActive', 'updatedAt'],
+            'u',
+            ['organization' => 'CASE WHEN org.displayName IS NOT NULL AND org.displayName <> \'\' THEN org.displayName ELSE org.legalName END']
+        );
+        if ('lastname' === $params->sort) {
+            $direction = 'desc' === $params->direction ? 'desc' : 'asc';
+            $qb->addOrderBy('u.firstname', $direction);
+        }
+        if ('organization' === $params->sort) {
+            $direction = 'desc' === $params->direction ? 'desc' : 'asc';
+            $qb->addOrderBy('u.lastname', $direction)
+                ->addOrderBy('u.firstname', $direction);
+        }
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('admin/users/_table.html.twig', [
@@ -52,8 +67,7 @@ class UserController extends AbstractController
     #[Route('/nouveau', name: 'new')]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        CreateUser $createUser,
     ): Response {
         $user = new User();
         $form = $this->createForm(UserType::class, $user, [
@@ -64,12 +78,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = (string) $form->get('plainPassword')->getData();
-            if ('' !== $plainPassword) {
-                $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-            }
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $createUser->execute($user, $plainPassword);
 
             $this->addFlash('success', 'L’utilisateur a été créé.');
 
@@ -99,8 +108,7 @@ class UserController extends AbstractController
         Request $request,
         string $publicIdentifier,
         UserRepository $userRepository,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        UpdateUser $updateUser,
     ): Response {
         $user = $userRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$user) {
@@ -124,11 +132,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = (string) $form->get('plainPassword')->getData();
-            if ('' !== $plainPassword) {
-                $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-            }
-
-            $entityManager->flush();
+            $updateUser->execute($user, $plainPassword);
 
             $this->addFlash('success', 'L’utilisateur a été mis à jour.');
 

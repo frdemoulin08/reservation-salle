@@ -7,7 +7,9 @@ use App\Form\EventTypeType;
 use App\Repository\EventTypeRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\EventType\CreateEventType;
+use App\UseCase\EventType\DeleteEventType;
+use App\UseCase\EventType\UpdateEventType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class EventTypeController extends AbstractController
     }
 
     #[Route('/administration/parametrage/types-evenement/nouveau', name: 'app_admin_event_types_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateEventType $createEventType): Response
     {
         $eventType = new EventType();
         $form = $this->createForm(EventTypeType::class, $eventType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($eventType);
-            $entityManager->flush();
+            $createEventType->execute($eventType);
 
             $this->addFlash('success', 'Le type d’événement a été créé avec succès.');
 
@@ -85,7 +86,7 @@ class EventTypeController extends AbstractController
         Request $request,
         int $id,
         EventTypeRepository $eventTypeRepository,
-        EntityManagerInterface $entityManager,
+        UpdateEventType $updateEventType,
     ): Response {
         $eventType = $eventTypeRepository->find($id);
         if (!$eventType instanceof EventType) {
@@ -98,7 +99,7 @@ class EventTypeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateEventType->execute($eventType);
             $this->addFlash('success', 'Le type d’événement a été mis à jour.');
 
             return $this->redirectToRoute('app_admin_event_types_index');
@@ -115,7 +116,7 @@ class EventTypeController extends AbstractController
         Request $request,
         int $id,
         EventTypeRepository $eventTypeRepository,
-        EntityManagerInterface $entityManager,
+        DeleteEventType $deleteEventType,
     ): Response {
         $eventType = $eventTypeRepository->find($id);
         if (!$eventType instanceof EventType) {
@@ -126,14 +127,11 @@ class EventTypeController extends AbstractController
             return $this->redirectToRoute('app_admin_event_types_index');
         }
 
-        if ($eventType->getReservations()->count() > 0) {
+        if (!$deleteEventType->execute($eventType)) {
             $this->addFlash('error', 'Impossible de supprimer un type d’événement déjà utilisé.');
 
             return $this->redirectToRoute('app_admin_event_types_index');
         }
-
-        $entityManager->remove($eventType);
-        $entityManager->flush();
         $this->addFlash('success', 'Le type d’événement a été supprimé.');
 
         return $this->redirectToRoute('app_admin_event_types_index');

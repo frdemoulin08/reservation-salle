@@ -7,7 +7,7 @@
 
 {% block admin_breadcrumb %}
     <div class="mb-4">
-        {% include 'admin/usagers/_breadcrumb.html.twig' %}
+        {% include 'admin/usagers/_breadcrumb.html.twig' with { current_label: page_heading } %}
     </div>
 {% endblock %}
 

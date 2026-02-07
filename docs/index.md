@@ -21,6 +21,10 @@
 ## Développement
 - [Règles de gestion](developpement/regles-gestion.md)
 
+## Métier
+- [Glossaire métier](glossaire.md)
+- [Règles métier (Organisation, Site/Salle)](metier/regles-organisation-site-salle.md)
+
 ## Technique
 - [CRUD standard](technique/crud.md)
 - [Formulaires (technique)](technique/validation-formulaires.md)
