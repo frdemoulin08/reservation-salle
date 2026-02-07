@@ -7,12 +7,11 @@ use App\Form\UsagerType;
 use App\Repository\UserRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\User\CreateUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -27,13 +26,28 @@ class UsagerController extends AbstractController
         TablePaginator $tablePaginator,
     ): Response {
         $params = TableParams::fromRequest($request, [
-            'sort' => 'updatedAt',
-            'direction' => 'desc',
+            'sort' => 'lastname',
+            'direction' => 'asc',
             'per_page' => 10,
         ]);
 
         $qb = $userRepository->createUsagerTableQb($params);
-        $pager = $tablePaginator->paginate($qb, $params, ['firstname', 'lastname', 'email', 'isActive', 'updatedAt'], 'u');
+        $pager = $tablePaginator->paginate(
+            $qb,
+            $params,
+            ['firstname', 'lastname', 'email', 'organization', 'isActive', 'updatedAt'],
+            'u',
+            ['organization' => 'CASE WHEN org.displayName IS NOT NULL AND org.displayName <> \'\' THEN org.displayName ELSE org.legalName END']
+        );
+        if ('lastname' === $params->sort) {
+            $direction = 'desc' === $params->direction ? 'desc' : 'asc';
+            $qb->addOrderBy('u.firstname', $direction);
+        }
+        if ('organization' === $params->sort) {
+            $direction = 'desc' === $params->direction ? 'desc' : 'asc';
+            $qb->addOrderBy('u.lastname', $direction)
+                ->addOrderBy('u.firstname', $direction);
+        }
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('admin/usagers/_table.html.twig', [
@@ -51,8 +65,7 @@ class UsagerController extends AbstractController
     #[Route('/nouveau', name: 'new')]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        CreateUser $createUser,
     ): Response {
         $user = new User();
         $form = $this->createForm(UsagerType::class, $user, [
@@ -63,12 +76,7 @@ class UsagerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = (string) $form->get('plainPassword')->getData();
-            if ('' !== $plainPassword) {
-                $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-            }
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $createUser->execute($user, $plainPassword);
 
             $this->addFlash('success', 'L’usager a été créé.');
 
@@ -78,5 +86,30 @@ class UsagerController extends AbstractController
         return $this->render('admin/usagers/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{publicIdentifier}', name: 'show', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
+    public function show(string $publicIdentifier, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
+        if (!$user instanceof User || $this->isAdminUser($user)) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('admin/usagers/show.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    private function isAdminUser(User $user): bool
+    {
+        $adminRoles = [
+            User::ROLE_SUPER_ADMIN,
+            User::ROLE_BUSINESS_ADMIN,
+            User::ROLE_APP_MANAGER,
+            User::ROLE_SUPERVISOR,
+        ];
+
+        return [] !== array_intersect($user->getRoles(), $adminRoles);
     }
 }

@@ -1,9 +1,11 @@
 {% set route = route|default('app_admin_users_index') %}
 {% set route_params = route_params|default({}) %}
+{% set show_route = show_route|default('app_admin_users_show') %}
+{% set edit_route = edit_route is defined ? edit_route : 'app_admin_users_edit' %}
 {% set columns = [
     { label: 'NOM PRÉNOM', sort: 'lastname' },
     { label: 'Email', sort: 'email' },
-    { label: 'Organisation' },
+    { label: 'Organisation', sort: 'organization' },
     { label: 'Rôles' },
     { label: 'Statut', sort: 'isActive' },
     { label: 'Mise à jour', sort: 'updatedAt' },
@@ -21,7 +23,8 @@
             } %}
             <tbody class="divide-y divide-neutral-secondary-soft bg-neutral-primary">
             {% for user in pager %}
-                <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer" data-row-link="{{ path('app_admin_users_show', { publicIdentifier: user.publicIdentifier }) }}">
+                {% set row_link = show_route ? path(show_route, { publicIdentifier: user.publicIdentifier }) : null %}
+                <tr class="border-b border-default bg-neutral-primary-soft hover:bg-neutral-secondary-medium cursor-pointer"{% if row_link %} data-row-link="{{ row_link }}"{% endif %}>
                         <th scope="row" class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
                             {{ user.lastname|upper }} {{ user.firstname }}
                         </th>
@@ -55,13 +58,21 @@
                         </td>
                         <td class="px-6 py-4">{{ user.updatedAt|date('d/m/Y') }}</td>
                     <td class="px-6 py-4 text-center">
-                        {{ include('components/_actions_dropdown.html.twig', {
-                            id: 'user-actions-' ~ user.id,
-                            items: [
-                                { label: 'Voir', href: path('app_admin_users_show', { publicIdentifier: user.publicIdentifier }) },
-                                { label: 'Éditer', href: path('app_admin_users_edit', { publicIdentifier: user.publicIdentifier }) }
-                            ]
-                        }) }}
+                        {% set action_items = [] %}
+                        {% if show_route %}
+                            {% set action_items = action_items|merge([{ label: 'Voir', href: path(show_route, { publicIdentifier: user.publicIdentifier }) }]) %}
+                        {% endif %}
+                        {% if edit_route %}
+                            {% set action_items = action_items|merge([{ label: 'Éditer', href: path(edit_route, { publicIdentifier: user.publicIdentifier }) }]) %}
+                        {% endif %}
+                        {% if action_items is empty %}
+                            <span class="text-body-subtle">—</span>
+                        {% else %}
+                            {{ include('components/_actions_dropdown.html.twig', {
+                                id: 'user-actions-' ~ user.id,
+                                items: action_items
+                            }) }}
+                        {% endif %}
                     </td>
                     </tr>
                 {% else %}

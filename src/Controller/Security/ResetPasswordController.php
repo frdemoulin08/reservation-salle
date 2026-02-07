@@ -7,6 +7,8 @@ use App\Entity\ResetPasswordRequest;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
+use App\UseCase\ResetPassword\LogResetPasswordEvent;
+use App\UseCase\User\UpdateUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +16,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -37,6 +38,7 @@ class ResetPasswordController extends AbstractController
         ResetPasswordHelperInterface $resetPasswordHelper,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
+        LogResetPasswordEvent $logResetPasswordEvent,
         #[Autowire(service: 'limiter.password_reset_ip')] RateLimiterFactory $passwordResetLimiterIp,
         #[Autowire(service: 'limiter.password_reset_email')] RateLimiterFactory $passwordResetLimiterEmail,
     ): Response {
@@ -61,7 +63,14 @@ class ResetPasswordController extends AbstractController
                 return $this->redirectToRoute('app_check_email');
             }
 
-            return $this->processSendingPasswordResetEmail($request, $email, $resetPasswordHelper, $entityManager, $mailer);
+            return $this->processSendingPasswordResetEmail(
+                $request,
+                $email,
+                $resetPasswordHelper,
+                $entityManager,
+                $mailer,
+                $logResetPasswordEvent,
+            );
         }
 
         return $this->render('security/reset_password/request.html.twig', [
@@ -87,16 +96,23 @@ class ResetPasswordController extends AbstractController
     public function reset(
         Request $request,
         ResetPasswordHelperInterface $resetPasswordHelper,
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager,
+        UpdateUser $updateUser,
         TokenStorageInterface $tokenStorage,
+        LogResetPasswordEvent $logResetPasswordEvent,
         string $token,
     ): Response {
         try {
             /** @var User $user */
             $user = $resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface) {
-            $this->logResetEvent($entityManager, ResetPasswordLog::EVENT_RESET_INVALID, null, '', $request, 'invalid_or_expired_token');
+            $logResetPasswordEvent->execute(
+                ResetPasswordLog::EVENT_RESET_INVALID,
+                null,
+                '',
+                $request->getClientIp(),
+                $request->headers->get('User-Agent'),
+                'invalid_or_expired_token',
+            );
             $this->addFlash('danger', 'Votre lien de réinitialisation est invalide ou expiré.');
 
             return $this->redirectToRoute('app_forgot_password_request');
@@ -109,11 +125,14 @@ class ResetPasswordController extends AbstractController
             $resetPasswordHelper->removeResetRequest($token);
             $this->cleanSessionAfterReset();
 
-            $encodedPassword = $passwordHasher->hashPassword($user, (string) $form->get('plainPassword')->getData());
-            $user->setPassword($encodedPassword);
-
-            $this->logResetEvent($entityManager, ResetPasswordLog::EVENT_RESET_SUCCESS, $user, $user->getEmail() ?? '', $request);
-            $entityManager->flush();
+            $updateUser->execute($user, (string) $form->get('plainPassword')->getData());
+            $logResetPasswordEvent->execute(
+                ResetPasswordLog::EVENT_RESET_SUCCESS,
+                $user,
+                $user->getEmail() ?? '',
+                $request->getClientIp(),
+                $request->headers->get('User-Agent'),
+            );
 
             $currentToken = $tokenStorage->getToken();
             if ($currentToken && $currentToken->getUser() instanceof User) {
@@ -135,14 +154,26 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(Request $request, string $email, ResetPasswordHelperInterface $resetPasswordHelper, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
-    {
+    private function processSendingPasswordResetEmail(
+        Request $request,
+        string $email,
+        ResetPasswordHelperInterface $resetPasswordHelper,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        LogResetPasswordEvent $logResetPasswordEvent,
+    ): Response {
         /** @var User|null $user */
         $user = $entityManager->getRepository(User::class)->findOneBy([
             'email' => mb_strtolower($email),
         ]);
 
-        $this->logResetEvent($entityManager, ResetPasswordLog::EVENT_REQUEST, $user, $email, $request);
+        $logResetPasswordEvent->execute(
+            ResetPasswordLog::EVENT_REQUEST,
+            $user,
+            $email,
+            $request->getClientIp(),
+            $request->headers->get('User-Agent'),
+        );
 
         if (!$user || !$user->isActive()) {
             return $this->redirectToRoute('app_check_email');
@@ -174,25 +205,5 @@ class ResetPasswordController extends AbstractController
         $this->setTokenObjectInSession($resetToken);
 
         return $this->redirectToRoute('app_check_email');
-    }
-
-    private function logResetEvent(
-        EntityManagerInterface $entityManager,
-        string $eventType,
-        ?User $user,
-        string $identifier,
-        Request $request,
-        ?string $failureReason = null,
-    ): void {
-        $log = new ResetPasswordLog();
-        $log->setEventType($eventType);
-        $log->setUser($user);
-        $log->setIdentifier($identifier);
-        $log->setIpAddress($request->getClientIp());
-        $log->setUserAgent($request->headers->get('User-Agent'));
-        $log->setFailureReason($failureReason);
-
-        $entityManager->persist($log);
-        $entityManager->flush();
     }
 }

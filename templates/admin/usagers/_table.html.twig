@@ -1,1 +1,7 @@
-{% include 'admin/users/_table.html.twig' with { pager: pager, params: params, route: 'app_admin_usagers_index' } %}
+{% include 'admin/users/_table.html.twig' with {
+    pager: pager,
+    params: params,
+    route: 'app_admin_usagers_index',
+    show_route: 'app_admin_usagers_show',
+    edit_route: null
+} %}

@@ -21,6 +21,7 @@ class UserRepository extends ServiceEntityRepository
     public function createTableQb(TableParams $params): QueryBuilder
     {
         $qb = $this->createQueryBuilder('u');
+        $qb->leftJoin('u.organization', 'org');
 
         $search = trim((string) ($params->filters['q'] ?? ''));
         if ('' !== $search) {

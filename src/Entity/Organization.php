@@ -177,6 +177,51 @@ class Organization
         return $this;
     }
 
+    public function isHeadOfficeInFrance(): bool
+    {
+        $country = strtoupper((string) ($this->headOfficeAddress?->getCountry() ?? ''));
+
+        return 'FR' === $country;
+    }
+
+    public function requiresSiret(): bool
+    {
+        if (!$this->isHeadOfficeInFrance()) {
+            return false;
+        }
+
+        return in_array($this->organizationType, ['ENTREPRISE', 'COLLECTIVITE'], true)
+            || ('ASSOCIATION' === $this->organizationType && $this->associationRegistered);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function applyLookupData(array $data, bool $overwrite = false): void
+    {
+        $this->siret = $this->mergeValue($this->siret, $data['siret'] ?? null, $overwrite);
+        $this->legalName = (string) $this->mergeValue($this->legalName, $data['legalName'] ?? null, $overwrite);
+        $this->displayName = (string) $this->mergeValue($this->displayName, $data['displayName'] ?? null, $overwrite);
+        $this->legalNature = $this->mergeValue($this->legalNature, $data['legalNature'] ?? null, $overwrite);
+        $this->organizationType = $this->mergeValue($this->organizationType, $data['organizationType'] ?? null, $overwrite);
+
+        $addressData = $data['address'] ?? null;
+        if (!is_array($addressData)) {
+            return;
+        }
+
+        if (null === $this->headOfficeAddress) {
+            $this->headOfficeAddress = new Address();
+        }
+
+        $this->headOfficeAddress->setLine1($this->mergeValue($this->headOfficeAddress->getLine1(), $addressData['line1'] ?? null, $overwrite));
+        $this->headOfficeAddress->setLine2($this->mergeValue($this->headOfficeAddress->getLine2(), $addressData['line2'] ?? null, $overwrite));
+        $this->headOfficeAddress->setLine3($this->mergeValue($this->headOfficeAddress->getLine3(), $addressData['line3'] ?? null, $overwrite));
+        $this->headOfficeAddress->setPostalCode($this->mergeValue($this->headOfficeAddress->getPostalCode(), $addressData['postalCode'] ?? null, $overwrite));
+        $this->headOfficeAddress->setCity($this->mergeValue($this->headOfficeAddress->getCity(), $addressData['city'] ?? null, $overwrite));
+        $this->headOfficeAddress->setCountry($this->mergeValue($this->headOfficeAddress->getCountry(), $addressData['country'] ?? null, $overwrite));
+    }
+
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
@@ -189,19 +234,23 @@ class Organization
         return $this;
     }
 
+    private function mergeValue(?string $current, ?string $incoming, bool $overwrite): ?string
+    {
+        if (null === $incoming || '' === $incoming) {
+            return $current;
+        }
+
+        if (!$overwrite && null !== $current && '' !== $current) {
+            return $current;
+        }
+
+        return $incoming;
+    }
+
     #[Assert\Callback]
     public function validateSiretRequirement(ExecutionContextInterface $context): void
     {
-        $country = strtoupper((string) ($this->headOfficeAddress?->getCountry() ?? ''));
-        if ('FR' !== $country) {
-            return;
-        }
-
-        $type = $this->organizationType;
-        $requiresSiret = in_array($type, ['ENTREPRISE', 'COLLECTIVITE'], true)
-            || ('ASSOCIATION' === $type && $this->associationRegistered);
-
-        if (!$requiresSiret) {
+        if (!$this->requiresSiret()) {
             return;
         }
 

@@ -7,7 +7,9 @@ use App\Form\EquipmentFormType;
 use App\Repository\EquipmentRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\Equipment\CreateEquipment;
+use App\UseCase\Equipment\DeleteEquipment;
+use App\UseCase\Equipment\UpdateEquipment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class EquipmentController extends AbstractController
     }
 
     #[Route('/administration/parametrage/equipements/nouveau', name: 'app_admin_equipments_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateEquipment $createEquipment): Response
     {
         $equipment = new Equipment();
         $form = $this->createForm(EquipmentFormType::class, $equipment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($equipment);
-            $entityManager->flush();
+            $createEquipment->execute($equipment);
 
             $this->addFlash('success', 'L’équipement a été créé avec succès.');
 
@@ -85,7 +86,7 @@ class EquipmentController extends AbstractController
         Request $request,
         int $id,
         EquipmentRepository $equipmentRepository,
-        EntityManagerInterface $entityManager,
+        UpdateEquipment $updateEquipment,
     ): Response {
         $equipment = $equipmentRepository->find($id);
         if (!$equipment instanceof Equipment) {
@@ -98,7 +99,7 @@ class EquipmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateEquipment->execute($equipment);
 
             $this->addFlash('success', 'L’équipement a été mis à jour.');
 
@@ -118,7 +119,7 @@ class EquipmentController extends AbstractController
         Request $request,
         int $id,
         EquipmentRepository $equipmentRepository,
-        EntityManagerInterface $entityManager,
+        DeleteEquipment $deleteEquipment,
     ): Response {
         $equipment = $equipmentRepository->find($id);
         if (!$equipment instanceof Equipment) {
@@ -129,8 +130,7 @@ class EquipmentController extends AbstractController
             return $this->redirectToRoute('app_admin_equipments_index');
         }
 
-        $entityManager->remove($equipment);
-        $entityManager->flush();
+        $deleteEquipment->execute($equipment);
 
         $this->addFlash('success', 'L’équipement a été supprimé.');
 
