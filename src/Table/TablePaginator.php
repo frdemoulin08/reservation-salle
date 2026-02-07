@@ -9,7 +9,7 @@ use Pagerfanta\Pagerfanta;
 class TablePaginator
 {
     /**
-     * @param string[] $allowedSorts
+     * @param string[]              $allowedSorts
      * @param array<string, string> $sortMap
      */
     public function paginate(
