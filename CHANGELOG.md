@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.5...v1.1.0) (2026-02-07)
+
+
+### Bug Fixes
+
+* correctif sur la pagination des tableaux ([e1840c6](https://github.com/frdemoulin08/reservation-salle/commit/e1840c68bdd48db281c62aa76324aecdb0473630))
+
+
+### Features
+
+* mise en place des cas d'usage ([0ae5ad3](https://github.com/frdemoulin08/reservation-salle/commit/0ae5ad34f40485c82ca4d9849e46e2e851d6b932))
+
 ## [1.0.5](https://github.com/frdemoulin08/reservation-salle/compare/v1.0.4...v1.0.5) (2026-02-06)
 
 
