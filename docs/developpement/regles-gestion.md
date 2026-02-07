@@ -74,6 +74,80 @@ Un “usager” est un compte **sans rôle d’administration**.
 - Filtrage liste : `src/Repository/UserRepository.php`
 - Formulaire : `src/Form/UsagerType.php`
 
+## RG-SITE-001 — Champs obligatoires d’un site
+
+**Règle**
+À la création d’un site, sont obligatoires :
+- nom
+- description (max 500)
+- adresse : ligne 1, code postal, pays, commune
+
+**Implémentation**
+- Formulaire : `src/Form/VenueType.php`
+- Tests : `tests/Functional/Administration/VenueValidationTest.php`
+
+## RG-SITE-002 — Identifiant public d’un site
+
+**Règle**
+Chaque site possède un `publicIdentifier` UUID v4 utilisé dans les routes de détail.
+
+**Implémentation**
+- Entité : `src/Entity/Venue.php`
+- Contrôleur : `src/Controller/Administration/VenueController.php`
+
+## RG-SITE-003 — Photos de site
+
+**Règle**
+- Upload protégé par CSRF
+- Le libellé de photo est obligatoire
+
+**Implémentation**
+- Contrôleur : `src/Controller/Administration/VenueController.php`
+- Tests : `tests/Functional/Administration/VenuePhotoTest.php`
+
+## RG-SALLE-001 — Rattachement à un site
+
+**Règle**
+Une salle doit être rattachée à un site.
+
+**Implémentation**
+- Entité : `src/Entity/Room.php` (relation non nullable)
+
+## RG-SALLE-002 — Identifiant public d’une salle
+
+**Règle**
+Chaque salle possède un `publicIdentifier` UUID v4 utilisé dans les routes de détail.
+
+**Implémentation**
+- Entité : `src/Entity/Room.php`
+- Contrôleur : `src/Controller/Administration/RoomController.php`
+
+## RG-SALLE-003 — Photos de salle
+
+**Règle**
+- Upload protégé par CSRF
+- Le libellé de photo est obligatoire
+
+**Implémentation**
+- Contrôleur : `src/Controller/Administration/RoomController.php`
+- Tests : `tests/Functional/Administration/RoomPhotoTest.php`
+
+## RG-REF-001 — Code des référentiels
+
+**Règle**
+Les codes des référentiels (types, configurations) sont :
+- obligatoires
+- au format `UPPER_SNAKE_CASE`
+- immuables après création
+
+**Référentiels concernés**
+- Type de salle (`RoomType`)
+- Configuration de salle (`RoomLayout`)
+- Type d’équipement (`EquipmentType`)
+
+**Implémentation**
+- Tests : `tests/Functional/Administration/RoomTypeValidationTest.php`, `tests/Functional/Administration/RoomLayoutValidationTest.php`, `tests/Functional/Administration/EquipmentTypeValidationTest.php`
+
 ---
 
 Pour ajouter une nouvelle RG :

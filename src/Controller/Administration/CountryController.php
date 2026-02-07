@@ -7,7 +7,9 @@ use App\Form\CountryType;
 use App\Repository\CountryRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\Country\CreateCountry;
+use App\UseCase\Country\DeleteCountry;
+use App\UseCase\Country\UpdateCountry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class CountryController extends AbstractController
     }
 
     #[Route('/administration/parametrage/pays/nouveau', name: 'app_admin_countries_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateCountry $createCountry): Response
     {
         $country = new Country();
         $form = $this->createForm(CountryType::class, $country);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($country);
-            $entityManager->flush();
+            $createCountry->execute($country);
 
             $this->addFlash('success', 'Le pays a été créé avec succès.');
 
@@ -83,8 +84,12 @@ class CountryController extends AbstractController
     }
 
     #[Route('/administration/parametrage/pays/{publicIdentifier}/modifier', name: 'app_admin_countries_edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
-    public function edit(Request $request, string $publicIdentifier, CountryRepository $countryRepository, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request,
+        string $publicIdentifier,
+        CountryRepository $countryRepository,
+        UpdateCountry $updateCountry,
+    ): Response {
         $country = $countryRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$country) {
             throw $this->createNotFoundException();
@@ -94,7 +99,7 @@ class CountryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateCountry->execute($country);
             $this->addFlash('success', 'Le pays a été mis à jour.');
 
             return $this->redirectToRoute('app_admin_countries_show', [
@@ -109,8 +114,12 @@ class CountryController extends AbstractController
     }
 
     #[Route('/administration/parametrage/pays/{publicIdentifier}/supprimer', name: 'app_admin_countries_delete', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'], methods: ['POST'])]
-    public function delete(Request $request, string $publicIdentifier, CountryRepository $countryRepository, EntityManagerInterface $entityManager): Response
-    {
+    public function delete(
+        Request $request,
+        string $publicIdentifier,
+        CountryRepository $countryRepository,
+        DeleteCountry $deleteCountry,
+    ): Response {
         $country = $countryRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$country) {
             throw $this->createNotFoundException();
@@ -120,8 +129,7 @@ class CountryController extends AbstractController
             return $this->redirectToRoute('app_admin_countries_index');
         }
 
-        $entityManager->remove($country);
-        $entityManager->flush();
+        $deleteCountry->execute($country);
         $this->addFlash('success', 'Le pays a été supprimé.');
 
         return $this->redirectToRoute('app_admin_countries_index');

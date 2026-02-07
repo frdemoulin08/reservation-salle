@@ -9,3 +9,4 @@ Index des guides UI disponibles.
 - [Flowbite + Tailwind (guidelines)](recommandations-flowbite-tailwind.md)
 - [Icônes](icones.md)
 - [Formulaires](formulaires.md)
+- [Boutons](boutons.md)

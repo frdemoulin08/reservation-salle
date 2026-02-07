@@ -16,13 +16,35 @@
                 <span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">Gestion</span>
             </div>
         </li>
-        <li aria-current="page">
-            <div class="flex items-center space-x-1.5">
-                <svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
-                </svg>
-                <span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">Usagers</span>
-            </div>
-        </li>
+        {% set current_label = current_label|default('') %}
+        {% if current_label %}
+            <li>
+                <div class="flex items-center space-x-1.5">
+                    <svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                    </svg>
+                    <a href="{{ path('app_admin_usagers_index') }}" class="inline-flex items-center text-xs font-medium text-body hover:text-fg-brand sm:text-sm leading-tight whitespace-normal">
+                        Usagers
+                    </a>
+                </div>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center space-x-1.5">
+                    <svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                    </svg>
+                    <span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">{{ current_label }}</span>
+                </div>
+            </li>
+        {% else %}
+            <li aria-current="page">
+                <div class="flex items-center space-x-1.5">
+                    <svg class="h-3.5 w-3.5 text-body rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                    </svg>
+                    <span class="inline-flex items-center text-xs font-medium text-body-subtle sm:text-sm leading-tight whitespace-normal">Usagers</span>
+                </div>
+            </li>
+        {% endif %}
     </ol>
 </nav>

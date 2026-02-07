@@ -15,6 +15,14 @@ use App\Service\PhotoUploadHelper;
 use App\Service\SiteDocumentStorage;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
+use App\UseCase\Venue\AddVenueDocument;
+use App\UseCase\Venue\AddVenuePhotos;
+use App\UseCase\Venue\CreateVenue;
+use App\UseCase\Venue\DeleteVenue;
+use App\UseCase\Venue\DeleteVenueDocument;
+use App\UseCase\Venue\DeleteVenuePhoto;
+use App\UseCase\Venue\UpdateVenue;
+use App\UseCase\Venue\UpdateVenuePhotoLabel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Packages;
@@ -64,15 +72,14 @@ class VenueController extends AbstractController
 
     #[Route('/administration/sites/nouveau', name: 'app_admin_venues_new')]
     #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateVenue $createVenue): Response
     {
         $venue = new Venue();
         $form = $this->createForm(VenueType::class, $venue);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($venue);
-            $entityManager->flush();
+            $createVenue->execute($venue);
 
             $this->addFlash('success', 'Le site a été créé avec succès.');
 
@@ -93,9 +100,9 @@ class VenueController extends AbstractController
         VenueRepository $venueRepository,
         CountryRepository $countryRepository,
         SiteDocumentTypeRepository $documentTypeRepository,
-        EntityManagerInterface $entityManager,
-        SiteDocumentStorage $documentStorage,
         PhotoUploadHelper $photoUploadHelper,
+        AddVenuePhotos $addVenuePhotos,
+        AddVenueDocument $addVenueDocument,
     ): Response {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -123,35 +130,14 @@ class VenueController extends AbstractController
                 if (!$photoType->isMultipleAllowed() && ($this->hasDocumentOfType($venue, $photoType) || count($uploadedFiles) > 1)) {
                     $photoForm->addError(new FormError($photoUploadHelper->getSinglePhotoNotAllowedMessage()));
                 } else {
-                    foreach ($uploadedFiles as $uploadedFile) {
-                        if (!$uploadedFile instanceof UploadedFile) {
-                            continue;
-                        }
+                    $createdDocuments = $addVenuePhotos->execute($venue, $photoType, $uploadedFiles);
+                    if ([] !== $createdDocuments) {
+                        $this->addFlash('success', $photoUploadHelper->getPhotosAddedMessage());
 
-                        $size = $uploadedFile->getSize();
-                        $mimeType = $uploadedFile->getMimeType() ?? $uploadedFile->getClientMimeType();
-                        $relativePath = $documentStorage->storeUploadedFile($venue, $uploadedFile, 'photos', $photoType->isPublic());
-                        $label = $photoUploadHelper->createDefaultLabel($uploadedFile);
-
-                        $photoDocument = (new VenueDocument())
-                            ->setVenue($venue)
-                            ->setLabel($label)
-                            ->setFilePath($relativePath)
-                            ->setMimeType($mimeType)
-                            ->setOriginalFilename($uploadedFile->getClientOriginalName())
-                            ->setSize($size)
-                            ->setIsPublic($photoType->isPublic())
-                            ->setDocumentType($photoType);
-
-                        $entityManager->persist($photoDocument);
+                        return $this->redirectToRoute('app_admin_venues_show', [
+                            'publicIdentifier' => $publicIdentifier,
+                        ]);
                     }
-                    $entityManager->flush();
-
-                    $this->addFlash('success', $photoUploadHelper->getPhotosAddedMessage());
-
-                    return $this->redirectToRoute('app_admin_venues_show', [
-                        'publicIdentifier' => $publicIdentifier,
-                    ]);
                 }
             }
         }
@@ -171,27 +157,7 @@ class VenueController extends AbstractController
             } elseif (!$documentType->isMultipleAllowed() && $this->hasDocumentOfType($venue, $documentType)) {
                 $documentForm->addError(new FormError('Un document de ce type existe déjà pour ce site.'));
             } elseif ($uploadedFile instanceof UploadedFile) {
-                $originalName = $uploadedFile->getClientOriginalName();
-                $size = $uploadedFile->getSize();
-                $mimeType = $uploadedFile->getMimeType() ?? $uploadedFile->getClientMimeType();
-                $relativePath = $documentStorage->storeUploadedFile($venue, $uploadedFile, 'documents', $documentType->isPublic());
-                $label = trim($documentUpload->getLabel());
-                if ('' === $label) {
-                    $label = pathinfo($originalName, PATHINFO_FILENAME) ?: 'Document';
-                    $documentUpload->setLabel($label);
-                }
-
-                $documentUpload
-                    ->setVenue($venue)
-                    ->setDocumentType($documentType)
-                    ->setFilePath($relativePath)
-                    ->setMimeType($mimeType)
-                    ->setOriginalFilename($originalName)
-                    ->setSize($size)
-                    ->setIsPublic($documentType->isPublic());
-
-                $entityManager->persist($documentUpload);
-                $entityManager->flush();
+                $addVenueDocument->execute($venue, $documentUpload, $documentType, $uploadedFile);
 
                 $this->addFlash('success', 'Le document a été ajouté avec succès.');
 
@@ -232,8 +198,8 @@ class VenueController extends AbstractController
         int $id,
         VenueRepository $venueRepository,
         EntityManagerInterface $entityManager,
-        SiteDocumentStorage $documentStorage,
         PhotoUploadHelper $photoUploadHelper,
+        DeleteVenuePhoto $deleteVenuePhoto,
     ): Response {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -255,9 +221,7 @@ class VenueController extends AbstractController
             ]);
         }
 
-        $documentStorage->delete($document->getFilePath(), $document->isPublic());
-        $entityManager->remove($document);
-        $entityManager->flush();
+        $deleteVenuePhoto->execute($document);
 
         $this->addFlash('success', $photoUploadHelper->getPhotoDeletedMessage());
 
@@ -272,11 +236,10 @@ class VenueController extends AbstractController
         string $publicIdentifier,
         VenueRepository $venueRepository,
         SiteDocumentTypeRepository $documentTypeRepository,
-        SiteDocumentStorage $documentStorage,
-        EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager,
         Packages $packages,
         PhotoUploadHelper $photoUploadHelper,
+        AddVenuePhotos $addVenuePhotos,
     ): JsonResponse {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -307,28 +270,7 @@ class VenueController extends AbstractController
             return new JsonResponse(['message' => $validationError], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $createdDocuments = [];
-        foreach ($files as $file) {
-            $size = $file->getSize();
-            $mimeType = $file->getMimeType() ?? $file->getClientMimeType();
-            $relativePath = $documentStorage->storeUploadedFile($venue, $file, 'photos', $photoType->isPublic());
-            $label = $photoUploadHelper->createDefaultLabel($file);
-
-            $photoDocument = (new VenueDocument())
-                ->setVenue($venue)
-                ->setLabel($label)
-                ->setFilePath($relativePath)
-                ->setMimeType($mimeType)
-                ->setOriginalFilename($file->getClientOriginalName())
-                ->setSize($size)
-                ->setIsPublic($photoType->isPublic())
-                ->setDocumentType($photoType);
-
-            $entityManager->persist($photoDocument);
-            $createdDocuments[] = $photoDocument;
-        }
-
-        $entityManager->flush();
+        $createdDocuments = $addVenuePhotos->execute($venue, $photoType, $files);
 
         $photos = [];
         foreach ($createdDocuments as $photoDocument) {
@@ -365,6 +307,7 @@ class VenueController extends AbstractController
         EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager,
         PhotoUploadHelper $photoUploadHelper,
+        UpdateVenuePhotoLabel $updateVenuePhotoLabel,
     ): JsonResponse {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -385,17 +328,10 @@ class VenueController extends AbstractController
             return new JsonResponse(['message' => $photoUploadHelper->getInvalidCsrfMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $label = trim((string) $request->request->get('label', ''));
-        if ('' === $label) {
-            return new JsonResponse(['message' => $photoUploadHelper->getLabelRequiredMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        $error = $updateVenuePhotoLabel->execute($document, (string) $request->request->get('label', ''));
+        if (null !== $error) {
+            return new JsonResponse(['message' => $error], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if (mb_strlen($label) > 255) {
-            return new JsonResponse(['message' => $photoUploadHelper->getLabelTooLongMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $document->setLabel($label);
-        $entityManager->flush();
 
         return new JsonResponse([
             'label' => $document->getLabel(),
@@ -409,7 +345,7 @@ class VenueController extends AbstractController
         int $id,
         VenueRepository $venueRepository,
         EntityManagerInterface $entityManager,
-        SiteDocumentStorage $documentStorage,
+        DeleteVenueDocument $deleteVenueDocument,
     ): Response {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -431,9 +367,7 @@ class VenueController extends AbstractController
             ]);
         }
 
-        $documentStorage->delete($document->getFilePath(), $document->isPublic());
-        $entityManager->remove($document);
-        $entityManager->flush();
+        $deleteVenueDocument->execute($document);
 
         $this->addFlash('success', 'Le document a été supprimé.');
 
@@ -479,7 +413,7 @@ class VenueController extends AbstractController
 
     #[Route('/administration/sites/{publicIdentifier}/modifier', name: 'app_admin_venues_edit', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'])]
     #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
-    public function edit(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, string $publicIdentifier, VenueRepository $venueRepository, UpdateVenue $updateVenue): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -490,7 +424,7 @@ class VenueController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateVenue->execute();
 
             $this->addFlash('success', 'Le site a été mis à jour.');
 
@@ -507,7 +441,7 @@ class VenueController extends AbstractController
 
     #[Route('/administration/sites/{publicIdentifier}/supprimer', name: 'app_admin_venues_delete', requirements: ['publicIdentifier' => '[0-9a-fA-F\\-]{36}'], methods: ['POST'])]
     #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
-    public function delete(Request $request, string $publicIdentifier, VenueRepository $venueRepository, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, string $publicIdentifier, VenueRepository $venueRepository, DeleteVenue $deleteVenue): Response
     {
         $venue = $venueRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$venue) {
@@ -518,8 +452,7 @@ class VenueController extends AbstractController
             return $this->redirectToRoute('app_admin_venues_index');
         }
 
-        $entityManager->remove($venue);
-        $entityManager->flush();
+        $deleteVenue->execute($venue);
         $this->addFlash('success', 'Le site a été supprimé.');
 
         return $this->redirectToRoute('app_admin_venues_index');

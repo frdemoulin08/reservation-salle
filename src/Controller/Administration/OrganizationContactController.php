@@ -4,13 +4,14 @@ namespace App\Controller\Administration;
 
 use App\Entity\Organization;
 use App\Entity\OrganizationContact;
-use App\Entity\Reservation;
 use App\Form\OrganizationContactType;
 use App\Repository\OrganizationContactRepository;
 use App\Repository\OrganizationRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\OrganizationContact\CreateOrganizationContact;
+use App\UseCase\OrganizationContact\DeleteOrganizationContact;
+use App\UseCase\OrganizationContact\UpdateOrganizationContact;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,7 +67,7 @@ class OrganizationContactController extends AbstractController
         int $organizationId,
         Request $request,
         OrganizationRepository $organizationRepository,
-        EntityManagerInterface $entityManager,
+        CreateOrganizationContact $createOrganizationContact,
     ): Response {
         $organization = $organizationRepository->find($organizationId);
         if (!$organization instanceof Organization) {
@@ -80,8 +81,7 @@ class OrganizationContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($contact);
-            $entityManager->flush();
+            $createOrganizationContact->execute($contact);
 
             $this->addFlash('success', 'Le contact a été créé avec succès.');
 
@@ -126,7 +126,7 @@ class OrganizationContactController extends AbstractController
         Request $request,
         OrganizationRepository $organizationRepository,
         OrganizationContactRepository $contactRepository,
-        EntityManagerInterface $entityManager,
+        UpdateOrganizationContact $updateOrganizationContact,
     ): Response {
         $organization = $organizationRepository->find($organizationId);
         if (!$organization instanceof Organization) {
@@ -142,7 +142,7 @@ class OrganizationContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateOrganizationContact->execute($contact);
             $this->addFlash('success', 'Le contact a été mis à jour.');
 
             return $this->redirectToRoute('app_admin_organization_contacts_show', [
@@ -165,7 +165,7 @@ class OrganizationContactController extends AbstractController
         Request $request,
         OrganizationRepository $organizationRepository,
         OrganizationContactRepository $contactRepository,
-        EntityManagerInterface $entityManager,
+        DeleteOrganizationContact $deleteOrganizationContact,
     ): Response {
         $organization = $organizationRepository->find($organizationId);
         if (!$organization instanceof Organization) {
@@ -183,19 +183,13 @@ class OrganizationContactController extends AbstractController
             ]);
         }
 
-        $reservationsCount = $entityManager->getRepository(Reservation::class)->count([
-            'organizationContact' => $contact,
-        ]);
-        if ($reservationsCount > 0) {
+        if (!$deleteOrganizationContact->execute($contact)) {
             $this->addFlash('error', 'Impossible de supprimer un contact déjà utilisé dans des réservations.');
 
             return $this->redirectToRoute('app_admin_organization_contacts_index', [
                 'organizationId' => $organization->getId(),
             ]);
         }
-
-        $entityManager->remove($contact);
-        $entityManager->flush();
         $this->addFlash('success', 'Le contact a été supprimé.');
 
         return $this->redirectToRoute('app_admin_organization_contacts_index', [

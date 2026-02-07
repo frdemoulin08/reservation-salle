@@ -105,6 +105,8 @@ Index centralisé : `docs/index.md`
 - Versioning : `docs/gestion-versions.md`
 - Epics & user stories : `docs/epics-et-user-stories.md`
 - Conventions : `docs/conventions.md`
+- Glossaire métier : `docs/glossaire.md`
+- Règles métier (Organisation, Site/Salle) : `docs/metier/regles-organisation-site-salle.md`
 - Usage JavaScript : `docs/technique/usage-javascript.md`
 - PHPMyAdmin : `docs/technique/phpmyadmin.md`
 - Tâches CRON : `docs/cron.md`

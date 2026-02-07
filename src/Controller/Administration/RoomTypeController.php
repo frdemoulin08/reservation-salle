@@ -7,7 +7,9 @@ use App\Form\RoomTypeType;
 use App\Repository\RoomTypeRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\RoomType\CreateRoomType;
+use App\UseCase\RoomType\DeleteRoomType;
+use App\UseCase\RoomType\UpdateRoomType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class RoomTypeController extends AbstractController
     }
 
     #[Route('/administration/parametrage/types-salle/nouveau', name: 'app_admin_room_types_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateRoomType $createRoomType): Response
     {
         $roomType = new RoomType();
         $form = $this->createForm(RoomTypeType::class, $roomType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($roomType);
-            $entityManager->flush();
+            $createRoomType->execute($roomType);
 
             $this->addFlash('success', 'Le type de salle a été créé avec succès.');
 
@@ -85,7 +86,7 @@ class RoomTypeController extends AbstractController
         Request $request,
         int $id,
         RoomTypeRepository $roomTypeRepository,
-        EntityManagerInterface $entityManager,
+        UpdateRoomType $updateRoomType,
     ): Response {
         $roomType = $roomTypeRepository->find($id);
         if (!$roomType instanceof RoomType) {
@@ -98,7 +99,7 @@ class RoomTypeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateRoomType->execute($roomType);
             $this->addFlash('success', 'Le type de salle a été mis à jour.');
 
             return $this->redirectToRoute('app_admin_room_types_index');
@@ -115,7 +116,7 @@ class RoomTypeController extends AbstractController
         Request $request,
         int $id,
         RoomTypeRepository $roomTypeRepository,
-        EntityManagerInterface $entityManager,
+        DeleteRoomType $deleteRoomType,
     ): Response {
         $roomType = $roomTypeRepository->find($id);
         if (!$roomType instanceof RoomType) {
@@ -126,14 +127,11 @@ class RoomTypeController extends AbstractController
             return $this->redirectToRoute('app_admin_room_types_index');
         }
 
-        if ($roomType->getRooms()->count() > 0) {
+        if (!$deleteRoomType->execute($roomType)) {
             $this->addFlash('error', 'Impossible de supprimer un type de salle déjà utilisé.');
 
             return $this->redirectToRoute('app_admin_room_types_index');
         }
-
-        $entityManager->remove($roomType);
-        $entityManager->flush();
         $this->addFlash('success', 'Le type de salle a été supprimé.');
 
         return $this->redirectToRoute('app_admin_room_types_index');

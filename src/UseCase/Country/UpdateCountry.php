@@ -1,0 +1,18 @@
+<?php
+
+namespace App\UseCase\Country;
+
+use App\Entity\Country;
+use Doctrine\ORM\EntityManagerInterface;
+
+final class UpdateCountry
+{
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
+
+    public function execute(Country $country): void
+    {
+        $this->entityManager->flush();
+    }
+}

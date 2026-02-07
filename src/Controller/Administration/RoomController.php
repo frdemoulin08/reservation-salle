@@ -8,9 +8,14 @@ use App\Form\PhotoUploadType;
 use App\Form\RoomFormType;
 use App\Repository\RoomRepository;
 use App\Service\PhotoUploadHelper;
-use App\Service\RoomDocumentStorage;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
+use App\UseCase\Room\AddRoomPhotos;
+use App\UseCase\Room\CreateRoom;
+use App\UseCase\Room\DeleteRoom;
+use App\UseCase\Room\DeleteRoomPhoto;
+use App\UseCase\Room\UpdateRoom;
+use App\UseCase\Room\UpdateRoomPhotoLabel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Packages;
@@ -56,15 +61,14 @@ class RoomController extends AbstractController
 
     #[Route('/administration/salles/nouveau', name: 'app_admin_rooms_new')]
     #[IsGranted(new Expression('is_granted("ROLE_BUSINESS_ADMIN")'))]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateRoom $createRoom): Response
     {
         $room = new Room();
         $form = $this->createForm(RoomFormType::class, $room);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($room);
-            $entityManager->flush();
+            $createRoom->execute($room);
 
             $this->addFlash('success', 'La salle a été créée avec succès.');
 
@@ -97,9 +101,9 @@ class RoomController extends AbstractController
         Request $request,
         string $publicIdentifier,
         RoomRepository $roomRepository,
-        RoomDocumentStorage $documentStorage,
-        EntityManagerInterface $entityManager,
         PhotoUploadHelper $photoUploadHelper,
+        AddRoomPhotos $addRoomPhotos,
+        UpdateRoom $updateRoom,
     ): Response {
         $room = $roomRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$room instanceof Room) {
@@ -115,27 +119,14 @@ class RoomController extends AbstractController
         if ($photoForm->isSubmitted() && $photoForm->isValid()) {
             $uploadedFiles = $photoUploadHelper->normalizeFiles($photoForm->get('photo')->getData());
             if ([] !== $uploadedFiles) {
-                foreach ($uploadedFiles as $uploadedFile) {
-                    $mimeType = $uploadedFile->getMimeType() ?? $uploadedFile->getClientMimeType();
-                    $relativePath = $documentStorage->storeUploadedFile($room, $uploadedFile, 'photos', true);
-                    $label = $photoUploadHelper->createDefaultLabel($uploadedFile);
+                $createdDocuments = $addRoomPhotos->execute($room, $uploadedFiles);
+                if ([] !== $createdDocuments) {
+                    $this->addFlash('success', $photoUploadHelper->getPhotosAddedMessage());
 
-                    $photoDocument = (new RoomDocument())
-                        ->setRoom($room)
-                        ->setLabel($label)
-                        ->setFilePath($relativePath)
-                        ->setMimeType($mimeType)
-                        ->setType(RoomDocument::TYPE_PHOTO);
-
-                    $entityManager->persist($photoDocument);
+                    return $this->redirectToRoute('app_admin_rooms_edit', [
+                        'publicIdentifier' => $room->getPublicIdentifier(),
+                    ]);
                 }
-                $entityManager->flush();
-
-                $this->addFlash('success', $photoUploadHelper->getPhotosAddedMessage());
-
-                return $this->redirectToRoute('app_admin_rooms_edit', [
-                    'publicIdentifier' => $room->getPublicIdentifier(),
-                ]);
             }
         }
 
@@ -143,7 +134,7 @@ class RoomController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateRoom->execute();
             $this->addFlash('success', 'La salle a été mise à jour.');
 
             return $this->redirectToRoute('app_admin_rooms_show', [
@@ -169,7 +160,7 @@ class RoomController extends AbstractController
         Request $request,
         string $publicIdentifier,
         RoomRepository $roomRepository,
-        EntityManagerInterface $entityManager,
+        DeleteRoom $deleteRoom,
     ): Response {
         $room = $roomRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$room instanceof Room) {
@@ -180,13 +171,7 @@ class RoomController extends AbstractController
             return $this->redirectToRoute('app_admin_rooms_index');
         }
 
-        $hasDependencies = $room->getRoomEquipments()->count() > 0
-            || $room->getRoomServices()->count() > 0
-            || $room->getRoomDocuments()->count() > 0
-            || $room->getRoomPricings()->count() > 0
-            || $room->getReservations()->count() > 0;
-
-        if ($hasDependencies) {
+        if (!$deleteRoom->execute($room)) {
             $this->addFlash('error', 'Impossible de supprimer une salle déjà utilisée.');
 
             return $this->redirectToRoute('app_admin_rooms_show', [
@@ -194,8 +179,6 @@ class RoomController extends AbstractController
             ]);
         }
 
-        $entityManager->remove($room);
-        $entityManager->flush();
         $this->addFlash('success', 'La salle a été supprimée.');
 
         return $this->redirectToRoute('app_admin_rooms_index');
@@ -207,11 +190,10 @@ class RoomController extends AbstractController
         Request $request,
         string $publicIdentifier,
         RoomRepository $roomRepository,
-        RoomDocumentStorage $documentStorage,
-        EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager,
         Packages $packages,
         PhotoUploadHelper $photoUploadHelper,
+        AddRoomPhotos $addRoomPhotos,
     ): JsonResponse {
         $room = $roomRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$room instanceof Room) {
@@ -233,24 +215,7 @@ class RoomController extends AbstractController
             return new JsonResponse(['message' => $validationError], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $createdDocuments = [];
-        foreach ($files as $file) {
-            $mimeType = $file->getMimeType() ?? $file->getClientMimeType();
-            $relativePath = $documentStorage->storeUploadedFile($room, $file, 'photos', true);
-            $label = $photoUploadHelper->createDefaultLabel($file);
-
-            $photoDocument = (new RoomDocument())
-                ->setRoom($room)
-                ->setLabel($label)
-                ->setFilePath($relativePath)
-                ->setMimeType($mimeType)
-                ->setType(RoomDocument::TYPE_PHOTO);
-
-            $entityManager->persist($photoDocument);
-            $createdDocuments[] = $photoDocument;
-        }
-
-        $entityManager->flush();
+        $createdDocuments = $addRoomPhotos->execute($room, $files);
 
         $photos = [];
         foreach ($createdDocuments as $photoDocument) {
@@ -286,8 +251,8 @@ class RoomController extends AbstractController
         int $photoId,
         RoomRepository $roomRepository,
         EntityManagerInterface $entityManager,
-        RoomDocumentStorage $documentStorage,
         PhotoUploadHelper $photoUploadHelper,
+        DeleteRoomPhoto $deleteRoomPhoto,
     ): Response {
         $room = $roomRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$room instanceof Room) {
@@ -309,9 +274,7 @@ class RoomController extends AbstractController
             ]);
         }
 
-        $documentStorage->delete($document->getFilePath(), true);
-        $entityManager->remove($document);
-        $entityManager->flush();
+        $deleteRoomPhoto->execute($document);
 
         $this->addFlash('success', $photoUploadHelper->getPhotoDeletedMessage());
 
@@ -330,6 +293,7 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager,
         PhotoUploadHelper $photoUploadHelper,
+        UpdateRoomPhotoLabel $updateRoomPhotoLabel,
     ): JsonResponse {
         $room = $roomRepository->findOneBy(['publicIdentifier' => $publicIdentifier]);
         if (!$room instanceof Room) {
@@ -350,17 +314,10 @@ class RoomController extends AbstractController
             return new JsonResponse(['message' => $photoUploadHelper->getInvalidCsrfMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $label = trim((string) $request->request->get('label', ''));
-        if ('' === $label) {
-            return new JsonResponse(['message' => $photoUploadHelper->getLabelRequiredMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        $error = $updateRoomPhotoLabel->execute($document, (string) $request->request->get('label', ''));
+        if (null !== $error) {
+            return new JsonResponse(['message' => $error], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if (mb_strlen($label) > 255) {
-            return new JsonResponse(['message' => $photoUploadHelper->getLabelTooLongMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $document->setLabel($label);
-        $entityManager->flush();
 
         return new JsonResponse([
             'label' => $document->getLabel(),

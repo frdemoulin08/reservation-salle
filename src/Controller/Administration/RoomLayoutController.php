@@ -7,7 +7,9 @@ use App\Form\RoomLayoutType;
 use App\Repository\RoomLayoutRepository;
 use App\Table\TablePaginator;
 use App\Table\TableParams;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\RoomLayout\CreateRoomLayout;
+use App\UseCase\RoomLayout\DeleteRoomLayout;
+use App\UseCase\RoomLayout\UpdateRoomLayout;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,15 +49,14 @@ class RoomLayoutController extends AbstractController
     }
 
     #[Route('/administration/parametrage/configurations-salle/nouveau', name: 'app_admin_room_layouts_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CreateRoomLayout $createRoomLayout): Response
     {
         $roomLayout = new RoomLayout();
         $form = $this->createForm(RoomLayoutType::class, $roomLayout);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($roomLayout);
-            $entityManager->flush();
+            $createRoomLayout->execute($roomLayout);
 
             $this->addFlash('success', 'La configuration de salle a été créée avec succès.');
 
@@ -85,7 +86,7 @@ class RoomLayoutController extends AbstractController
         Request $request,
         int $id,
         RoomLayoutRepository $roomLayoutRepository,
-        EntityManagerInterface $entityManager,
+        UpdateRoomLayout $updateRoomLayout,
     ): Response {
         $roomLayout = $roomLayoutRepository->find($id);
         if (!$roomLayout instanceof RoomLayout) {
@@ -98,7 +99,7 @@ class RoomLayoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $updateRoomLayout->execute($roomLayout);
             $this->addFlash('success', 'La configuration de salle a été mise à jour.');
 
             return $this->redirectToRoute('app_admin_room_layouts_index');
@@ -115,7 +116,7 @@ class RoomLayoutController extends AbstractController
         Request $request,
         int $id,
         RoomLayoutRepository $roomLayoutRepository,
-        EntityManagerInterface $entityManager,
+        DeleteRoomLayout $deleteRoomLayout,
     ): Response {
         $roomLayout = $roomLayoutRepository->find($id);
         if (!$roomLayout instanceof RoomLayout) {
@@ -126,14 +127,11 @@ class RoomLayoutController extends AbstractController
             return $this->redirectToRoute('app_admin_room_layouts_index');
         }
 
-        if ($roomLayout->getRooms()->count() > 0) {
+        if (!$deleteRoomLayout->execute($roomLayout)) {
             $this->addFlash('error', 'Impossible de supprimer une configuration de salle déjà utilisée.');
 
             return $this->redirectToRoute('app_admin_room_layouts_index');
         }
-
-        $entityManager->remove($roomLayout);
-        $entityManager->flush();
         $this->addFlash('success', 'La configuration de salle a été supprimée.');
 
         return $this->redirectToRoute('app_admin_room_layouts_index');
